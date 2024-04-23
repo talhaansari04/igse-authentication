@@ -1,3 +1,8 @@
+#-----Default admin id and pass------#
+igse:
+  admin:
+    id: gse@shangrila.gov.un
+    pass: gse@energy
 eureka:
   client:
     serviceUrl:
@@ -18,3 +23,6 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/igse
     username: root
     password: root
+
+
+
