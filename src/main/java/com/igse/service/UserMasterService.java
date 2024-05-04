@@ -1,19 +1,13 @@
 package com.igse.service;
 
 import com.igse.config.EncoderDecoder;
-import com.igse.dto.IgseResponse;
-import com.igse.dto.UserRegistrationDTO;
-import com.igse.dto.UserRequest;
-import com.igse.dto.UserResponse;
-import com.igse.entity.MeterReadingEntity;
+import com.igse.dto.*;
 import com.igse.entity.UserMaster;
-import com.igse.entity.VoucherCodeEntity;
 import com.igse.exception.UserException;
-import com.igse.repository.MeterReadingRepo;
 import com.igse.repository.UserMasterRepository;
-import com.igse.repository.VoucherRepo;
 import com.igse.util.GlobalConstant;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -28,26 +22,37 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserMasterService {
     private final WebClient webClient = WebClient.create();
     private final UserMasterRepository userMasterRepository;
-    private final VoucherRepo voucherRepo;
-    private final MeterReadingRepo readingRepo;
     private final EncoderDecoder encoderDecoder;
     private final JwtService jwt;
 
-    private IgseResponse<VoucherCodeEntity> singleDetail(String voucherCode){
+    private IgseResponse<VoucherResponse> singleDetail(String voucherCode) {
         /*Note Please handle excetion incase 404*/
-       return webClient.get()
+        return webClient.get()
                 .uri("http://localhost:8080/igse/core/admin/voucher/" + voucherCode)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherCodeEntity>>() {
+                .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
                 }).block();
     }
 
+    private void saveSingleDetail(VoucherResponse voucherCode) {
+        /*Note Please handle excetion incase 404*/
+        webClient.patch()
+                .uri("http://localhost:8080/igse/core/admin/voucher")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .bodyValue(voucherCode)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
+                })
+                .block();
+        log.info("Voucher Save Successfully");
+    }
+
     public void saveUser(UserRegistrationDTO userRegistrationDTO) {
-        VoucherCodeEntity voucherDetails;
         Optional<UserMaster> customerDetails = userMasterRepository.findById(userRegistrationDTO.getCustomerId());
         if (customerDetails.isPresent()) {
             UserMaster details = customerDetails.get();
@@ -55,25 +60,7 @@ public class UserMasterService {
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Customer already exist");
             }
         }
-        IgseResponse<VoucherCodeEntity> singleVoucher = singleDetail(userRegistrationDTO.getVoucherCode());
-        if (Objects.nonNull(singleVoucher)) {
-            voucherDetails = singleVoucher.getData();
-            if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegistrationDTO.getVoucherCode())) {
-                if (voucherDetails.getStatus().equals(GlobalConstant.Voucher.USED)) {
-                    throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "EVC code already used");
-                }
-            } else {
-                throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code");
-            }
-            VoucherCodeEntity voucherCode = new VoucherCodeEntity();
-            voucherCode.setVoucherCode(voucherDetails.getVoucherCode());
-            voucherCode.setStatus(GlobalConstant.Voucher.USED);
-            voucherCode.setCustomerId(userRegistrationDTO.getCustomerId());
-            voucherCode.setVoucherBalance(voucherDetails.getVoucherBalance());
-            voucherRepo.save(voucherCode);
-        } else {
-            throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code");
-        }
+        VoucherResponse voucherDetails = processVoucher(userRegistrationDTO);
         UserMaster userDetails = new UserMaster();
         BeanUtils.copyProperties(userRegistrationDTO, userDetails);
         userDetails.setPass(encoderDecoder.encrypt(userRegistrationDTO.getPass()));
@@ -83,18 +70,48 @@ public class UserMasterService {
         userMasterRepository.save(userDetails);
     }
 
+    private VoucherResponse processVoucher(UserRegistrationDTO userRegistrationDTO) {
+        VoucherResponse voucherDetails;
+        IgseResponse<VoucherResponse> singleVoucher = singleDetail(userRegistrationDTO.getVoucherCode());
+        if (Objects.nonNull(singleVoucher)) {
+            voucherDetails = singleVoucher.getData();
+            if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegistrationDTO.getVoucherCode())) {
+                if (voucherDetails.getStatus().equals(GlobalConstant.Voucher.USED)) {
+                    throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "EVC code already used");
+                }
+            } else {
+                throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code");
+            }
+            VoucherResponse voucherCode = new VoucherResponse();
+            voucherCode.setVoucherCode(voucherDetails.getVoucherCode());
+            voucherCode.setStatus(GlobalConstant.Voucher.USED);
+            voucherCode.setCustomerId(userRegistrationDTO.getCustomerId());
+            voucherCode.setVoucherBalance(voucherDetails.getVoucherBalance());
+            saveSingleDetail(voucherCode);
+        } else {
+            throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code");
+        }
+        return voucherDetails;
+    }
+
     private void setMeterReadingInitialValue(String customerId) {
-        MeterReadingEntity readingEntity = new MeterReadingEntity();
-        readingEntity.setDayReading(100.00);
-        readingEntity.setNightReading(250.0);
-        readingEntity.setGasReading(800.00);
-        readingEntity.setSubmissionDate(LocalDate.now());
-        readingEntity.setBillingStatus(GlobalConstant.PAID);
-        readingEntity.setCustomerId(customerId);
-        readingEntity.setPaidAmount(0.0);
-        readingEntity.setDueAmount(0.0);
-        readingEntity.setPaymentDate(LocalDate.now());
-        readingRepo.save(readingEntity);
+        MeterReadingDTO readingDTO = MeterReadingDTO.builder()
+                .dayReading(100.00)
+                .nightReading(250.0)
+                .gasReading(800.00)
+                .submissionDate(LocalDate.now())
+                .billingStatus(GlobalConstant.PAID)
+                .customerId(customerId).build();
+
+        webClient.post()
+                .uri("http://localhost:8080/igse/core/meter")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .bodyValue(readingDTO)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
+                })
+                .block();
+        log.info("MeterReading Save Successfully");
     }
 
     public UserResponse getUserDetails(UserRequest userRequest) throws UserException {

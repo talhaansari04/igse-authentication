@@ -1,6 +1,9 @@
 package com.igse.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Entity;
@@ -8,8 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
+@Data
 @Entity
 @Table(name = "igse_user_master")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserMaster {
 
 	@Id

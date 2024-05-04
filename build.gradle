@@ -57,3 +57,6 @@ tasks.named('bootBuildImage') {
 tasks.named('test') {
     useJUnitPlatform()
 }
+bootJar {
+    destinationDirectory.set(file("D:\\Project\\buildJars"))
+}

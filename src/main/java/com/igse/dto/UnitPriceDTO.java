@@ -1,10 +1,18 @@
 package com.igse.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class UnitPriceDTO {
+    private String customerId;
     @NotNull(message = "Day charge shouldn't blank")
     @JsonProperty("dayReading")
     private Double dayCharge;
@@ -19,36 +27,4 @@ public class UnitPriceDTO {
     @JsonProperty("standingChargePerDay")
     private Double standingChargePerDay;
 
-
-    public Double getDayCharge() {
-        return dayCharge;
-    }
-
-    public void setDayCharge(Double dayCharge) {
-        this.dayCharge = dayCharge;
-    }
-
-    public Double getNightCharge() {
-        return nightCharge;
-    }
-
-    public void setNightCharge(Double nightCharge) {
-        this.nightCharge = nightCharge;
-    }
-
-    public Double getGasCharge() {
-        return gasCharge;
-    }
-
-    public void setGasCharge(Double gasCharge) {
-        this.gasCharge = gasCharge;
-    }
-
-    public Double getStandingChargePerDay() {
-        return standingChargePerDay;
-    }
-
-    public void setStandingChargePerDay(Double standingChargePerDay) {
-        this.standingChargePerDay = standingChargePerDay;
-    }
 }

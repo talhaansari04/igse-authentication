@@ -1,19 +1,27 @@
 package com.igse.config;
 
-import com.igse.entity.UnitPriceEntity;
+import com.igse.dto.IgseResponse;
+import com.igse.dto.UnitPriceDTO;
+import com.igse.dto.VoucherResponse;
 import com.igse.entity.UserMaster;
-import com.igse.repository.EnergyChargesRepo;
 import com.igse.repository.UserMasterRepository;
 import com.igse.util.GlobalConstant;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class LoadAdminDetailsByYml implements CommandLineRunner {
     @Value("${igse.admin.id}")
     private String adminID;
@@ -21,9 +29,8 @@ public class LoadAdminDetailsByYml implements CommandLineRunner {
     private String adminPass;
 
     private final UserMasterRepository repository;
-    private final EnergyChargesRepo chargesRepo;
     private final EncoderDecoder encoderDecoder;
-
+    private final WebClient webClient = WebClient.create();
     @Override
     public void run(String... args) {
         Optional<UserMaster> details = repository.findById(adminID);
@@ -34,15 +41,45 @@ public class LoadAdminDetailsByYml implements CommandLineRunner {
             userMaster.setPass(encoderDecoder.encrypt(adminPass));
             repository.save(userMaster);
         }
-        Optional<UnitPriceEntity> adminData = chargesRepo.findById(adminID);
-        if (adminData.isEmpty()) {
-            UnitPriceEntity priceEntity = new UnitPriceEntity();
-            priceEntity.setAdminId(adminID);
+        IgseResponse<UnitPriceDTO> adminData = getFixedMeterDetails();
+        if (Objects.isNull(adminData)) {
+            UnitPriceDTO priceEntity = new UnitPriceDTO();
+            priceEntity.setCustomerId(adminID);
             priceEntity.setDayCharge(0.34);
             priceEntity.setNightCharge(0.2);
             priceEntity.setGasCharge(0.1);
             priceEntity.setStandingChargePerDay(0.74);
-            chargesRepo.save(priceEntity);
+            saveSingleDetail(priceEntity);
+        }else {
+            log.info(adminData.toString());
         }
+    }
+    private IgseResponse<UnitPriceDTO> getFixedMeterDetails() {
+        /*Note Please handle excetion incase 404*/
+        try {
+            return webClient.get()
+                    .uri("http://localhost:8080/igse/core/admin/meter/price")
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<IgseResponse<UnitPriceDTO>>() {
+                    }).block();
+
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+
+    }
+    private void saveSingleDetail(UnitPriceDTO unitPriceDTO) {
+        /*Note Please handle excetion incase 404*/
+        webClient.post()
+                .uri("http://localhost:8080/igse/core/admin/change/price")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .bodyValue(unitPriceDTO)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
+                })
+                .block();
+        log.info("Successfully Change Meter");
     }
 }

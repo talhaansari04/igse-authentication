@@ -1,21 +1,19 @@
-package com.igse.entity;
+package com.igse.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.time.LocalDate;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class VoucherResponse {
 
-@Entity
-@Data
-@Table(name = "voucher_code")
-public class VoucherCodeEntity {
-    @Id
     protected String voucherCode;
     protected String customerId;
     protected String status;
@@ -24,5 +22,4 @@ public class VoucherCodeEntity {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd")
     protected LocalDate voucherDate;
-
 }
