@@ -5,7 +5,7 @@ import com.igse.entity.UserMaster;
 import com.igse.repository.EnergyChargesRepo;
 import com.igse.repository.UserMasterRepository;
 import com.igse.util.GlobalConstant;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -13,30 +13,29 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class LoadAdminDetailsByYml implements CommandLineRunner {
     @Value("${igse.admin.id}")
     private String adminID;
     @Value("${igse.admin.pass}")
     private String adminPass;
-    @Autowired
-    private UserMasterRepository repository;
-    @Autowired
-    EnergyChargesRepo chargesRepo;
-    @Autowired
-    private EncoderDecoder encoderDecoder;
+
+    private final UserMasterRepository repository;
+    private final EnergyChargesRepo chargesRepo;
+    private final EncoderDecoder encoderDecoder;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Optional<UserMaster> details = repository.findById(adminID);
-        if (!details.isPresent()){
-            UserMaster userMaster=new UserMaster();
+        if (details.isEmpty()) {
+            UserMaster userMaster = new UserMaster();
             userMaster.setRole(GlobalConstant.Role.ADMIN);
             userMaster.setCustomerId(adminID);
             userMaster.setPass(encoderDecoder.encrypt(adminPass));
             repository.save(userMaster);
         }
         Optional<UnitPriceEntity> adminData = chargesRepo.findById(adminID);
-        if (!adminData.isPresent()) {
+        if (adminData.isEmpty()) {
             UnitPriceEntity priceEntity = new UnitPriceEntity();
             priceEntity.setAdminId(adminID);
             priceEntity.setDayCharge(0.34);

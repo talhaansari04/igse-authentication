@@ -1,6 +1,7 @@
 package com.igse.service;
 
 import com.igse.config.EncoderDecoder;
+import com.igse.dto.IgseResponse;
 import com.igse.dto.UserRegistrationDTO;
 import com.igse.dto.UserRequest;
 import com.igse.dto.UserResponse;
@@ -14,9 +15,12 @@ import com.igse.repository.VoucherRepo;
 import com.igse.util.GlobalConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -25,26 +29,35 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserMasterService {
-
+    private final WebClient webClient = WebClient.create();
     private final UserMasterRepository userMasterRepository;
     private final VoucherRepo voucherRepo;
     private final MeterReadingRepo readingRepo;
     private final EncoderDecoder encoderDecoder;
     private final JwtService jwt;
 
+    private IgseResponse<VoucherCodeEntity> singleDetail(String voucherCode){
+        /*Note Please handle excetion incase 404*/
+       return webClient.get()
+                .uri("http://localhost:8080/igse/core/admin/voucher/" + voucherCode)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherCodeEntity>>() {
+                }).block();
+    }
 
     public void saveUser(UserRegistrationDTO userRegistrationDTO) {
-        VoucherCodeEntity voucherDetails = null;
+        VoucherCodeEntity voucherDetails;
         Optional<UserMaster> customerDetails = userMasterRepository.findById(userRegistrationDTO.getCustomerId());
-        Optional<VoucherCodeEntity> voucher = voucherRepo.findById(userRegistrationDTO.getVoucherCode());
         if (customerDetails.isPresent()) {
             UserMaster details = customerDetails.get();
             if (details.getCustomerId().equalsIgnoreCase(userRegistrationDTO.getCustomerId())) {
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Customer already exist");
             }
         }
-        if (voucher.isPresent()) {
-            voucherDetails = voucher.get();
+        IgseResponse<VoucherCodeEntity> singleVoucher = singleDetail(userRegistrationDTO.getVoucherCode());
+        if (Objects.nonNull(singleVoucher)) {
+            voucherDetails = singleVoucher.getData();
             if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegistrationDTO.getVoucherCode())) {
                 if (voucherDetails.getStatus().equals(GlobalConstant.Voucher.USED)) {
                     throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "EVC code already used");
@@ -85,6 +98,8 @@ public class UserMasterService {
     }
 
     public UserResponse getUserDetails(UserRequest userRequest) throws UserException {
+        getUserDetail(userRequest.getCustomerId());
+        Optional.of(getUserDetail(userRequest.getCustomerId())).orElse(null);
         UserMaster userDetails = userMasterRepository.findById(userRequest.getCustomerId()).orElse(null);
         if (Objects.nonNull(userDetails)) {
             if (validateUser(userDetails, userRequest)) {
@@ -104,5 +119,14 @@ public class UserMasterService {
 
     private boolean validateUser(UserMaster userDetails, UserRequest userRequest) {
         return encoderDecoder.encrypt(userRequest.getPassword()).equals(userDetails.getPass());
+    }
+
+    private IgseResponse<UserResponse> getUserDetail(String customerID) {
+        return webClient.get()
+                .uri("http://localhost:8080/igse/core/dashboard/user/info/" + customerID)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<IgseResponse<UserResponse>>() {
+                }).block();
     }
 }

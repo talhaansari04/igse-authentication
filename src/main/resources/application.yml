@@ -12,7 +12,7 @@ eureka:
 server:
   servlet:
     context-path: /igse/auth
-  port: 7000
+  port: 6000
 spring:
   application:
     name: igse-auth

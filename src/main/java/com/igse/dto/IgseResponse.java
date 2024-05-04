@@ -1,22 +1,18 @@
 package com.igse.dto;
 
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 public class IgseResponse<T> {
     private Integer status;
     private T data;
 
-    public Integer getStatus() {
-        return status;
-    }
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 }
