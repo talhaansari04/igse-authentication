@@ -72,14 +72,18 @@ public class LoadAdminDetailsByYml implements CommandLineRunner {
     }
     private void saveSingleDetail(UnitPriceDTO unitPriceDTO) {
         /*Note Please handle excetion incase 404*/
-        webClient.post()
-                .uri("http://localhost:8080/igse/core/admin/change/price")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .bodyValue(unitPriceDTO)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
-                })
-                .block();
-        log.info("Successfully Change Meter");
+        try {
+            webClient.post()
+                    .uri("http://localhost:8080/igse/core/admin/change/price")
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .bodyValue(unitPriceDTO)
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
+                    })
+                    .block();
+            log.info("Successfully Change Meter");
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 }

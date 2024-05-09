@@ -114,12 +114,12 @@ public class UserMasterService {
         log.info("MeterReading Save Successfully");
     }
 
-    public UserResponse getUserDetails(UserRequest userRequest) throws UserException {
-        getUserDetail(userRequest.getCustomerId());
-        Optional.of(getUserDetail(userRequest.getCustomerId())).orElse(null);
-        UserMaster userDetails = userMasterRepository.findById(userRequest.getCustomerId()).orElse(null);
+    public UserResponse getUserDetails(LoginRequest loginRequest) throws UserException {
+        getUserDetail(loginRequest.getCustomerId());
+        Optional.of(getUserDetail(loginRequest.getCustomerId())).orElse(null);
+        UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId()).orElse(null);
         if (Objects.nonNull(userDetails)) {
-            if (validateUser(userDetails, userRequest)) {
+            if (validateUser(userDetails, loginRequest)) {
                 UserResponse userResponse = new UserResponse();
                 userResponse.setToken(jwt.generateToken(userDetails.getCustomerId(), userDetails.getRole()));
                 BeanUtils.copyProperties(userDetails, userResponse);
@@ -134,8 +134,8 @@ public class UserMasterService {
         }
     }
 
-    private boolean validateUser(UserMaster userDetails, UserRequest userRequest) {
-        return encoderDecoder.encrypt(userRequest.getPassword()).equals(userDetails.getPass());
+    private boolean validateUser(UserMaster userDetails, LoginRequest loginRequest) {
+        return encoderDecoder.encrypt(loginRequest.getPassword()).equals(userDetails.getPass());
     }
 
     private IgseResponse<UserResponse> getUserDetail(String customerID) {
