@@ -31,7 +31,7 @@ public final class GlobalConstant {
         }
 
         public static final String USED = "USED";
-        public static final String NOT_USED = "NOT USED";
+        public static final String NOT_USED = "NOT_USED";
     }
 
 }

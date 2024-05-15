@@ -1,4 +1,4 @@
-package com.igse.exception;
+package com.igse.dto.registration;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserException extends RuntimeException {
-    private Integer status;
-    private String message;
+public class Address {
+    private String flatNo;
+    private String area;
+    private String landmark;
+    private Long pinCode;
 }

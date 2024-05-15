@@ -1,10 +1,9 @@
-package com.igse.dto.user;
+package com.igse.dto.login;
 
-public class Login {
+public class LoginVersion {
     public interface LoginV1 {
     }
     public interface LoginV2 {
     }
-
 
 }

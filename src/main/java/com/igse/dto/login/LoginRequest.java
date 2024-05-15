@@ -1,8 +1,6 @@
-package com.igse.dto;
+package com.igse.dto.login;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.igse.dto.user.Login;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,16 +16,16 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class LoginRequest {
 
-    @JsonView(value = Login.LoginV2.class)
+    @JsonView(value = LoginVersion.LoginV2.class)
     @NotNull(message = "UserName should not be empty")
     private String userName;
 
-    @JsonView(value = {Login.LoginV1.class,Login.LoginV2.class})
+    @JsonView(value = {LoginVersion.LoginV1.class,LoginVersion.LoginV2.class})
     @Size(min = 4, max = 20, message = "Password length between 4 to 20")
     private String password;
 
-    @JsonView(value = Login.LoginV1.class)
-    @NotNull(message = "Email Id should not be empty",groups = Login.LoginV1.class)
+    @JsonView(value = LoginVersion.LoginV1.class)
+    @NotNull(message = "Email Id should not be empty",groups = LoginVersion.LoginV1.class)
     @Email(message = "Invalid email id")
     private String customerId;
 
