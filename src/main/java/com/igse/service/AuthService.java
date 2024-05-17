@@ -19,7 +19,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -31,8 +30,8 @@ public class AuthService {
     private final JwtService jwt;
 
     public UserResponse getUserDetails(LoginRequest loginRequest) throws UserException {
-        getUserDetail(loginRequest.getCustomerId());
-        Optional.of(getUserDetail(loginRequest.getCustomerId())).orElse(null);
+       // getUserDetail(loginRequest.getCustomerId());
+        //Optional.of(getUserDetail(loginRequest.getCustomerId())).orElse(null);
         UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId()).orElse(null);
         if (Objects.nonNull(userDetails)) {
             if (validateUser(userDetails, loginRequest)) {

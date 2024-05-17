@@ -2,6 +2,7 @@ package com.igse.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "igse_user_master")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserMaster {

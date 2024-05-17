@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -24,13 +24,18 @@ public class VoucherService {
             log.info("Number of voucher code...{}", count);
             log.info("Voucher Creation Start...");
             VoucherCodeEntity codeEntity = VoucherCodeEntity.builder()
-                    .voucherCode("XZLEB39H")
+                    .voucherCode(randomString())
                     .voucherBalance(200.00)
                     .status(GlobalConstant.Voucher.NOT_USED).build();
             VoucherCodeEntity created = codeRepository.save(codeEntity);
             log.info("Voucher Created...{}", created.getVoucherCode());
         }
 
+    }
+
+    /* Should use pagignation*/
+    public List<VoucherCodeEntity> getAllVoucher(){
+       return codeRepository.findAll();
     }
 
     private String randomString() {
