@@ -64,6 +64,10 @@ bootJar {
     destinationDirectory.set(file("D:\\Project\\buildJars"))
 }
 
+tasks.named('bootRun'){
+    systemProperty('spring.profiles.active', 'dev')
+}
+
 jacocoTestReport {
     reports {
         xml.required = false

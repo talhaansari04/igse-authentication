@@ -14,6 +14,7 @@ import com.igse.util.GlobalConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ public class CustomerService {
     private final EncoderDecoder encoderDecoder;
     private final UserMasterRepository userMasterRepository;
     private final VoucherCodeRepository codeRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void saveUser(UserRegistrationDTO userRegistrationDTO) {
@@ -51,6 +53,7 @@ public class CustomerService {
         userDetails.setRole(GlobalConstant.Role.USER);
         setMeterReadingInitialValue(userRegistrationDTO.getCustomerId());
         userMasterRepository.save(userDetails);
+        eventPublisher.publishEvent(userDetails.getCustomerId());
     }
 
     private VoucherCodeEntity processVoucher(UserRegistrationDTO userRegistrationDTO) {
