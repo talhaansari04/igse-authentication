@@ -14,6 +14,8 @@ server:
     context-path: /igse/auth
   port: 6000
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
   application:
     name: igse-auth
   datasource:
@@ -32,6 +34,11 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   profiles:
     active: dev
+
+services:
+  kafka:
+    regisTopics: v1.dev.regi
+    groupId: "default-dev"
 
 
 
