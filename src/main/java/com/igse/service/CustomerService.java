@@ -19,6 +19,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -35,9 +36,11 @@ public class CustomerService {
     private final UserMasterRepository userMasterRepository;
     private final VoucherCodeRepository codeRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final KafkaTemplate<String,String> kafkaTemplate;
 
     @Transactional
     public void saveUser(UserRegistrationDTO userRegistrationDTO) {
+        kafkaTemplate.send("v1.dev.regi","Hello World");
         Optional<UserMaster> customerDetails = userMasterRepository.findById(userRegistrationDTO.getCustomerId());
         if (customerDetails.isPresent()) {
             UserMaster details = customerDetails.get();
