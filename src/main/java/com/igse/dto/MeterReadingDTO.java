@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class MeterReadingDTO {
     protected Integer id;
     protected String customerId;
-private String billingStatus;
+    private String billingStatus;
     @NotNull(message = "Day shouldn't null")
     protected Double dayReading;
     @NotNull(message = "Night shouldn't null")
