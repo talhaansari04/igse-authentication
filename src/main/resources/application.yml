@@ -34,7 +34,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   profiles:
     active: dev
-
 services:
   kafka:
     regisTopics: v1.dev.regi

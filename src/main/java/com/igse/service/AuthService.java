@@ -42,7 +42,7 @@ public class AuthService {
                 userMasterRepository.save(userDetails);
                 return userResponse;
             } else {
-                throw new UserException(HttpStatus.NOT_FOUND.value(), "Invalid Password");
+                throw new UserException(HttpStatus.NOT_FOUND.value(), "Invalid Credential");
             }
         } else {
             throw new UserException(HttpStatus.NOT_FOUND.value(), "Customer not registered");
