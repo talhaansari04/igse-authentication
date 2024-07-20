@@ -19,21 +19,33 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    private static final String INVALID_USER = "Customer not registered";
     private final WebClient webClient = WebClient.create();
     private final UserMasterRepository userMasterRepository;
     private final EncoderDecoder encoderDecoder;
     private final JwtService jwt;
 
-    public UserResponse getUserDetails(LoginRequest loginRequest) throws UserException {
-       // getUserDetail(loginRequest.getCustomerId());
-        //Optional.of(getUserDetail(loginRequest.getCustomerId())).orElse(null);
-        UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId()).orElse(null);
-        if (Objects.nonNull(userDetails)) {
+    public UserResponse v1Login(LoginRequest loginRequest) {
+        UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId())
+                .orElseThrow(() -> new UserException(HttpStatus.NOT_FOUND.value(), INVALID_USER));
+        return getUserDetails(loginRequest, userDetails);
+
+    }
+
+    public UserResponse v2Login(LoginRequest loginRequest) {
+        UserMaster userDetails = userMasterRepository.findAllByUserName(loginRequest.getUserName())
+                .orElseThrow(() -> new UserException(HttpStatus.NOT_FOUND.value(), INVALID_USER));
+        return getUserDetails(loginRequest, userDetails);
+    }
+
+
+    private UserResponse getUserDetails(LoginRequest loginRequest, UserMaster userDetails) throws UserException {
             if (validateUser(userDetails, loginRequest)) {
                 UserResponse userResponse = new UserResponse();
                 userResponse.setToken(jwt.generateToken(userDetails.getCustomerId(), userDetails.getRole()));
@@ -44,9 +56,6 @@ public class AuthService {
             } else {
                 throw new UserException(HttpStatus.NOT_FOUND.value(), "Invalid Credential");
             }
-        } else {
-            throw new UserException(HttpStatus.NOT_FOUND.value(), "Customer not registered");
-        }
     }
 
     private boolean validateUser(UserMaster userDetails, LoginRequest loginRequest) {

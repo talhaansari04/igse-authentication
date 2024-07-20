@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -27,14 +28,17 @@ public class LoginAuthentication {
 
     @PostMapping(path = "v1/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> loginAuthV1(
-            @RequestBody @Validated(value = LoginVersion.LoginV1.class) @JsonView(value = LoginVersion.LoginV1.class) LoginRequest loginRequest) {
-        log.info("Login Authentication Start {}",loginRequest.getCustomerId());
-        return ResponseEntity.status(HttpStatus.OK).body(authService.getUserDetails(loginRequest));
+            @RequestBody @Validated(value = LoginVersion.LoginV1.class)
+            @JsonView(value = LoginVersion.LoginV1.class) LoginRequest loginRequest) {
+        log.info("Login Authentication Start {}", loginRequest.getCustomerId());
+        return ResponseEntity.status(HttpStatus.OK).body(authService.v1Login(loginRequest));
     }
+
     @PostMapping(path = "v2/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> loginAuthV2(
-            @RequestBody @Valid @JsonView(value = LoginVersion.LoginV2.class) LoginRequest loginRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.getUserDetails(loginRequest));
+            @RequestBody @Validated(value = LoginVersion.LoginV2.class)
+            @JsonView(value = LoginVersion.LoginV2.class) LoginRequest loginRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.v2Login(loginRequest));
     }
 
 }

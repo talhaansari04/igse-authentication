@@ -10,19 +10,26 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
+
 @Component
 public class JwtService {
     @Value("${igse.admin.id}")
     private String adminID;
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 
-    public String generateToken(String userName,String userRole){
-       return createToken(Map.of("ROLE",userRole),userName);
+    public String generateToken(String userName, String userRole) {
+        Map<String, Object> map = Map.of(
+                "ROLE", userRole,
+                "customerId", userName
+        );
+        return createToken(map, userName);
     }
-   private String createToken(Map<String, Object> claims, String userName) {
+
+    private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userName)
+                .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSignkey(), SignatureAlgorithm.HS256).compact();
@@ -33,7 +40,7 @@ public class JwtService {
     }
 
 
-    public String getAdminToken(){
-       return generateToken(adminID, "admin");
+    public String getAdminToken() {
+        return generateToken(adminID, "admin");
     }
 }
