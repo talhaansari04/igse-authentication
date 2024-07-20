@@ -20,7 +20,7 @@ public class MeterRepo {
 
     private final WebClient webClient = WebClient.create();
     private final JwtService jwtService;
-    private static final String BASE_URL="http://localhost:8080/igse/core/meter";
+    private static final String BASE_URL="http://localhost:8080/igse/core/meter/meter";
 
     public void saveMeterDetails(MeterReadingDTO readingDTO) {
         String token = jwtService.getAdminToken();

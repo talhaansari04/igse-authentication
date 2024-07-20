@@ -47,8 +47,8 @@ public class CustomerService {
         userDetails.setCurrentBalance(voucherDetails.getVoucherBalance());
         userDetails.setRole(GlobalConstant.Role.USER);
         setMeterReadingInitialValue(userRegistrationDTO.getCustomerId());
-        userMasterRepository.save(userDetails);
-        eventPublisher.publishEvent(userDetails.getCustomerId());
+        UserMaster success = userMasterRepository.save(userDetails);
+        eventPublisher.publishEvent(success);
     }
 
     private VoucherResponse processVoucher(UserRegistrationDTO userRegistrationDTO) {
