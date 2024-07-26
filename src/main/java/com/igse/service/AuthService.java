@@ -3,9 +3,11 @@ package com.igse.service;
 import com.igse.config.EncoderDecoder;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.UserResponse;
+import com.igse.dto.WalletInfoDTO;
 import com.igse.dto.login.LoginRequest;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
+import com.igse.repository.PaymentRepo;
 import com.igse.repository.UserMasterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ public class AuthService {
     private final UserMasterRepository userMasterRepository;
     private final EncoderDecoder encoderDecoder;
     private final JwtService jwt;
+    private final PaymentRepo paymentRepo;
 
     public UserResponse v1Login(LoginRequest loginRequest) {
         UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId())
@@ -48,10 +51,13 @@ public class AuthService {
     private UserResponse getUserDetails(LoginRequest loginRequest, UserMaster userDetails) throws UserException {
             if (validateUser(userDetails, loginRequest)) {
                 UserResponse userResponse = new UserResponse();
-                userResponse.setToken(jwt.generateToken(userDetails.getCustomerId(), userDetails.getRole()));
+                String token = jwt.generateToken(userDetails.getCustomerId(), userDetails.getRole());
+                userResponse.setToken(token);
                 BeanUtils.copyProperties(userDetails, userResponse);
                 userDetails.setLastLogin(LocalDate.now());
                 userMasterRepository.save(userDetails);
+                WalletInfoDTO walletInfo = paymentRepo.walletDetails(userDetails.getCustomerId(),token);
+                userResponse.setWalletInfo(walletInfo);
                 return userResponse;
             } else {
                 throw new UserException(HttpStatus.NOT_FOUND.value(), "Invalid Credential");

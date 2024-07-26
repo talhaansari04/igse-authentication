@@ -1,6 +1,7 @@
 package com.igse.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.*;
@@ -20,10 +21,11 @@ public class UserResponse {
     private Integer numberOfBedRoom;
     private String token;
     private String role;
-    private Double currentBalance;
 
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate lastLogin;
+    @JsonProperty("wallet")
+    private WalletInfoDTO walletInfo;
 
 }

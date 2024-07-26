@@ -1,5 +1,6 @@
 package com.igse.event;
 
+import com.igse.dto.VoucherResponse;
 import com.igse.dto.WalletPayloadKafka;
 import com.igse.entity.UserMaster;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,8 @@ public class CustomerRegistrationEvent {
     private final KafkaTemplate<String, WalletPayloadKafka> kafkaTemplate;
 
     @EventListener
-    private void processRegistration(UserMaster userMaster) {
-        log.info("\"Event Received of customerId {}...\"", userMaster.getCustomerId());
-        WalletPayloadKafka wallet = WalletPayloadKafka.builder()
-                .customerId(userMaster.getCustomerId())
-                .totalBalance(200.00)
-                .creationDate(LocalDate.now()).build();
+    private void processRegistration(WalletPayloadKafka wallet) {
+        log.info("\"Event Received of customerId {}...\"", wallet.getCustomerId());
         ListenableFuture<SendResult<String, WalletPayloadKafka>> future = kafkaTemplate.send(topic, wallet);
-
     }
 }

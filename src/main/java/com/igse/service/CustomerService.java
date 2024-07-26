@@ -3,6 +3,7 @@ package com.igse.service;
 import com.igse.config.EncoderDecoder;
 import com.igse.dto.MeterReadingDTO;
 import com.igse.dto.VoucherResponse;
+import com.igse.dto.WalletPayloadKafka;
 import com.igse.dto.registration.UserRegistrationDTO;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
@@ -44,11 +45,19 @@ public class CustomerService {
         UserMaster userDetails = new UserMaster();
         BeanUtils.copyProperties(userRegistrationDTO, userDetails);
         userDetails.setPass(encoderDecoder.encrypt(userRegistrationDTO.getPass()));
-        userDetails.setCurrentBalance(voucherDetails.getVoucherBalance());
         userDetails.setRole(GlobalConstant.Role.USER);
         setMeterReadingInitialValue(userRegistrationDTO.getCustomerId());
         UserMaster success = userMasterRepository.save(userDetails);
-        eventPublisher.publishEvent(success);
+        publishWalletEvent(success,voucherDetails);
+
+    }
+
+    private void publishWalletEvent(UserMaster userMaster,VoucherResponse voucherDetails){
+        WalletPayloadKafka wallet = WalletPayloadKafka.builder()
+                .customerId(userMaster.getCustomerId())
+                .totalBalance(voucherDetails.getVoucherBalance())
+                .creationDate(LocalDate.now()).build();
+        eventPublisher.publishEvent(wallet);
     }
 
     private VoucherResponse processVoucher(UserRegistrationDTO userRegistrationDTO) {

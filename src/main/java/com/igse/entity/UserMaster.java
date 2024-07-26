@@ -29,7 +29,6 @@ public class UserMaster {
 	private String address;
 	private String propertyType;
 	private Integer numberOfBedRoom;
-	private Double currentBalance;
 	@JsonIgnore
 	@UpdateTimestamp
 	private LocalDate lastLogin;
