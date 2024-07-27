@@ -13,6 +13,4 @@ import lombok.ToString;
 public class IgseResponse<T> {
     private Integer status;
     private T data;
-
-
 }

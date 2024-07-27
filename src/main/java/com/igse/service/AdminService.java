@@ -1,8 +1,10 @@
 package com.igse.service;
 
 import com.igse.dto.UserResponse;
+import com.igse.dto.WalletInfoDTO;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
+import com.igse.repository.PaymentRepo;
 import com.igse.repository.UserMasterRepository;
 import com.igse.util.GlobalConstant;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +22,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AdminService {
     private final UserMasterRepository repository;
+    private final PaymentRepo paymentRepo;
 
     public List<UserMaster> getSingleCustomerRecord() {
         return repository.findAll();
     }
 
-    public UserResponse dashBoardData(String customerId) {
+    public UserResponse dashBoardData(String customerId,String token) {
         Optional<UserMaster> details = repository.findById(customerId);
         if (details.isPresent()) {
             UserResponse response = new UserResponse();
             BeanUtils.copyProperties(details.get(), response);
+            WalletInfoDTO walletInfo = paymentRepo.walletDetails(customerId,token);
+            response.setWalletInfo(walletInfo);
             return response;
         } else {
             throw new UserException(HttpStatus.NOT_FOUND.value(), "Not Found");
