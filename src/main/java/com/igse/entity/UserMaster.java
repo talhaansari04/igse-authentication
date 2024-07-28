@@ -7,8 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
@@ -26,10 +29,12 @@ public class UserMaster {
 	private String userName;
 	@JsonIgnore
 	private String pass;
-	private String address;
-	private String propertyType;
-	private Integer numberOfBedRoom;
+
 	@JsonIgnore
 	@UpdateTimestamp
 	private LocalDate lastLogin;
+
+    @OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "customerId")
+	private DemographicDetailsEntity demographicDetails;
 }

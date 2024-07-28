@@ -4,7 +4,10 @@ import com.igse.config.EncoderDecoder;
 import com.igse.dto.MeterReadingDTO;
 import com.igse.dto.VoucherResponse;
 import com.igse.dto.WalletPayloadKafka;
+import com.igse.dto.registration.Address;
+import com.igse.dto.registration.DemographicDetails;
 import com.igse.dto.registration.UserRegistrationDTO;
+import com.igse.entity.DemographicDetailsEntity;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
 import com.igse.repository.UserMasterRepository;
@@ -42,17 +45,38 @@ public class CustomerService {
             }
         }
         VoucherResponse voucherDetails = processVoucher(userRegistrationDTO);
-        UserMaster userDetails = new UserMaster();
-        BeanUtils.copyProperties(userRegistrationDTO, userDetails);
-        userDetails.setPass(encoderDecoder.encrypt(userRegistrationDTO.getPass()));
-        userDetails.setRole(GlobalConstant.Role.USER);
+        UserMaster userMaster = mapUserAddress(userRegistrationDTO);
+       // userDetails.setPass(encoderDecoder.encrypt(userRegistrationDTO.getPass()));
+        //userDetails.setRole(GlobalConstant.Role.USER);
         setMeterReadingInitialValue(userRegistrationDTO.getCustomerId());
-        UserMaster success = userMasterRepository.save(userDetails);
-        publishWalletEvent(success,voucherDetails);
+        UserMaster success = userMasterRepository.save(userMaster);
+        publishWalletEvent(success, voucherDetails);
 
     }
 
-    private void publishWalletEvent(UserMaster userMaster,VoucherResponse voucherDetails){
+    private UserMaster mapUserAddress(UserRegistrationDTO registrationDTO) {
+        DemographicDetails details = registrationDTO.getDemographicDetails();
+        Address address = details.getAddress();
+        DemographicDetailsEntity demographicDetails=DemographicDetailsEntity.builder()
+                .customerId(registrationDTO.getCustomerId())
+                .addressLandmark(address.getLandmark())
+                .addressArea(address.getArea())
+                .addressFlatNo(address.getFlatNo())
+                .addressPinCode(address.getPinCode())
+                .numberOfBedRoom(details.getNumberOfBedRoom())
+                .propertyType(details.getPropertyType())
+                .flatRegistrationNo(details.getFlatRegistrationNo())
+                .build();
+
+       return UserMaster.builder()
+                .userName("-")
+                .customerId(registrationDTO.getCustomerId())
+                .pass(encoderDecoder.encrypt(registrationDTO.getPass()))
+                .role(GlobalConstant.Role.USER)
+                .demographicDetails(demographicDetails).build();
+    }
+
+    private void publishWalletEvent(UserMaster userMaster, VoucherResponse voucherDetails) {
         WalletPayloadKafka wallet = WalletPayloadKafka.builder()
                 .customerId(userMaster.getCustomerId())
                 .totalBalance(voucherDetails.getVoucherBalance())
@@ -61,26 +85,23 @@ public class CustomerService {
     }
 
     private VoucherResponse processVoucher(UserRegistrationDTO userRegistrationDTO) {
-        VoucherResponse voucherDetails;
-        Optional<VoucherResponse> singleVoucher = Optional.of(voucherRepo.getVoucherDetail(userRegistrationDTO.getVoucherCode()).getData());
-        if (singleVoucher.isPresent()) {
-            voucherDetails = singleVoucher.get();
-            if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegistrationDTO.getVoucherCode())) {
-                if (voucherDetails.getStatus().equals(GlobalConstant.Voucher.USED)) {
-                    throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "EVC code already used");
-                }
-            } else {
-                throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code");
+        VoucherResponse voucherDetails = Optional
+                .of(voucherRepo.getVoucherDetail(userRegistrationDTO.getVoucherCode())
+                        .getData())
+                .orElseThrow(() -> new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code"));
+        if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegistrationDTO.getVoucherCode())) {
+            if (voucherDetails.getStatus().equals(GlobalConstant.USED)) {
+                throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "EVC code already used");
             }
-            VoucherResponse voucherCode = VoucherResponse.builder()
-                    .voucherCode(voucherDetails.getVoucherCode())
-                    .status(GlobalConstant.Voucher.USED)
-                    .customerId(userRegistrationDTO.getCustomerId())
-                    .voucherBalance(voucherDetails.getVoucherBalance()).build();
-            voucherRepo.saveSingleDetail(voucherCode);
         } else {
             throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code");
         }
+        VoucherResponse voucherCode = VoucherResponse.builder()
+                .voucherCode(voucherDetails.getVoucherCode())
+                .status(GlobalConstant.USED)
+                .customerId(userRegistrationDTO.getCustomerId())
+                .voucherBalance(voucherDetails.getVoucherBalance()).build();
+        voucherRepo.saveSingleDetail(voucherCode);
         return voucherDetails;
     }
 

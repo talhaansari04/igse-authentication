@@ -3,6 +3,10 @@ package com.igse.config;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.UnitPriceDTO;
 import com.igse.dto.VoucherResponse;
+import com.igse.dto.registration.Address;
+import com.igse.dto.registration.DemographicDetails;
+import com.igse.dto.registration.UserRegistrationDTO;
+import com.igse.entity.DemographicDetailsEntity;
 import com.igse.entity.UserMaster;
 import com.igse.repository.UserMasterRepository;
 import com.igse.service.JwtService;
@@ -34,15 +38,13 @@ public class LoadAdminDetailsByYml implements CommandLineRunner {
 
     private final JwtService jwtService;
     private final WebClient webClient = WebClient.create();
+    private static final String BLANK = "-";
+
     @Override
     public void run(String... args) {
         Optional<UserMaster> details = repository.findById(adminID);
         if (details.isEmpty()) {
-            UserMaster userMaster = new UserMaster();
-            userMaster.setRole(GlobalConstant.Role.ADMIN);
-            userMaster.setCustomerId(adminID);
-            userMaster.setPass(encoderDecoder.encrypt(adminPass));
-            repository.save(userMaster);
+            repository.save(mapUserAddress());
         }
         IgseResponse<UnitPriceDTO> adminData = getFixedMeterDetails();
         if (Objects.isNull(adminData)) {
@@ -53,10 +55,32 @@ public class LoadAdminDetailsByYml implements CommandLineRunner {
             priceEntity.setGasCharge(0.1);
             priceEntity.setStandingChargePerDay(0.74);
             saveSingleDetail(priceEntity);
-        }else {
+        } else {
             log.info(adminData.toString());
         }
     }
+
+    private UserMaster mapUserAddress() {
+
+        DemographicDetailsEntity demographicDetails = DemographicDetailsEntity.builder()
+                .customerId(adminID)
+                .addressLandmark(BLANK)
+                .addressArea(BLANK)
+                .addressFlatNo(BLANK)
+                .addressPinCode(110024L)
+                .numberOfBedRoom(0)
+                .propertyType(BLANK)
+                .flatRegistrationNo(BLANK)
+                .build();
+
+        return UserMaster.builder()
+                .customerId(adminID)
+                .pass(encoderDecoder.encrypt(adminPass))
+                .userName(GlobalConstant.Role.ADMIN)
+                .role(GlobalConstant.Role.ADMIN)
+                .demographicDetails(demographicDetails).build();
+    }
+
     private IgseResponse<UnitPriceDTO> getFixedMeterDetails() {
         /*Note Please handle excetion incase 404*/
         String token = jwtService.getAdminToken();
@@ -64,17 +88,18 @@ public class LoadAdminDetailsByYml implements CommandLineRunner {
             return webClient.get()
                     .uri("http://localhost:8080/igse/core/admin/meter/price")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,"Bearer "+token)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<IgseResponse<UnitPriceDTO>>() {
                     }).block();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             return null;
         }
 
     }
+
     private void saveSingleDetail(UnitPriceDTO unitPriceDTO) {
         /*Note Please handle excetion incase 404*/
         String token = jwtService.getAdminToken();
@@ -82,14 +107,14 @@ public class LoadAdminDetailsByYml implements CommandLineRunner {
             webClient.post()
                     .uri("http://localhost:8080/igse/core/change/price")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,"Bearer "+token)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .bodyValue(unitPriceDTO)
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
                     })
                     .block();
             log.info("Successfully Change Meter");
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
     }

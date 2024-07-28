@@ -5,6 +5,9 @@ import com.igse.dto.IgseResponse;
 import com.igse.dto.UserResponse;
 import com.igse.dto.WalletInfoDTO;
 import com.igse.dto.login.LoginRequest;
+import com.igse.dto.registration.Address;
+import com.igse.dto.registration.DemographicDetails;
+import com.igse.entity.DemographicDetailsEntity;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
 import com.igse.repository.PaymentRepo;
@@ -58,10 +61,25 @@ public class AuthService {
                 userMasterRepository.save(userDetails);
                 WalletInfoDTO walletInfo = paymentRepo.walletDetails(userDetails.getCustomerId(),token);
                 userResponse.setWalletInfo(walletInfo);
+                userResponse.setDemographicDetails(mapDemographicDetails(userDetails));
                 return userResponse;
             } else {
                 throw new UserException(HttpStatus.NOT_FOUND.value(), "Invalid Credential");
             }
+    }
+    private DemographicDetails mapDemographicDetails(UserMaster userDetails){
+        DemographicDetailsEntity details = userDetails.getDemographicDetails();
+        Address address = Address.builder()
+                .area(details.getAddressArea())
+                .flatNo(details.getAddressFlatNo())
+                .pinCode(details.getAddressPinCode())
+                .landmark(details.getAddressLandmark()).build();
+      return DemographicDetails.builder()
+                .numberOfBedRoom(details.getNumberOfBedRoom())
+                .propertyType(details.getPropertyType())
+                .flatRegistrationNo(details.getFlatRegistrationNo())
+                .address(address)
+                .build();
     }
 
     private boolean validateUser(UserMaster userDetails, LoginRequest loginRequest) {

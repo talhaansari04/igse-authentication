@@ -5,6 +5,7 @@ public final class GlobalConstant {
         throw new IllegalArgumentException("GlobalConstant.class");
     }
 
+    public static final String USED = "USED";
     public static final String[] REQUEST_MATCHER = {"/v2/api-docs", "/login", "/register"};
     public static final String GENERAL_EXCEPTION = "GENERAL EXCEPTION";
     public static final String CORS_ANGULAR = "http://localhost:4200";
@@ -24,14 +25,6 @@ public final class GlobalConstant {
 
         public static final String USER = "USER";
         public static final String ADMIN = "ADMIN";
-    }
-    public static final class Voucher {
-        private Voucher() {
-            throw new IllegalArgumentException("Role.class");
-        }
-
-        public static final String USED = "USED";
-        public static final String NOT_USED = "NOT_USED";
     }
 
 }
