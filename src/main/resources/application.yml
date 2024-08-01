@@ -1,6 +1,9 @@
 #-----Default admin id and pass------#
 igse:
   admin:
+    day: 0.34
+    night: 0.2
+    gas: 0.1
     id: gse@shangrila.gov.un
     pass: gse@energy
 eureka:
@@ -39,6 +42,14 @@ services:
     regisTopics: v1.dev.regi
     groupId: "default-dev"
 
-
-
-
+infrastructure:
+  services:
+    igse_payment:
+      endpoint: ${services.igse.payment.endpoint}
+      walletDetailPath: /wallet/v1/
+    igse_core:
+      endpoint: ${services.igse.core.endpoint}
+      meterDetailPath: /admin/meter/price
+      changePricePath: /admin/change/price
+      voucherDetailsPath: /voucher/
+      saveVoucherPath: /voucher/save

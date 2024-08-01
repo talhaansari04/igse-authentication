@@ -5,6 +5,8 @@ public final class GlobalConstant {
         throw new IllegalArgumentException("GlobalConstant.class");
     }
 
+    public static final String BEARER = "Bearer ";
+
     public static final String USED = "USED";
     public static final String[] REQUEST_MATCHER = {"/v2/api-docs", "/login", "/register"};
     public static final String GENERAL_EXCEPTION = "GENERAL EXCEPTION";

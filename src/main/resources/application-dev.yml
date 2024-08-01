@@ -3,3 +3,22 @@
 #    fetch-registry: false
 #    register-with-eureka: false
 
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+
+services:
+  igse:
+    core:
+      endpoint: http://localhost:8080/igse/core
+    payment:
+      endpoint: http://localhost:8080/igse-payment
+  kafka:
+    regisTopics: v1.dev.regi
+    groupId: "default-dev"
+
+service:
+  kafka:
+    wallet:
+      topic: "wallet.v1"
+      groupId: "wallet-dev-A1"

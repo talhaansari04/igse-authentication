@@ -33,15 +33,17 @@ public class CustomerQuery {
             @RequestParam(value = "page", defaultValue = "10") int pageSize,
             @RequestParam(name = "role", defaultValue = "All") String role) {
         IgseResponse<List<UserMaster>> igseResponse = new IgseResponse<>();
-        igseResponse.setData(adminService.getAllCustomerRecord(offset,pageSize,role));
+        igseResponse.setData(adminService.getAllCustomerRecord(offset, pageSize, role));
         igseResponse.setStatus(HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(igseResponse);
     }
 
     @GetMapping(path = "/user/info/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IgseResponse<UserResponse>> dashboardData(@PathVariable String customerId,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public ResponseEntity<IgseResponse<UserResponse>> dashboardData(
+            @PathVariable String customerId,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         IgseResponse<UserResponse> igseResponse = new IgseResponse<>();
-        igseResponse.setData(adminService.dashBoardData(customerId,token.substring(7)));
+        igseResponse.setData(adminService.dashBoardData(customerId, token.substring(7)));
         igseResponse.setStatus(HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(igseResponse);
     }
