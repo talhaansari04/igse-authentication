@@ -82,10 +82,10 @@ public class MeterRepo {
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<IgseResponse<UnitPriceDTO>>() {
                     })
-                    .retryWhen(Retry.fixedDelay(3, Duration.ofMillis(1000)).doAfterRetry(x -> {
-                        log.info("Total Retry {}", x.totalRetries()
-                        );
-                    }))
+                    .retryWhen(Retry
+                            .fixedDelay(3, Duration.ofSeconds(3))
+                            .doAfterRetry(x -> log.info("Total Retry {}", x.totalRetries()
+                    )))
                     .block();
 
         } catch (Exception e) {

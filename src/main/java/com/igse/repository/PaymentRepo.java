@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -30,16 +31,23 @@ public class PaymentRepo {
     private String walletDetailPath;
 
     public WalletInfoDTO walletDetails(String customerId, String token) {
-        return webClient.get()
-                .uri(basePath + walletDetailPath + customerId + "/info")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + token)
-                .retrieve()
-                .onStatus(HttpStatus::isError, coreError::handleCoreError)
-                .bodyToMono(WalletInfoDTO.class)
-                .retryWhen(Retry
-                        .fixedDelay(3, Duration.ofMillis(5000))
-                        .doAfterRetry(x -> log.info("Total Retry {}", x.totalRetries()
-                ))).block();
+        try{
+            log.info("Path {}",basePath+walletDetailPath);
+            return  webClient.get()
+                    .uri(basePath+walletDetailPath,customerId)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION, BEARER + token)
+                    .retrieve()
+                    .onStatus(HttpStatus::isError, coreError::handleCoreError)
+                    .bodyToMono(WalletInfoDTO.class)
+                    .retryWhen(Retry
+                            .fixedDelay(3, Duration.ofMillis(5000))
+                            .doAfterRetry(x -> log.info("Total Retry {}", x.totalRetries()
+                            )))
+                    .block();
+        }catch (WebClientRequestException e){
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 }
