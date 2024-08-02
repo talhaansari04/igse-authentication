@@ -46,7 +46,7 @@ infrastructure:
   services:
     igse_payment:
       endpoint: ${services.igse.payment.endpoint}
-      walletDetailPath: /wallet/v1/
+      walletDetailPath: /wallet/v1/{customerId}/info
     igse_core:
       endpoint: ${services.igse.core.endpoint}
       meterDetailPath: /admin/meter/price
