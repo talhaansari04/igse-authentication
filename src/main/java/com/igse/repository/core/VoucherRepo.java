@@ -54,7 +54,7 @@ public class VoucherRepo {
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                 .bodyValue(voucherCode)
                 .retrieve()
-                .onStatus(HttpStatus::isError, coreError::handleCoreError)
+                //.onStatus(HttpStatus::isError, coreError::handleCoreError)
                 .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
                 })
 

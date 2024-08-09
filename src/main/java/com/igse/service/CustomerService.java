@@ -14,13 +14,13 @@ import com.igse.repository.RegistrationStatusRepo;
 import com.igse.repository.UserMasterRepository;
 import com.igse.repository.core.VoucherRepo;
 import com.igse.util.GlobalConstant;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Slf4j

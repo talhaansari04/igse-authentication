@@ -45,7 +45,7 @@ public class MeterRepo {
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                 .bodyValue(readingDTO)
                 .retrieve()
-                .onStatus(HttpStatus::isError, coreError::handleCoreError)
+                //.onStatus(HttpStatus::isError, coreError::handleCoreError)
                 .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
                 })
                 .block();

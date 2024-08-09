@@ -13,6 +13,7 @@ import com.igse.repository.UserMasterRepository;
 import com.igse.repository.core.MeterRepo;
 import com.igse.repository.core.VoucherRepo;
 import com.igse.util.GlobalConstant;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

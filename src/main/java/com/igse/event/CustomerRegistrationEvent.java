@@ -27,7 +27,7 @@ public class CustomerRegistrationEvent {
     private void processRegistration(WalletPayloadKafka wallet) {
         log.info("\"Event Received of customerId {}...\"", wallet.getCustomerId());
         try {
-            CompletableFuture<SendResult<String, WalletPayloadKafka>> future = kafkaTemplate.send(topic, wallet).completable();
+            CompletableFuture<SendResult<String, WalletPayloadKafka>> future = kafkaTemplate.send(topic, wallet);
             future.whenComplete((result, ex) -> {
                 if (null == ex) {
                     log.info("Message sent successfully ...");

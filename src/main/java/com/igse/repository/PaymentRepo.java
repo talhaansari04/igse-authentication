@@ -38,7 +38,7 @@ public class PaymentRepo {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                     .retrieve()
-                    .onStatus(HttpStatus::isError, coreError::handleCoreError)
+                    //.onStatus(HttpStatus::isError, coreError::handleCoreError)
                     .bodyToMono(WalletInfoDTO.class)
                     .retryWhen(Retry
                             .fixedDelay(3, Duration.ofMillis(5000))
