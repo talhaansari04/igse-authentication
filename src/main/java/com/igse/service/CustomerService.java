@@ -1,28 +1,26 @@
 package com.igse.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igse.config.EncoderDecoder;
-import com.igse.dto.MeterReadingDTO;
 import com.igse.dto.VoucherResponse;
-import com.igse.dto.WalletPayloadKafka;
 import com.igse.dto.registration.Address;
 import com.igse.dto.registration.DemographicDetails;
 import com.igse.dto.registration.UserRegistrationDTO;
 import com.igse.entity.DemographicDetailsEntity;
+import com.igse.entity.RegistrationStatusEntity;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
+import com.igse.repository.RegistrationStatusRepo;
 import com.igse.repository.UserMasterRepository;
-import com.igse.repository.core.MeterRepo;
 import com.igse.repository.core.VoucherRepo;
 import com.igse.util.GlobalConstant;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Slf4j
@@ -31,9 +29,8 @@ import java.util.Optional;
 public class CustomerService {
     private final EncoderDecoder encoderDecoder;
     private final UserMasterRepository userMasterRepository;
-    private final ApplicationEventPublisher eventPublisher;
     private final VoucherRepo voucherRepo;
-    private final MeterRepo meterRepo;
+    private final RegistrationStatusRepo statusRepo;
 
     @Transactional
     public void saveUser(UserRegistrationDTO userRegistrationDTO) {
@@ -44,14 +41,26 @@ public class CustomerService {
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Customer already exist");
             }
         }
-        VoucherResponse voucherDetails = processVoucher(userRegistrationDTO);
-        UserMaster userMaster = mapUserAddress(userRegistrationDTO);
-       // userDetails.setPass(encoderDecoder.encrypt(userRegistrationDTO.getPass()));
-        //userDetails.setRole(GlobalConstant.Role.USER);
-        setMeterReadingInitialValue(userRegistrationDTO.getCustomerId());
-        UserMaster success = userMasterRepository.save(userMaster);
-        publishWalletEvent(success, voucherDetails);
 
+        VoucherResponse voucherResponse = voucherDetails(userRegistrationDTO);
+        UserMaster userMaster = mapUserAddress(userRegistrationDTO);
+        UserMaster success = userMasterRepository.save(userMaster);
+        RegistrationStatusEntity statusEntity = mapRegistrationStatus(userRegistrationDTO, voucherResponse);
+        statusRepo.save(statusEntity);
+       /* setMeterReadingInitialValue(userRegistrationDTO.getCustomerId());
+        VoucherResponse voucherDetails = processVoucher(userRegistrationDTO);
+        publishWalletEvent(success, voucherDetails);*/
+
+    }
+
+    @SneakyThrows
+    private RegistrationStatusEntity mapRegistrationStatus(UserRegistrationDTO registrationDTO, VoucherResponse voucherResponse){
+        return RegistrationStatusEntity.builder()
+                .customerId(registrationDTO.getCustomerId())
+                .jsonVoucherPayload(new ObjectMapper().writeValueAsString(voucherResponse))
+                .isVoucherRedeemed("PENDING")
+                .isMeterDetailSave("PENDING")
+                .isWalletCreated("PENDING").build();
     }
 
     private UserMaster mapUserAddress(UserRegistrationDTO registrationDTO) {
@@ -76,15 +85,7 @@ public class CustomerService {
                 .demographicDetails(demographicDetails).build();
     }
 
-    private void publishWalletEvent(UserMaster userMaster, VoucherResponse voucherDetails) {
-        WalletPayloadKafka wallet = WalletPayloadKafka.builder()
-                .customerId(userMaster.getCustomerId())
-                .totalBalance(voucherDetails.getVoucherBalance())
-                .creationDate(LocalDate.now()).build();
-        eventPublisher.publishEvent(wallet);
-    }
-
-    private VoucherResponse processVoucher(UserRegistrationDTO userRegistrationDTO) {
+    private VoucherResponse voucherDetails(UserRegistrationDTO userRegistrationDTO){
         VoucherResponse voucherDetails = Optional
                 .of(voucherRepo.getVoucherDetail(userRegistrationDTO.getVoucherCode())
                         .getData())
@@ -92,29 +93,18 @@ public class CustomerService {
         if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegistrationDTO.getVoucherCode())) {
             if (voucherDetails.getStatus().equals(GlobalConstant.USED)) {
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "EVC code already used");
+            }else {
+                return voucherDetails;
             }
         } else {
             throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code");
         }
-        VoucherResponse voucherCode = VoucherResponse.builder()
-                .voucherCode(voucherDetails.getVoucherCode())
-                .status(GlobalConstant.USED)
-                .customerId(userRegistrationDTO.getCustomerId())
-                .voucherBalance(voucherDetails.getVoucherBalance()).build();
-        voucherRepo.saveSingleDetail(voucherCode);
-        return voucherDetails;
     }
 
-    private void setMeterReadingInitialValue(String customerId) {
-        MeterReadingDTO readingDTO = MeterReadingDTO.builder()
-                .dayReading(100.00)
-                .nightReading(250.0)
-                .gasReading(800.00)
-                .submissionDate(LocalDate.now())
-                .billingStatus(GlobalConstant.PAID)
-                .customerId(customerId).build();
-        meterRepo.saveMeterDetails(readingDTO);
-    }
+
+
+
+
 
 
 }

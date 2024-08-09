@@ -3,9 +3,9 @@
 #    fetch-registry: false
 #    register-with-eureka: false
 
-spring:
-  kafka:
-    bootstrap-servers: localhost:9092
+#spring:
+#  kafka:
+#    bootstrap-servers: localhost:9092
 
 services:
   igse:
@@ -19,6 +19,12 @@ services:
 
 service:
   kafka:
+    enable: false
     wallet:
       topic: "wallet.v1"
       groupId: "wallet-dev-A1"
+logging:
+  level:
+    org:
+      apache:
+        kafka: off

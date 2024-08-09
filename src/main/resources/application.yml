@@ -31,9 +31,11 @@ spring:
   jpa:
     show-sql: false
     hibernate:
+      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: update
     properties:
       hibernate:
+
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   profiles:
     active: dev
@@ -53,3 +55,4 @@ infrastructure:
       changePricePath: /admin/change/price
       voucherDetailsPath: /voucher/
       saveVoucherPath: /voucher/save
+

@@ -48,7 +48,6 @@ public class GlobalExceptionHandler {
             errors.setStatus(HttpStatus.BAD_REQUEST.value());
         }
         log.error("{}", ex.getMessage());
-        kafkaTemplate.send(topic, ex.getMessage());
 
         return errors;
     }

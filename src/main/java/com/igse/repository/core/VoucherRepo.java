@@ -28,7 +28,7 @@ public class VoucherRepo {
     @Value("${infrastructure.services.igse_core.voucherDetailsPath}")
     private String voucherDetailPath;
 
-    @Value("${infrastructure.services.igse_core.voucherDetailsPath}")
+    @Value("${infrastructure.services.igse_core.saveVoucherPath}")
     private String saveVoucherPath;
 
 
@@ -36,7 +36,7 @@ public class VoucherRepo {
         String token = jwtService.getAdminToken();
         /*Note Please handle excetion incase 404*/
         return webClient.get()
-                .uri(basePath + voucherDetailPath)
+                .uri(basePath + voucherDetailPath+voucherCode)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                 .retrieve()
