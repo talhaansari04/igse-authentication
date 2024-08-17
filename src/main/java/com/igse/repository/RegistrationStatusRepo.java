@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RegistrationStatusRepo extends JpaRepository<RegistrationStatusEntity, Long> {
@@ -14,4 +15,6 @@ public interface RegistrationStatusRepo extends JpaRepository<RegistrationStatus
             rs.isWalletCreated = :wallet OR rs.isVoucherRedeemed = :voucher OR rs.isMeterDetailSave = :meter
             """, nativeQuery = true)
     List<RegistrationStatusEntity> findRegistrationStatus(String wallet, String voucher, String meter);
+
+    Optional<RegistrationStatusEntity> findByCustomerId(String customerId);
 }

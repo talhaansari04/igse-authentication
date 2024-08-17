@@ -24,7 +24,7 @@ public class RegistrationStatusEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String customerId;
-    @Column(columnDefinition = "JSON")
+    @Column(name = "isWalletCreated")
     private String isWalletCreated;
     @Column(name = "isVoucherRedeemed")
     private String isVoucherRedeemed;

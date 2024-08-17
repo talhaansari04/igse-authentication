@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.igse.util.GlobalConstant.PENDING;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -41,16 +43,10 @@ public class CustomerService {
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Customer already exist");
             }
         }
-
         VoucherResponse voucherResponse = voucherDetails(userRegistrationDTO);
-        UserMaster userMaster = mapUserAddress(userRegistrationDTO);
-        UserMaster success = userMasterRepository.save(userMaster);
-        RegistrationStatusEntity statusEntity = mapRegistrationStatus(userRegistrationDTO, voucherResponse);
-        statusRepo.save(statusEntity);
-       /* setMeterReadingInitialValue(userRegistrationDTO.getCustomerId());
-        VoucherResponse voucherDetails = processVoucher(userRegistrationDTO);
-        publishWalletEvent(success, voucherDetails);*/
-
+        UserMaster success = userMasterRepository.save(mapUserAddress(userRegistrationDTO));
+        statusRepo.save(mapRegistrationStatus(userRegistrationDTO, voucherResponse));
+        log.info("Customer Registered Successfully ... {}",success.getCustomerId());
     }
 
     @SneakyThrows
@@ -58,9 +54,9 @@ public class CustomerService {
         return RegistrationStatusEntity.builder()
                 .customerId(registrationDTO.getCustomerId())
                 .jsonVoucherPayload(new ObjectMapper().writeValueAsString(voucherResponse))
-                .isVoucherRedeemed("PENDING")
-                .isMeterDetailSave("PENDING")
-                .isWalletCreated("PENDING").build();
+                .isVoucherRedeemed(PENDING)
+                .isMeterDetailSave(PENDING)
+                .isWalletCreated(PENDING).build();
     }
 
     private UserMaster mapUserAddress(UserRegistrationDTO registrationDTO) {

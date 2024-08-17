@@ -4,27 +4,36 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.igse.dto.MeterReadingDTO;
 import com.igse.dto.VoucherResponse;
+import com.igse.dto.WalletInfoDTO;
 import com.igse.dto.WalletPayloadKafka;
-import com.igse.dto.registration.UserRegistrationDTO;
 import com.igse.entity.RegistrationStatusEntity;
 import com.igse.entity.UserMaster;
+import com.igse.repository.PaymentRepo;
 import com.igse.repository.RegistrationStatusRepo;
 import com.igse.repository.UserMasterRepository;
 import com.igse.repository.core.MeterRepo;
 import com.igse.repository.core.VoucherRepo;
-import com.igse.util.GlobalConstant;
+import com.igse.service.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import static com.igse.util.GlobalConstant.OUT_OF_BOX_TASK_EXECUTOR;
+import static com.igse.util.GlobalConstant.PAID;
+import static com.igse.util.GlobalConstant.PENDING;
+import static com.igse.util.GlobalConstant.SUCCESS;
+import static com.igse.util.GlobalConstant.USED;
+
 
 @Slf4j
 @Component
@@ -34,21 +43,24 @@ public class RegistrationPoller {
     private final ApplicationEventPublisher eventPublisher;
     private final MeterRepo meterRepo;
     private final VoucherRepo voucherRepo;
+    private final PaymentRepo paymentRepo;
     private final UserMasterRepository masterRepository;
     private final KafkaTemplate<String, WalletPayloadKafka> kafkaTemplate;
+    private final JwtService jwt;
 
-    private static final String PENDING = "PENDING";
-    private static final String SUCCESS = "SUCCESS";
 
+    @Async(OUT_OF_BOX_TASK_EXECUTOR)
     @Scheduled(cron = "0 0/1 * * * ?")
     public void processPendingRecords() {
         log.info("*****Poller Service*****");
         List<RegistrationStatusEntity> detail = statusRepo.findRegistrationStatus(PENDING, PENDING, PENDING);
-        if (!detail.isEmpty()) {
+        if (detail.isEmpty()) {
+            log.info("Registration OutOfBox count = 0");
+        } else {
             log.info("Event found*****");
+            log.info("Registration OutOfBox count {}", detail.size());
             detail.forEach(this::startProcess);
         }
-
     }
 
     @SneakyThrows
@@ -68,8 +80,7 @@ public class RegistrationPoller {
     private void processWallet(UserMaster master, VoucherResponse voucherResponse, RegistrationStatusEntity status) {
         if (PENDING.equalsIgnoreCase(status.getIsWalletCreated())) {
             publishWalletEvent(master, voucherResponse);
-            status.setIsWalletCreated(SUCCESS);
-            statusRepo.save(status);
+
         }
     }
 
@@ -85,9 +96,12 @@ public class RegistrationPoller {
     @Transactional
     private void processVoucher(String customerId, RegistrationStatusEntity status, VoucherResponse voucherResponse) {
         if (PENDING.equalsIgnoreCase(status.getIsVoucherRedeemed())) {
-            saveVoucher(customerId, voucherResponse);
-            status.setIsVoucherRedeemed(SUCCESS);
-            statusRepo.save(status);
+            WalletInfoDTO walletDetails = paymentRepo.walletDetails(customerId, jwt.getAdminToken());
+            if (null != walletDetails) {
+                saveVoucher(customerId, voucherResponse);
+                status.setIsVoucherRedeemed(SUCCESS);
+                statusRepo.save(status);
+            }
         }
     }
 
@@ -106,7 +120,7 @@ public class RegistrationPoller {
                 .nightReading(250.0)
                 .gasReading(800.00)
                 .submissionDate(LocalDate.now())
-                .billingStatus(GlobalConstant.PAID)
+                .billingStatus(PAID)
                 .customerId(customerId).build();
         meterRepo.saveMeterDetails(readingDTO);
         log.info("Meter reading save successfully {}", customerId);
@@ -115,7 +129,7 @@ public class RegistrationPoller {
     private void saveVoucher(String customerId, VoucherResponse voucherDetails) {
         VoucherResponse voucherCode = VoucherResponse.builder()
                 .voucherCode(voucherDetails.getVoucherCode())
-                .status(GlobalConstant.USED)
+                .status(USED)
                 .customerId(customerId)
                 .voucherBalance(voucherDetails.getVoucherBalance()).build();
         voucherRepo.saveSingleDetail(voucherCode);
