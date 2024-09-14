@@ -1,5 +1,6 @@
 package com.igse.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
@@ -28,5 +29,6 @@ public class DemographicDetailsEntity {
     protected String addressLandmark;
     protected Long addressPinCode;
     @OneToOne(mappedBy = "demographicDetails")
+    @JsonBackReference
     private UserMaster userMaster;
 }

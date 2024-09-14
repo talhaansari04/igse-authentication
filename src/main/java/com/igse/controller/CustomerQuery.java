@@ -22,12 +22,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("customer")
+@RequestMapping(path = "customer", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CustomerQuery {
 
     private final AdminService adminService;
 
-    @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/all")
     public ResponseEntity<IgseResponse<List<UserMaster>>> allCustomerList(
             @RequestParam(value = "offset") int offset,
             @RequestParam(value = "page", defaultValue = "10") int pageSize,
@@ -38,7 +38,7 @@ public class CustomerQuery {
         return ResponseEntity.status(HttpStatus.OK).body(igseResponse);
     }
 
-    @GetMapping(path = "/user/info/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/user/info/{customerId}")
     public ResponseEntity<IgseResponse<UserResponse>> dashboardData(
             @PathVariable String customerId,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
