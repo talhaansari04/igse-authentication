@@ -5,11 +5,13 @@ plugins {
     id 'jacoco'
 }
 
+
 group = 'com.igse'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 configurations {
@@ -24,9 +26,11 @@ repositories {
     maven { url 'https://repo.spring.io/snapshot' }
 }
 
-ext {
-    set('springCloudVersion', "2023.0.1")
-}
+ext['springCloudVersion'] = '2023.0.1'
+ext['spring-framework.version'] = '6.1.13'
+ext['tomcat.version'] = '10.1.25'
+
+
 
 dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
@@ -65,10 +69,13 @@ bootJar {
     destinationDirectory.set(file("D:\\Project\\buildJars"))
 }
 
-tasks.named('bootRun'){
-    systemProperty('spring.profiles.active', 'dev')
-}
+/*tasks.named('bootRun'){
+    //systemProperty('spring.profiles.active', 'dev')
 
+}*/
+bootRun{
+    jvmArgs(["-Dspring.output.ansi.enabled=ALWAYS","-Dspring.profiles.active=dev"])
+}
 jacocoTestReport {
     reports {
         xml.required = false
@@ -88,3 +95,5 @@ jacocoTestReport {
 //
 //}
 //check.dependsOn jacocoTestCoverageVerification
+
+configurations.runtimeClasspath.resolutionStrategy.activateDependencyLocking()
