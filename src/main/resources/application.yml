@@ -57,9 +57,8 @@ management:
       exposure:
         include:
           - "*"
-info:
-  build:
-    version: #version#
+
+
 services:
   kafka:
     regisTopics: v1.dev.regi
