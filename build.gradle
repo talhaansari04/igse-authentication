@@ -89,9 +89,4 @@ jacocoTestReport {
     }
 }
 
-//jacocoTestCoverageVerification {
-//
-//}
-//check.dependsOn jacocoTestCoverageVerification
-
 configurations.runtimeClasspath.resolutionStrategy.activateDependencyLocking()
