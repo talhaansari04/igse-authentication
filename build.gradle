@@ -5,7 +5,9 @@ plugins {
     id 'jacoco'
 }
 
-
+springBoot {
+    buildInfo()
+}
 group = 'com.igse'
 version = '0.0.1-SNAPSHOT'
 
@@ -69,10 +71,6 @@ bootJar {
     destinationDirectory.set(file("D:\\Project\\buildJars"))
 }
 
-/*tasks.named('bootRun'){
-    //systemProperty('spring.profiles.active', 'dev')
-
-}*/
 bootRun{
     jvmArgs(["-Dspring.output.ansi.enabled=ALWAYS","-Dspring.profiles.active=dev"])
 }

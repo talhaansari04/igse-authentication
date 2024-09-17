@@ -13,32 +13,53 @@ eureka:
   instance:
     preferIpAddress: false
 server:
+  port: 6000
   servlet:
     context-path: /igse/auth
-  port: 6000
 spring:
-  kafka:
-    bootstrap-servers: localhost:9092
   application:
     name: igse-auth
+  kafka:
+    bootstrap-servers: localhost:9092
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 10
     url: jdbc:mysql://127.0.0.1:3306/igse-admin
     username: root
     password: root
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      pool-name: springBootJpaHikari
+      max-lifetime: 2000000
+      connection-timeout: 5000
+      connection-test-query: select 1
+      connection-init-sql: select 1
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: false
     hibernate:
       naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: update
     properties:
       hibernate:
+        format_sql: true
 
-        dialect: org.hibernate.dialect.MySQL8Dialect
-  profiles:
-    active: dev
+management:
+  info:
+    git:
+      mode: full
+  endpoint:
+    shutdown:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*"
+info:
+  build:
+    version: #version#
 services:
   kafka:
     regisTopics: v1.dev.regi

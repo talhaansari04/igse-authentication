@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableTransactionManagement
-public class IgseAuthenticationApplication {
+public class Application {
 	public static void main(String[] args) {
-		SpringApplication.run(IgseAuthenticationApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 }
