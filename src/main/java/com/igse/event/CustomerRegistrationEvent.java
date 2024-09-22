@@ -27,12 +27,11 @@ public class CustomerRegistrationEvent {
 
     private final RegistrationStatusRepo statusRepo;
 
-
-    @EventListener
     @Async
+    @EventListener
     public void processRegistration(WalletPayloadKafka wallet) {
         Optional<RegistrationStatusEntity> registrationStatus = Optional.empty();
-        log.info("\"Event Received of customerId {}...\"", wallet.getCustomerId());
+        log.info("message=\"Wallet Event Received of customerId {}...\"", wallet.getCustomerId());
         try {
             CompletableFuture<SendResult<String, WalletPayloadKafka>> future = kafkaTemplate.send(topic, wallet);
             registrationStatus = statusRepo.findByCustomerId(wallet.getCustomerId());
@@ -47,7 +46,7 @@ public class CustomerRegistrationEvent {
                                 statusRepo.save(customer);
                             });
                 } else {
-                    log.error("Unable to sent message");
+                    log.error("message=\"Unable to sent message\"");
                     finalRegistrationStatus.ifPresent(this::handleFailedEvent);
 
                 }
@@ -63,5 +62,4 @@ public class CustomerRegistrationEvent {
         registrationStatus.setIsWalletCreated(GlobalConstant.PENDING);
         statusRepo.save(registrationStatus);
     }
-
 }
