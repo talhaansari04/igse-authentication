@@ -33,7 +33,6 @@ ext['spring-framework.version'] = '6.1.13'
 ext['tomcat.version'] = '10.1.25'
 
 
-
 dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.apache.commons:commons-lang3'
@@ -51,6 +50,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
+    implementation "org.springframework.boot:spring-boot-starter-aop"
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+
 }
 
 dependencyManagement {
@@ -64,15 +66,18 @@ tasks.named('bootBuildImage') {
 }
 
 tasks.named('test') {
+    group 'igse-test'
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
+
+
 bootJar {
     destinationDirectory.set(file("D:\\Project\\buildJars"))
 }
 
-bootRun{
-    jvmArgs(["-Dspring.output.ansi.enabled=ALWAYS","-Dspring.profiles.active=dev"])
+bootRun {
+    jvmArgs(["-Dspring.output.ansi.enabled=ALWAYS", "-Dspring.profiles.active=dev"])
 }
 jacocoTestReport {
     reports {
@@ -89,4 +94,18 @@ jacocoTestReport {
     }
 }
 
+tasks.register('blackBoxTest', Test) {
+    println('**********BlackBox**********')
+    group 'igse-test'
+    include '**/blackbox/**'
+    systemProperty 'spring.profiles.active', 'test'
+    useJUnitPlatform()
+}
+tasks.register('integrationTest', Test) {
+    println('**********Integration**********')
+    group 'igse-test'
+    include '**/component/**'
+    systemProperty 'spring.profiles.active', 'test'
+    useJUnitPlatform()
+}
 configurations.runtimeClasspath.resolutionStrategy.activateDependencyLocking()

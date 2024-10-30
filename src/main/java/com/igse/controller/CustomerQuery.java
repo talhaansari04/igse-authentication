@@ -28,7 +28,7 @@ public class CustomerQuery {
     private final AdminService adminService;
 
     @GetMapping(path = "/all")
-    public ResponseEntity<IgseResponse<List<UserMaster>>> allCustomerList(
+    public final ResponseEntity<IgseResponse<List<UserMaster>>> allCustomerList(
             @RequestParam(value = "offset") int offset,
             @RequestParam(value = "page", defaultValue = "10") int pageSize,
             @RequestParam(name = "role", defaultValue = "All") String role) {

@@ -11,7 +11,7 @@ import com.igse.entity.DemographicDetailsEntity;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
 import com.igse.repository.PaymentRepo;
-import com.igse.repository.UserMasterRepository;
+import com.igse.repository.db.UserMasterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service

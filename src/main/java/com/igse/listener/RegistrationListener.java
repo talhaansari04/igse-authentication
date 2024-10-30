@@ -1,7 +1,7 @@
 package com.igse.listener;
 
 import com.igse.entity.EventLog;
-import com.igse.repository.EventLogRepo;
+import com.igse.repository.db.EventLogRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

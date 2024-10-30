@@ -5,18 +5,15 @@ import com.igse.dto.MeterReadingDTO;
 import com.igse.dto.UnitPriceDTO;
 import com.igse.dto.VoucherResponse;
 import com.igse.service.JwtService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
-
-import java.time.Duration;
 
 import static com.igse.util.GlobalConstant.BEARER;
 
@@ -71,6 +68,7 @@ public class MeterRepo {
         }
     }
 
+    @CircuitBreaker(name = "igseCoreMeter", fallbackMethod = "notFound")
     public IgseResponse<UnitPriceDTO> getFixedMeterDetails() {
         /*Note Please handle excetion incase 404*/
         String token = jwtService.getAdminToken();
@@ -82,15 +80,20 @@ public class MeterRepo {
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<IgseResponse<UnitPriceDTO>>() {
                     })
-                    .retryWhen(Retry
-                            .fixedDelay(3, Duration.ofSeconds(3))
-                            .doAfterRetry(x -> log.info("Total Retry {}", x.totalRetries()
-                    )))
+//                    .retryWhen(Retry
+//                            .fixedDelay(3, Duration.ofSeconds(3))
+//                            .doAfterRetry(x -> log.info("FixedMeterDetails retry {}", x.totalRetries()
+//                    )))
                     .block();
 
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return null;
+        } finally {
+            log.info("Executed");
         }
+    }
+    public IgseResponse<UnitPriceDTO> notFound(Throwable e){
+        log.info("Hystrix fall back-------");
+        IgseResponse response=new IgseResponse();
+        response.setData(UnitPriceDTO.builder().build());
+        return response;
     }
 }

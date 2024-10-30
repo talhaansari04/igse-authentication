@@ -5,7 +5,7 @@ import com.igse.dto.WalletInfoDTO;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
 import com.igse.repository.PaymentRepo;
-import com.igse.repository.UserMasterRepository;
+import com.igse.repository.db.UserMasterRepository;
 import com.igse.util.GlobalConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

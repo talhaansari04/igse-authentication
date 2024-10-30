@@ -1,4 +1,4 @@
-package com.igse.repository;
+package com.igse.repository.db;
 
 import com.igse.entity.EventLog;
 import org.springframework.data.jpa.repository.JpaRepository;

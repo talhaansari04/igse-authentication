@@ -4,16 +4,14 @@ import com.igse.dto.IgseResponse;
 import com.igse.dto.UnitPriceDTO;
 import com.igse.entity.DemographicDetailsEntity;
 import com.igse.entity.UserMaster;
-import com.igse.repository.UserMasterRepository;
+import com.igse.repository.db.UserMasterRepository;
 import com.igse.repository.core.MeterRepo;
-import com.igse.service.JwtService;
 import com.igse.util.GlobalConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -62,7 +60,6 @@ public class LoadAdminDetailsByYml implements CommandLineRunner {
     }
 
     private UserMaster mapUserAddress() {
-
         DemographicDetailsEntity demographicDetails = DemographicDetailsEntity.builder()
                 .customerId(adminID)
                 .addressLandmark(BLANK)
@@ -81,8 +78,4 @@ public class LoadAdminDetailsByYml implements CommandLineRunner {
                 .role(GlobalConstant.Role.ADMIN)
                 .demographicDetails(demographicDetails).build();
     }
-
-
-
-
 }

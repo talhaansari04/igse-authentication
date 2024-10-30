@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -54,7 +54,7 @@ public class VoucherRepo {
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                 .bodyValue(voucherCode)
                 .retrieve()
-                //.onStatus(HttpStatus::isError, coreError::handleCoreError)
+                .onStatus(HttpStatusCode::isError, coreError::handleCoreError)
                 .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
                 })
 

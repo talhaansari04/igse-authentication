@@ -1,7 +1,7 @@
-eureka:
-  client:
-    fetch-registry: false
-    register-with-eureka: false
+#eureka:
+#  client:
+#    fetch-registry: false
+#    register-with-eureka: false
 
 #spring:
 #  kafka:
@@ -19,12 +19,17 @@ services:
 
 service:
   kafka:
-    enable: false
+    enable: true
     wallet:
       topic: "wallet.v1"
       groupId: "wallet-dev-A1"
 logging:
+  pattern:
+    console: "%clr(IST=){faint}%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z', UTC}){faint} [%t] %clr(APP=){faint}%clr(${spring.application.name:null}){yellow} %clr(LEVEL=){faint}%clr(${LOG_LEVEL_PATTERN:%p}) %clr(CLASS=){faint}%clr(%logger{26}){cyan} %clr(X-Correlation-Id=){faint}%clr(%X{X-Correlation-Id:-null}){reverse} | %m%n%ex"
   level:
     org:
       apache:
         kafka: off
+
+
+

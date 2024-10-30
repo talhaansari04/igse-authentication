@@ -1,10 +1,10 @@
-package com.igse.unit.service;
+package unit.com.igse.test.service;
 
 import com.igse.config.EncoderDecoder;
 import com.igse.dto.registration.UserRegistrationDTO;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
-import com.igse.repository.UserMasterRepository;
+import com.igse.repository.db.UserMasterRepository;
 import com.igse.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -67,10 +67,10 @@ services:
 infrastructure:
   services:
     igse_payment:
-      endpoint: ${services.igse.payment.endpoint}
+      endpoint: http://localhost:8080/igse-payment
       walletDetailPath: /wallet/v1/{customerId}/info
     igse_core:
-      endpoint: ${services.igse.core.endpoint}
+      endpoint: http://localhost:8080/igse/core
       meterDetailPath: /admin/meter/price
       changePricePath: /admin/change/price
       voucherDetailsPath: /voucher/
@@ -95,3 +95,10 @@ resilience4j:
         waitDurationInOpenState: 5s
         failureRateThreshold: 50
         eventConsumerBufferSize: 10
+
+service:
+  kafka:
+    enable: false
+    wallet:
+      topic: "wallet.v1"
+      groupId: "wallet-dev-A1"
