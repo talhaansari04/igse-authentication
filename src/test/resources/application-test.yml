@@ -8,6 +8,8 @@ igse:
     pass: gse@energy
 eureka:
   client:
+    fetch-registry: false
+    register-with-eureka: false
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
   instance:
@@ -102,3 +104,4 @@ service:
     wallet:
       topic: "wallet.v1"
       groupId: "wallet-dev-A1"
+

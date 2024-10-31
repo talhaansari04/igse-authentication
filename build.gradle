@@ -52,6 +52,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     implementation "org.springframework.boot:spring-boot-starter-aop"
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+    testImplementation "org.wiremock:wiremock:3.9.2"
 
 }
 
@@ -71,6 +72,19 @@ tasks.named('test') {
     finalizedBy jacocoTestReport
 }
 
+tasks.register('blackBoxTest', Test) {
+    group 'igse-test'
+    include '**/blackbox/**'
+    systemProperty 'spring.profiles.active', 'test'
+    useJUnitPlatform()
+}
+
+tasks.register('componentTest', Test) {
+    group 'igse-test'
+    include '**/component/**'
+    systemProperty 'spring.profiles.active', 'test'
+    useJUnitPlatform()
+}
 
 bootJar {
     destinationDirectory.set(file("D:\\Project\\buildJars"))
@@ -94,18 +108,5 @@ jacocoTestReport {
     }
 }
 
-tasks.register('blackBoxTest', Test) {
-    println('**********BlackBox**********')
-    group 'igse-test'
-    include '**/blackbox/**'
-    systemProperty 'spring.profiles.active', 'test'
-    useJUnitPlatform()
-}
-tasks.register('integrationTest', Test) {
-    println('**********Integration**********')
-    group 'igse-test'
-    include '**/component/**'
-    systemProperty 'spring.profiles.active', 'test'
-    useJUnitPlatform()
-}
+
 configurations.runtimeClasspath.resolutionStrategy.activateDependencyLocking()
