@@ -17,6 +17,11 @@ server:
   servlet:
     context-path: /igse/auth
 spring:
+  flyway:
+    enabled: true
+    baselineOnMigrate: true
+    validateOnMigrate: true
+    locations: classpath:db/migration
   application:
     name: igse-auth
   kafka:
@@ -40,7 +45,7 @@ spring:
     show-sql: false
     hibernate:
       naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true

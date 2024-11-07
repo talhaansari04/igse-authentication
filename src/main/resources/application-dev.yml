@@ -30,6 +30,12 @@ logging:
     org:
       apache:
         kafka: off
-
+spring:
+  sql:
+    init:
+      mode: ALWAYS
+      data-locations:
+        - classpath:sql/cleanUp.sql
+        - classpath:sql/dashboard_admin.sql
 
 
