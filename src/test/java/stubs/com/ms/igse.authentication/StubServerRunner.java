@@ -1,4 +1,4 @@
-package com.igse.common;
+package stubs.com.ms.igse.authentication;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import jakarta.annotation.PostConstruct;

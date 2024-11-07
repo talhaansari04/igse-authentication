@@ -1,9 +1,9 @@
 {
   "mappings": [
     {
-      "name": "core",
+      "name": "payment",
       "request": {
-        "urlPath": "/admin/meter/price",
+        "urlPath": "/wallet/v1/test@gmail.com/info",
         "method": "GET",
         "headers": {
           "X-Correlation-Id": {
@@ -17,7 +17,7 @@
         "headers": {
           "Content-Type": "application/json"
         },
-        "bodyFileName": "core_success_test.json"
+        "bodyFileName": "wallet_success_test.json"
       }
     }
   ]

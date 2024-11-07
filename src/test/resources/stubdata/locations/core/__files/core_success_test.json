@@ -1,0 +1,9 @@
+{
+  "status": 200,
+  "data": {
+    "gasCharge": "0.1",
+    "dayCharge": "0.34",
+    "nightCharge": "0.2",
+    "standingChargePerDay": "0.74"
+  }
+}

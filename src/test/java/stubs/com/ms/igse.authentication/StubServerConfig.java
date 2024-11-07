@@ -1,4 +1,4 @@
-package com.igse.common;
+package stubs.com.ms.igse.authentication;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
@@ -7,11 +7,18 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration
 public class StubServerConfig {
     @Bean
     public WireMockServer core(){
-        return createServer(6000,"src/test/resources/stubdata/locations/core");
+        System.out.println("Core Stub starting......");
+        return createServer(9701,"src/test/resources/stubdata/locations/core");
+    }
+
+    @Bean
+    public WireMockServer payment(){
+        return createServer(9702,"src/test/resources/stubdata/locations/payment");
     }
 
     public WireMockServer createServer(int port, String fileMapping){

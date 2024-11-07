@@ -14,10 +14,7 @@ eureka:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
   instance:
     preferIpAddress: false
-server:
-  port: 6000
-  servlet:
-    context-path: /igse/auth
+
 spring:
   application:
     name: igse-auth
@@ -69,10 +66,10 @@ services:
 infrastructure:
   services:
     igse_payment:
-      endpoint: http://localhost:8080/igse-payment
+      endpoint: http://localhost:9702
       walletDetailPath: /wallet/v1/{customerId}/info
     igse_core:
-      endpoint: http://localhost:8080/igse/core
+      endpoint: http://localhost:9701
       meterDetailPath: /admin/meter/price
       changePricePath: /admin/change/price
       voucherDetailsPath: /voucher/

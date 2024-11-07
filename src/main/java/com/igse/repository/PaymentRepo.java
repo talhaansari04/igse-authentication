@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.UUID;
 
 import static com.igse.util.GlobalConstant.BEARER;
 
@@ -38,6 +39,7 @@ public class PaymentRepo {
                     .uri(basePath + walletDetailPath, customerId)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, BEARER + token)
+                    .header("X-Correlation-Id", UUID.randomUUID().toString())
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, coreError::handleCoreError)
                     .bodyToMono(WalletInfoDTO.class)

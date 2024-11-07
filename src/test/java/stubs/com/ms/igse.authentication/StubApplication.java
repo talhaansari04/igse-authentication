@@ -1,4 +1,4 @@
-package com.igse.common;
+package stubs.com.ms.igse.authentication;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;

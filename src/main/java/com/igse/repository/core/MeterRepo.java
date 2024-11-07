@@ -14,6 +14,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
 
 import static com.igse.util.GlobalConstant.BEARER;
 
@@ -77,13 +80,15 @@ public class MeterRepo {
                     .uri(basePath + meterDetailsPath)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, BEARER + token)
+                    .header("X-Correlation-Id","testvdfdfd")
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<IgseResponse<UnitPriceDTO>>() {
                     })
-//                    .retryWhen(Retry
-//                            .fixedDelay(3, Duration.ofSeconds(3))
-//                            .doAfterRetry(x -> log.info("FixedMeterDetails retry {}", x.totalRetries()
-//                    )))
+                    .retryWhen(Retry
+                            .fixedDelay(3, Duration.ofSeconds(3))
+                            .doAfterRetry(x -> log.info("FixedMeterDetails retry {} path {}", x.totalRetries(),basePath+meterDetailsPath
+
+                    )))
                     .block();
 
         } finally {
