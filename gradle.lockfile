@@ -85,6 +85,7 @@ jakarta.xml.bind:jakarta.xml.bind-api:4.0.2=runtimeClasspath
 joda-time:joda-time:2.3=runtimeClasspath
 net.bytebuddy:byte-buddy:1.14.13=runtimeClasspath
 net.javacrumbs.shedlock:shedlock-core:5.8.0=runtimeClasspath
+net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.8.0=runtimeClasspath
 net.javacrumbs.shedlock:shedlock-spring:5.8.0=runtimeClasspath
 org.antlr:antlr-runtime:3.4=runtimeClasspath
 org.antlr:antlr4-runtime:4.13.0=runtimeClasspath

@@ -4,6 +4,8 @@ public final class GlobalConstant {
     private GlobalConstant() {
         throw new IllegalArgumentException("GlobalConstant.class");
     }
+
+    public static final String CORRELATION_ID = "X-Correlation-Id";
     public static final String PENDING = "PENDING";
     public static final String SUCCESS = "SUCCESS";
     public static final String BEARER = "Bearer ";

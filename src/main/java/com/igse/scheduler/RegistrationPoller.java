@@ -18,6 +18,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.slf4j.MDC;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -27,7 +29,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import static com.igse.util.GlobalConstant.CORRELATION_ID;
 import static com.igse.util.GlobalConstant.OUT_OF_BOX_TASK_EXECUTOR;
 import static com.igse.util.GlobalConstant.PAID;
 import static com.igse.util.GlobalConstant.PENDING;
@@ -51,7 +55,9 @@ public class RegistrationPoller {
 
     @Async(OUT_OF_BOX_TASK_EXECUTOR)
     @Scheduled(cron = "0 0/1 * * * ?")
+    @SchedulerLock(name = "RoutineScheduler.scheduledTask", lockAtLeastFor = "PT15S", lockAtMostFor = "PT30S")
     public void processPendingRecords() {
+        MDC.put(CORRELATION_ID, OUT_OF_BOX_TASK_EXECUTOR+"-" + UUID.randomUUID());
         log.info("*****Poller Service*****");
         List<RegistrationStatusEntity> detail = statusRepo.findRegistrationStatus(PENDING, PENDING, PENDING);
         if (detail.isEmpty()) {
@@ -61,6 +67,7 @@ public class RegistrationPoller {
             log.info("Registration OutOfBox count {}", detail.size());
             detail.forEach(this::startProcess);
         }
+        MDC.clear();
     }
 
     @SneakyThrows

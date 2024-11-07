@@ -20,13 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.Callable;
 
+import static com.igse.util.GlobalConstant.CORRELATION_ID;
+
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class LoginAuthentication {
 
-    private static final String CORRELATION_ID = "X-Correlation-Id";
+
     private final AuthService authService;
 
     @PostMapping(path = "v1/login", produces = MediaType.APPLICATION_JSON_VALUE)
