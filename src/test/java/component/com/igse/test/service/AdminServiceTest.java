@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ComponentTest
 @Sql(scripts = { "/sql/cleanup_dashboard_admin.sql","/sql/dashboard_admin.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
@@ -24,6 +25,7 @@ class AdminServiceTest {
     void admin_Dashboard_Success200(){
         UserResponse userResponse = adminService.dashBoardData("test@gmail.com", UUID.randomUUID().toString());
         assertNotNull(userResponse);
+ /*       assertThrows(Exception.class,()->adminService.dashBoardData("test@gmail.com", UUID.randomUUID().toString()));*/
     }
 
 }

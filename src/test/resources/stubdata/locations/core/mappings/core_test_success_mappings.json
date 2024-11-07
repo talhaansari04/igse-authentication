@@ -1,0 +1,27 @@
+{
+  "mappings": [
+    {
+      "name": "core",
+      "request": {
+        "urlPath": "/v1/customer-details",
+        "method": "POST",
+        "headers": {
+          "Content-Type": {
+            "contains": "application/json"
+          },
+          "x-corelation-id": {
+            "matches": ".+"
+          }
+      }
+
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "core_success_test.json"
+      }
+    }
+  ]
+}
