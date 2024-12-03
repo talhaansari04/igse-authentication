@@ -53,6 +53,7 @@ spring:
 management:
   info:
     git:
+      enabled: false
       mode: full
   endpoint:
     shutdown:
@@ -60,8 +61,7 @@ management:
   endpoints:
     web:
       exposure:
-        include:
-          - "*"
+        include: health,info
 
 
 services:

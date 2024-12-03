@@ -14,6 +14,7 @@ import com.igse.repository.PaymentRepo;
 import com.igse.repository.db.UserMasterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +39,9 @@ public class AuthService {
     public UserResponse v1Login(LoginRequest loginRequest) {
         UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId())
                 .orElseThrow(() -> new UserException(HttpStatus.NOT_FOUND.value(), INVALID_USER));
-        return getUserDetails(loginRequest, userDetails);
+        UserResponse response = getUserDetails(loginRequest, userDetails);
+        MDC.clear();
+        return response;
 
     }
 

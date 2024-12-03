@@ -3,7 +3,7 @@
     {
       "name": "payment",
       "request": {
-        "urlPath": "/wallet/v1/test@gmail.com/info",
+        "urlPath": "/wallet/v1/talhaansari61@gmail.com/info",
         "method": "GET",
         "headers": {
           "X-Correlation-Id": {

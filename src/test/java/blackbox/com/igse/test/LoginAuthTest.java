@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @BlackBoxTest
 class LoginAuthTest {
 
@@ -12,8 +14,8 @@ class LoginAuthTest {
     }
 
     @Test
-    void login_Admin_Success200(){
-
+    void login_admin_success_200(){
+        assertNotNull(null);
     }
     @AfterEach
     void tearDown() {

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static com.igse.util.GlobalConstant.CORRELATION_ID;
@@ -34,11 +35,11 @@ public class LoginAuthentication {
     @PostMapping(path = "v1/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public final Callable<UserResponse> loginAuthV1(
             @RequestBody @Validated(value = LoginVersion.LoginV1.class)
-            @JsonView(value = LoginVersion.LoginV1.class) final LoginRequest loginRequest,
-            @RequestHeader(CORRELATION_ID) String correlationId) {
-        MDC.put(CORRELATION_ID, correlationId);
+            @JsonView(value = LoginVersion.LoginV1.class) final LoginRequest loginRequest) {
+        MDC.put(CORRELATION_ID, UUID.randomUUID().toString());
         log.info("Login Authentication Start {}", loginRequest.getCustomerId());
         return () -> authService.v1Login(loginRequest);
+
     }
 
     @PostMapping(path = "v2/login", produces = MediaType.APPLICATION_JSON_VALUE)
