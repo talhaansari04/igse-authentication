@@ -1,4 +1,18 @@
 #-----Default admin id and pass------#
+management:
+  info:
+    git:
+      mode: full
+  endpoint:
+    shutdown:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+info:
+  build:
+    version: #version#
 igse:
   admin:
     day: 0.34
@@ -6,12 +20,7 @@ igse:
     gas: 0.1
     id: gse@shangrila.gov.un
     pass: gse@energy
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-  instance:
-    preferIpAddress: false
+
 server:
   port: 6000
   servlet:
@@ -50,18 +59,7 @@ spring:
       hibernate:
         format_sql: true
 
-management:
-  info:
-    git:
-      enabled: false
-      mode: full
-  endpoint:
-    shutdown:
-      enabled: false
-  endpoints:
-    web:
-      exposure:
-        include: health,info
+
 
 
 services:
@@ -82,7 +80,7 @@ infrastructure:
       saveVoucherPath: /voucher/save
 logging:
   pattern:
-    console: "%clr(IST=){faint}%clr(%d{yyyy-MM-dd'|'HH:mm:ss, Asia/Kolkata}){faint} [%t] %clr(APP=){faint}%clr(${spring.application.name:null}){yellow} %clr(LEVEL=){faint}%clr(${LOG_LEVEL_PATTERN:%p}) %clr(CLASS=){faint}%clr(%logger{26}){cyan} %clr(X-Correlation-Id=){faint}%clr(%X{X-Correlation-Id:-null}){reverse} | %m%n%ex"
+    console: "%clr(IST=){faint}%clr(%d{yyyy-MM-dd'|'HH:mm:ss, Asia/Kolkata}){faint} [%t] %clr(APP=){faint}%clr(${spring.application.name:null}){yellow} %clr(LEVEL=){faint}%clr(${LOG_LEVEL_PATTERN:%p}) %clr(CLASS=){faint}%clr(%logger{26}){cyan} %clr(X-Correlation-Id=){faint}%clr(%X{X-Correlation-Id:-}){reverse} | %m%n%ex"
   level:
     org:
       apache:

@@ -5,7 +5,7 @@ import com.igse.config.EncoderDecoder;
 import com.igse.dto.VoucherResponse;
 import com.igse.dto.registration.Address;
 import com.igse.dto.registration.DemographicDetails;
-import com.igse.dto.registration.UserRegistrationDTO;
+import com.igse.dto.registration.UserRegRequest;
 import com.igse.entity.DemographicDetailsEntity;
 import com.igse.entity.RegistrationStatusEntity;
 import com.igse.entity.UserMaster;
@@ -35,22 +35,22 @@ public class CustomerService {
     private final RegistrationStatusRepo statusRepo;
 
     @Transactional
-    public void saveUser(UserRegistrationDTO userRegistrationDTO) {
-        Optional<UserMaster> customerDetails = userMasterRepository.findById(userRegistrationDTO.getCustomerId());
+    public void saveUser(UserRegRequest userRegRequest) {
+        Optional<UserMaster> customerDetails = userMasterRepository.findById(userRegRequest.getCustomerId());
         if (customerDetails.isPresent()) {
             UserMaster details = customerDetails.get();
-            if (details.getCustomerId().equalsIgnoreCase(userRegistrationDTO.getCustomerId())) {
+            if (details.getCustomerId().equalsIgnoreCase(userRegRequest.getCustomerId())) {
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Customer already exist");
             }
         }
-        VoucherResponse voucherResponse = voucherDetails(userRegistrationDTO);
-        UserMaster success = userMasterRepository.save(mapUserAddress(userRegistrationDTO));
-        statusRepo.save(mapRegistrationStatus(userRegistrationDTO, voucherResponse));
+        VoucherResponse voucherResponse = voucherDetails(userRegRequest);
+        UserMaster success = userMasterRepository.save(mapUserAddress(userRegRequest));
+        statusRepo.save(mapRegistrationStatus(userRegRequest, voucherResponse));
         log.info("Customer Registered Successfully ... {}",success.getCustomerId());
     }
 
     @SneakyThrows
-    private RegistrationStatusEntity mapRegistrationStatus(UserRegistrationDTO registrationDTO, VoucherResponse voucherResponse){
+    private RegistrationStatusEntity mapRegistrationStatus(UserRegRequest registrationDTO, VoucherResponse voucherResponse){
         return RegistrationStatusEntity.builder()
                 .customerId(registrationDTO.getCustomerId())
                 .jsonVoucherPayload(new ObjectMapper().writeValueAsString(voucherResponse))
@@ -59,7 +59,7 @@ public class CustomerService {
                 .isWalletCreated(PENDING).build();
     }
 
-    private UserMaster mapUserAddress(UserRegistrationDTO registrationDTO) {
+    private UserMaster mapUserAddress(UserRegRequest registrationDTO) {
         DemographicDetails details = registrationDTO.getDemographicDetails();
         Address address = details.getAddress();
         DemographicDetailsEntity demographicDetails=DemographicDetailsEntity.builder()
@@ -81,12 +81,12 @@ public class CustomerService {
                 .demographicDetails(demographicDetails).build();
     }
 
-    private VoucherResponse voucherDetails(UserRegistrationDTO userRegistrationDTO){
+    private VoucherResponse voucherDetails(UserRegRequest userRegRequest){
         VoucherResponse voucherDetails = Optional
-                .of(voucherRepo.getVoucherDetail(userRegistrationDTO.getVoucherCode())
+                .of(voucherRepo.getVoucherDetail(userRegRequest.getVoucherCode())
                         .getData())
                 .orElseThrow(() -> new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code"));
-        if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegistrationDTO.getVoucherCode())) {
+        if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegRequest.getVoucherCode())) {
             if (voucherDetails.getStatus().equals(GlobalConstant.USED)) {
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "EVC code already used");
             }else {

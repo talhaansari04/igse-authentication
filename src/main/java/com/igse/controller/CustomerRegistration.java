@@ -2,7 +2,7 @@ package com.igse.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.igse.dto.registration.RegistrationVersion;
-import com.igse.dto.registration.UserRegistrationDTO;
+import com.igse.dto.registration.UserRegRequest;
 import com.igse.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,15 +23,15 @@ public class CustomerRegistration {
     private final CustomerService userMasterService;
     @PostMapping(path = "v1/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> userRegistrationV1(
-            @RequestBody @Valid @JsonView(RegistrationVersion.V1.class) UserRegistrationDTO userRegistrationDTO) {
-        userMasterService.saveUser(userRegistrationDTO);
+            @RequestBody @Valid @JsonView(RegistrationVersion.V1.class) UserRegRequest userRegRequest) {
+        userMasterService.saveUser(userRegRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     @PostMapping(path = "v2/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> userRegistrationV2(
             @RequestBody @Validated(RegistrationVersion.V2.class)
-            @JsonView(RegistrationVersion.V2.class) UserRegistrationDTO userRegistrationDTO) {
-        userMasterService.saveUser(userRegistrationDTO);
+            @JsonView(RegistrationVersion.V2.class) UserRegRequest userRegRequest) {
+        userMasterService.saveUser(userRegRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

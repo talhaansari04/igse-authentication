@@ -1,7 +1,7 @@
 package unit.com.igse.test.service;
 
 import com.igse.config.EncoderDecoder;
-import com.igse.dto.registration.UserRegistrationDTO;
+import com.igse.dto.registration.UserRegRequest;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
 import com.igse.repository.db.UserMasterRepository;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
     @Test
     void user_registerUser_failed(){
-        UserRegistrationDTO registration = UserRegistrationDTO.builder()
+        UserRegRequest registration = UserRegRequest.builder()
                 .customerId("123654").build();
         when(userMasterRepository.findById(any()))
                 .thenReturn(Optional.of(UserMaster.builder().customerId("123654").build()));

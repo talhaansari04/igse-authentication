@@ -19,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonView(value = {RegistrationVersion.V1.class, RegistrationVersion.V2.class})
-public class UserRegistrationDTO {
+public class UserRegRequest {
     @Email(message = "Invalid email id")
     private String customerId;
 
