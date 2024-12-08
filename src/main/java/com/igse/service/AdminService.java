@@ -6,7 +6,7 @@ import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
 import com.igse.repository.PaymentRepo;
 import com.igse.repository.db.UserMasterRepository;
-import com.igse.util.GlobalConstant;
+import com.igse.common.IgseConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -43,9 +43,9 @@ public class AdminService {
 
     public List<UserMaster> getAllCustomerRecord(int offSet, int pageSize,String role) {
         PageRequest pageReq = PageRequest.of(offSet, pageSize);
-        if (GlobalConstant.Role.ADMIN.equalsIgnoreCase(role)) {
+        if (IgseConstants.Role.ADMIN.equalsIgnoreCase(role)) {
             return repository.findAllByRole(role, pageReq);
-        } else if (GlobalConstant.Role.USER.equalsIgnoreCase(role)){
+        } else if (IgseConstants.Role.USER.equalsIgnoreCase(role)){
             return repository.findAllByRole(role, pageReq);
         }else {
             return repository.findAll(pageReq).getContent();

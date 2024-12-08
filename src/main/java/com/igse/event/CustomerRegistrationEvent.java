@@ -1,9 +1,9 @@
 package com.igse.event;
 
+import com.igse.common.IgseConstants;
 import com.igse.dto.WalletPayloadKafka;
 import com.igse.entity.RegistrationStatusEntity;
 import com.igse.repository.db.RegistrationStatusRepo;
-import com.igse.util.GlobalConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +42,7 @@ public class CustomerRegistrationEvent {
                     log.info("Message sent successfully ...");
                     finalRegistrationStatus
                             .ifPresent(customer -> {
-                                customer.setIsWalletCreated(GlobalConstant.SUCCESS);
+                                customer.setIsWalletCreated(IgseConstants.SUCCESS);
                                 statusRepo.save(customer);
                             });
                 } else {
@@ -59,7 +59,7 @@ public class CustomerRegistrationEvent {
     }
 
     private void handleFailedEvent(RegistrationStatusEntity registrationStatus) {
-        registrationStatus.setIsWalletCreated(GlobalConstant.PENDING);
+        registrationStatus.setIsWalletCreated(IgseConstants.PENDING);
         statusRepo.save(registrationStatus);
     }
 }

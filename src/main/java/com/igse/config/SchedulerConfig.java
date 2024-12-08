@@ -1,6 +1,6 @@
 package com.igse.config;
 
-import com.igse.util.GlobalConstant;
+import com.igse.common.IgseConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -10,7 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 public class SchedulerConfig {
 
-    @Bean(name = GlobalConstant.OUT_OF_BOX_TASK_EXECUTOR)
+    @Bean(name = IgseConstants.OUT_OF_BOX_TASK_EXECUTOR)
     public ThreadPoolTaskExecutor outOfBoxAsyncTaskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setCorePoolSize(5);

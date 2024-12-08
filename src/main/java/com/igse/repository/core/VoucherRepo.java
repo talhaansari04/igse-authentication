@@ -13,7 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static com.igse.util.GlobalConstant.BEARER;
+import static com.igse.common.IgseConstants.BEARER;
+
 
 @Slf4j
 @Component

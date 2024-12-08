@@ -18,7 +18,8 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.UUID;
 
-import static com.igse.util.GlobalConstant.BEARER;
+import static com.igse.common.IgseConstants.BEARER;
+
 
 @Slf4j
 @Component

@@ -15,6 +15,7 @@ com.fasterxml:classmate:1.6.0=runtimeClasspath
 com.github.luben:zstd-jni:1.5.5-1=runtimeClasspath
 com.google.code.findbugs:jsr305:3.0.2=runtimeClasspath
 com.google.code.gson:gson:2.10.1=runtimeClasspath
+com.igse:igse-common:1.0=runtimeClasspath
 com.mysql:mysql-connector-j:8.3.0=runtimeClasspath
 com.sun.istack:istack-commons-runtime:4.1.2=runtimeClasspath
 com.zaxxer:HikariCP:5.0.1=runtimeClasspath

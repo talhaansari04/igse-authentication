@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import static com.igse.util.GlobalConstant.CORRELATION_ID;
+import static com.igse.common.IgseConstants.CORRELATION_ID;
 
 
 @Slf4j

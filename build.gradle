@@ -5,7 +5,7 @@ plugins {
     id 'jacoco'
     id 'com.gorylenko.gradle-git-properties' version '2.4.0'
     //id 'org.unbroken-dome.test-sets' version '4.0.0'
-   // id 'docker-compose'
+    // id 'docker-compose'
 }
 
 springBoot {
@@ -26,6 +26,7 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url 'https://repo.spring.io/milestone' }
     maven { url 'https://repo.spring.io/snapshot' }
@@ -61,6 +62,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-mysql'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
     testImplementation 'org.hamcrest:hamcrest:2.1'
+    implementation 'com.igse:igse-common:1.0'
     //implementation 'com.vladmihalcea:hibernate-types-52:2.21.1'
 }
 
@@ -75,28 +77,32 @@ tasks.named('bootBuildImage') {
 }
 
 
-
 tasks.named('test') {
     group 'igse-test'
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 
-tasks.register('blackBoxTest', Test) {
-    group 'igse-test'
+project.tasks.register('blackBoxTest', Test) {
+    group = 'igse-test'
+    description = "Run black box test"
     include '**/blackbox/**'
-    systemProperty 'spring.profiles.active', 'test'
-    useJUnitPlatform()
+    //systemProperty 'spring.profiles.active', 'test'
+    testLogging.showStandardStreams = true
+    //useJUnitPlatform()
 }
 
-tasks.register('componentTest', Test) {
+project.tasks.register('componentTest', Test) {
     group 'igse-test'
     include '**/component/**'
     systemProperty 'spring.profiles.active', 'test'
     useJUnitPlatform()
 }
 
-test{
+project.blackBoxTest.mustRunAfter project.jacocoTestCoverageVerification
+project.check.dependsOn project.blackBoxTest
+
+test {
     testLogging {
         events "passed", "skipped", "standardError"
         exceptionFormat = "full"

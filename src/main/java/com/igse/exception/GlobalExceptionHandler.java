@@ -1,10 +1,8 @@
 package com.igse.exception;
 
-import com.igse.util.GlobalConstant;
+import com.igse.common.IgseConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -45,7 +43,7 @@ public class GlobalExceptionHandler {
             errors.setMessage(userException.getMessage());
             errors.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } else {
-            errors.setMessage(GlobalConstant.GENERAL_EXCEPTION);
+            errors.setMessage(IgseConstants.GENERAL_EXCEPTION);
             errors.setStatus(HttpStatus.BAD_REQUEST.value());
         }
         log.error("{}", ex.getMessage());

@@ -31,12 +31,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.igse.util.GlobalConstant.CORRELATION_ID;
-import static com.igse.util.GlobalConstant.OUT_OF_BOX_TASK_EXECUTOR;
-import static com.igse.util.GlobalConstant.PAID;
-import static com.igse.util.GlobalConstant.PENDING;
-import static com.igse.util.GlobalConstant.SUCCESS;
-import static com.igse.util.GlobalConstant.USED;
+import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static com.igse.common.IgseConstants.OUT_OF_BOX_TASK_EXECUTOR;
+import static com.igse.common.IgseConstants.PAID;
+import static com.igse.common.IgseConstants.PENDING;
+import static com.igse.common.IgseConstants.SUCCESS;
+import static com.igse.common.IgseConstants.USED;
 
 
 @Slf4j

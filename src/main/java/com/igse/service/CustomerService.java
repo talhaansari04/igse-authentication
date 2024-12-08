@@ -1,6 +1,7 @@
 package com.igse.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.igse.common.IgseConstants;
 import com.igse.config.EncoderDecoder;
 import com.igse.dto.VoucherResponse;
 import com.igse.dto.registration.Address;
@@ -10,10 +11,9 @@ import com.igse.entity.DemographicDetailsEntity;
 import com.igse.entity.RegistrationStatusEntity;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
+import com.igse.repository.core.VoucherRepo;
 import com.igse.repository.db.RegistrationStatusRepo;
 import com.igse.repository.db.UserMasterRepository;
-import com.igse.repository.core.VoucherRepo;
-import com.igse.util.GlobalConstant;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,7 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.igse.util.GlobalConstant.PENDING;
+import static com.igse.common.IgseConstants.PENDING;
+import static com.igse.common.IgseConstants.USED;
 
 @Slf4j
 @Service
@@ -77,7 +78,7 @@ public class CustomerService {
                 .userName("-")
                 .customerId(registrationDTO.getCustomerId())
                 .pass(encoderDecoder.encrypt(registrationDTO.getPass()))
-                .role(GlobalConstant.Role.USER)
+                .role(IgseConstants.Role.USER)
                 .demographicDetails(demographicDetails).build();
     }
 
@@ -87,7 +88,7 @@ public class CustomerService {
                         .getData())
                 .orElseThrow(() -> new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code"));
         if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegRequest.getVoucherCode())) {
-            if (voucherDetails.getStatus().equals(GlobalConstant.USED)) {
+            if (voucherDetails.getStatus().equals(USED)) {
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "EVC code already used");
             }else {
                 return voucherDetails;
