@@ -57,7 +57,7 @@ class UserRegistrationTest {
     @Test
     void customerQuerySuccess() {
         LoginRequest loginRequest = LoginRequest.builder()
-                .customerId("talhaansari61@gmail.com")
+                .customerId("talhaansari611@gmail.com")
                 .password("root").build();
         given()
                 .log()

@@ -18,6 +18,7 @@ import java.util.TimeZone;
 public class Application {
 	@PostConstruct
 	void started() {
+
 		TimeZone.setDefault(TimeZone.getTimeZone("IST"));
 	}
 	public static void main(String[] args) {

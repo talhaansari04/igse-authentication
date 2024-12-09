@@ -1,9 +1,12 @@
 plugins {
     id 'java'
+    id 'igse' version '1.0'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'jacoco'
-    id 'com.gorylenko.gradle-git-properties' version '2.4.0'
+    id 'com.gorylenko.gradle-git-properties' version '2.4.1'
+    id 'org.ajoberstar.grgit' version "5.0.0-rc.3"
+
     //id 'org.unbroken-dome.test-sets' version '4.0.0'
     // id 'docker-compose'
 }
@@ -12,7 +15,7 @@ springBoot {
     buildInfo()
 }
 group = 'com.igse'
-version = '0.0.1-SNAPSHOT'
+//version = "${igseVersion}${igse.suffix()}"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -37,7 +40,11 @@ ext['spring-framework.version'] = '6.1.13'
 ext['tomcat.version'] = '10.1.25'
 
 
+
 dependencies {
+    implementation 'io.spring.gradle:dependency-management-plugin:1.1.6'
+    //implementation 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.15'
+   // implementation 'com.gorylenko.gradle-git-properties:gradle-git-properties:2.4.2'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -62,7 +69,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-mysql'
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
     testImplementation 'org.hamcrest:hamcrest:2.1'
-    implementation 'com.igse:igse-common:1.0'
+    implementation 'com.igse:igse-common:1.1'
     //implementation 'com.vladmihalcea:hibernate-types-52:2.21.1'
 }
 
@@ -79,28 +86,29 @@ tasks.named('bootBuildImage') {
 
 tasks.named('test') {
     group 'igse-test'
-    useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 
-project.tasks.register('blackBoxTest', Test) {
-    group = 'igse-test'
-    description = "Run black box test"
-    include '**/blackbox/**'
-    //systemProperty 'spring.profiles.active', 'test'
-    testLogging.showStandardStreams = true
-    //useJUnitPlatform()
-}
+//project.tasks.register('blackBoxTest', Test) {
+//    group = 'igse-test'
+//    description = "Run black box test"
+//    include '**/blackbox/**'
+//    //systemProperty 'spring.profiles.active', 'test'
+//    testLogging.showStandardStreams = true
+//    //useJUnitPlatform()
+//}
+//
+//project.tasks.register('componentTest', Test) {
+//    group = 'igse-test'
+//    description = "Run component test"
+//    include '**/component/**'
+//    testLogging.showStandardStreams = true
+//    //systemProperty 'spring.profiles.active', 'test'
+//    //useJUnitPlatform()
+//}
 
-project.tasks.register('componentTest', Test) {
-    group 'igse-test'
-    include '**/component/**'
-    systemProperty 'spring.profiles.active', 'test'
-    useJUnitPlatform()
-}
-
-project.blackBoxTest.mustRunAfter project.jacocoTestCoverageVerification
-project.check.dependsOn project.blackBoxTest
+//project.blackBoxTest.mustRunAfter project.jacocoTestCoverageVerification
+//project.check.dependsOn project.blackBoxTest
 
 test {
     testLogging {
@@ -132,6 +140,21 @@ jacocoTestReport {
         }))
     }
 }
+gitProperties {
+    keys = [
+            'git.branch',
+            'git.commit.id',
+            'git.build.version'
 
+            /*
+             'git.dirty',
+            'git.commit.message.full',
+            'git.commit.user.name',
+            'git.commit.user.email',
+            'git.remote.origin.url',
+            'git.build.host'
+            */
+    ]
+}
 
 configurations.runtimeClasspath.resolutionStrategy.activateDependencyLocking()
