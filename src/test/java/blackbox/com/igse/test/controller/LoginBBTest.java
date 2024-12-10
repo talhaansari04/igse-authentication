@@ -3,6 +3,7 @@ package blackbox.com.igse.test.controller;
 import blackbox.com.igse.test.BlackBoxTest;
 import com.igse.dto.login.LoginRequest;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -17,13 +18,12 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.UUID;
 
-import static io.netty.handler.codec.http.HttpHeaders.Values.APPLICATION_JSON;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.not;
 
 
 @BlackBoxTest
-class UserRegistrationTest {
+class LoginBBTest {
     private static final String BASE_URI = "http://localhost";
     private static final String BASE_PATH = "/igse/auth";
     private static final int PORT = 6000;
@@ -57,14 +57,14 @@ class UserRegistrationTest {
     @Test
     void customerQuerySuccess() {
         LoginRequest loginRequest = LoginRequest.builder()
-                .customerId("talhaansari611@gmail.com")
+                .customerId("talhaansari61@gmail.com")
                 .password("root").build();
         given()
                 .log()
                 .all()
                 .headers(httpHeaders)
-                .accept(APPLICATION_JSON)
-                .contentType(APPLICATION_JSON)
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
                 .body(loginRequest)
                 .post(REGISTRATION_PATH_V1)
                 .then()

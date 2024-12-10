@@ -96,9 +96,9 @@ public class MeterRepo {
             log.info("Executed");
         }
     }
-    public IgseResponse<UnitPriceDTO> notFound(Throwable e){
-        log.info("Hystrix fall back-------");
-        IgseResponse response=new IgseResponse();
+    public IgseResponse<UnitPriceDTO> notFound(Exception e){
+        log.info("Hystrix fall back-------{}",e.getMessage());
+        IgseResponse<UnitPriceDTO> response=new IgseResponse<>();
         response.setData(UnitPriceDTO.builder().build());
         return response;
     }

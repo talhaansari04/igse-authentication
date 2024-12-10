@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 
     @Test
-    void user_registerUser_failed(){
+    void user_registerUser_failedUnit(){
         UserRegRequest registration = UserRegRequest.builder()
                 .customerId("123654").build();
         when(userMasterRepository.findById(any()))

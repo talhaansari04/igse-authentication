@@ -40,12 +40,13 @@ ext['spring-framework.version'] = '6.1.13'
 ext['tomcat.version'] = '10.1.25'
 
 
-
 dependencies {
     implementation 'io.spring.gradle:dependency-management-plugin:1.1.6'
     //implementation 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.15'
-   // implementation 'com.gorylenko.gradle-git-properties:gradle-git-properties:2.4.2'
+    // implementation 'com.gorylenko.gradle-git-properties:gradle-git-properties:2.4.2'
     implementation 'org.springframework.kafka:spring-kafka'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-text
+    implementation 'org.apache.commons:commons-text:1.12.0'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -84,40 +85,12 @@ tasks.named('bootBuildImage') {
 }
 
 
-tasks.named('test') {
-    group 'igse-test'
+tasks.withType(Test) {
+/*Need put on parent dependency*/
     finalizedBy jacocoTestReport
-}
-
-//project.tasks.register('blackBoxTest', Test) {
-//    group = 'igse-test'
-//    description = "Run black box test"
-//    include '**/blackbox/**'
-//    //systemProperty 'spring.profiles.active', 'test'
-//    testLogging.showStandardStreams = true
-//    //useJUnitPlatform()
-//}
-//
-//project.tasks.register('componentTest', Test) {
-//    group = 'igse-test'
-//    description = "Run component test"
-//    include '**/component/**'
-//    testLogging.showStandardStreams = true
-//    //systemProperty 'spring.profiles.active', 'test'
-//    //useJUnitPlatform()
-//}
-
-//project.blackBoxTest.mustRunAfter project.jacocoTestCoverageVerification
-//project.check.dependsOn project.blackBoxTest
-
-test {
-    testLogging {
-        events "passed", "skipped", "standardError"
-        exceptionFormat = "full"
-    }
     useJUnitPlatform()
-    //finalizedBy jacocoTestReport
 }
+
 
 bootJar {
     destinationDirectory.set(file("D:\\Project\\buildJars"))
