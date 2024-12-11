@@ -5,7 +5,6 @@ import com.igse.dto.login.LoginRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,17 +17,20 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.UUID;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 
 @BlackBoxTest
 class LoginBBTest {
+    private static final String VALID_CUSTOMER_ID = "talhaansari61@gmail.com";
     private static final String BASE_URI = "http://localhost";
     private static final String BASE_PATH = "/igse/auth";
     private static final int PORT = 6000;
-    private static final String REGISTRATION_PATH_V1 = "/v1/login";
-    static HttpHeaders httpHeaders;
+    private static final String LOGIN_PATH_V1 = "/v1/login";
+     HttpHeaders httpHeaders;
 
     @AfterEach
     void tearDown() throws Exception {
@@ -46,7 +48,7 @@ class LoginBBTest {
         RestAssured.basePath = BASE_PATH;
         RestAssured.port = PORT;
         httpHeaders = new HttpHeaders();
-        httpHeaders.add("X-Correlation-Id", UUID.randomUUID().toString());
+        httpHeaders.add(CORRELATION_ID, UUID.randomUUID().toString());
 
         try (Connection connection = dataSource.getConnection()) {
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("/sql/cleanup_dashboard_admin.sql"));
@@ -55,10 +57,11 @@ class LoginBBTest {
     }
 
     @Test
-    void customerQuerySuccess() {
+    void loginV1_customer_success200() {
         LoginRequest loginRequest = LoginRequest.builder()
-                .customerId("talhaansari61@gmail.com")
+                .customerId(VALID_CUSTOMER_ID)
                 .password("root").build();
+
         given()
                 .log()
                 .all()
@@ -66,10 +69,33 @@ class LoginBBTest {
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body(loginRequest)
-                .post(REGISTRATION_PATH_V1)
+                .post(LOGIN_PATH_V1)
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.SC_OK)
-                .body(not(Matchers.empty()));
+                .body("customerId", is(VALID_CUSTOMER_ID))
+                .body("token", notNullValue())
+                .body("wallet.walletId", is("OWARETCNDS"));
+    }
+
+    @Test
+    void loginV1_customer_unauthorized() {
+        LoginRequest loginRequest = LoginRequest.builder()
+                .customerId("invalid@gmail.com")
+                .password("invalid").build();
+
+        given()
+                .log()
+                .all()
+                .headers(httpHeaders)
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .post(LOGIN_PATH_V1)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .body("status", is(404))
+                .body("message", is("Customer not registered"));
     }
 }
