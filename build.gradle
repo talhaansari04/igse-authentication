@@ -87,6 +87,7 @@ tasks.named('bootBuildImage') {
 
 tasks.withType(Test) {
 /*Need put on parent dependency*/
+    jvmArgs(["-Dspring.output.ansi.enabled=ALWAYS", "-Dspring.profiles.active=dev"])
     finalizedBy jacocoTestReport
     useJUnitPlatform()
 }

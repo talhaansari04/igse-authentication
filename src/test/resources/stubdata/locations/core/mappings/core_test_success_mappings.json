@@ -6,7 +6,7 @@
         "urlPath": "/admin/meter/price",
         "method": "GET",
         "headers": {
-          "X-Correlation-Id": {
+          "correlationId": {
             "matches": ".+"
           }
       }
@@ -18,6 +18,26 @@
           "Content-Type": "application/json"
         },
         "bodyFileName": "core_success_test.json"
+      }
+    },
+    {
+      "name": "core_voucher",
+      "request": {
+        "urlPath": "/voucher/62ANW9MV",
+        "method": "GET",
+        "headers": {
+          "correlationId": {
+            "matches": ".+"
+          }
+        }
+
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "core_valid_voucher_success.json"
       }
     }
   ]

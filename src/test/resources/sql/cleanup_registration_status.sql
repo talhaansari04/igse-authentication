@@ -1,0 +1,1 @@
+DELETE FROM igse_registration_status

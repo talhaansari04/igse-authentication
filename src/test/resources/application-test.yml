@@ -76,7 +76,7 @@ infrastructure:
       saveVoucherPath: /voucher/save
 logging:
   pattern:
-    console: "%clr(IST=){faint}%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z', UTC}){faint} [%t] %clr(APP=){faint}%clr(${spring.application.name:null}){yellow} %clr(LEVEL=){faint}%clr(${LOG_LEVEL_PATTERN:%p}) %clr(CLASS=){faint}%clr(%logger{26}){cyan} %clr(X-Correlation-Id=){faint}%clr(%X{X-Correlation-Id:-null}){reverse} | %m%n%ex"
+    console: "%clr(IST=){faint}%clr(%d{yyyy-MM-dd'|'HH:mm:ss, Asia/Kolkata}){faint} [%t] %clr(APP=){faint}%clr(${spring.application.name:null}){yellow} %clr(LEVEL=){faint}%clr(${LOG_LEVEL_PATTERN:%p}) %clr(CLASS=){faint}%clr(%logger{26}){cyan} %clr(CID:){faint}%clr(%X{correlationId:-}){reverse} | %m%n%ex"
   level:
     org:
       apache:

@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "data": {
+    "voucherCode": "62ANW9MV",
+    "customerId": null,
+    "status": "NOT_USED",
+    "voucherBalance": 200.0,
+    "voucherDate": "2024-08-17"
+  }
+}

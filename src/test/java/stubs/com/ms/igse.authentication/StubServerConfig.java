@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class StubServerConfig {
     @Bean
     public WireMockServer core(){
-        System.out.println("Core Stub starting......");
+        System.out.println("Igse-Core Stub starting ...");
         return createServer(9701,"src/test/resources/stubdata/locations/core");
     }
 
