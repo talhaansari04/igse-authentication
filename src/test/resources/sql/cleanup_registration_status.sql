@@ -1,1 +1,3 @@
 DELETE FROM igse_registration_status
+DELETE FROM igse_user_master
+DELETE FROM demographic_details
