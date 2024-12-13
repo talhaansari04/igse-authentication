@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="APP" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ssZ.SSS} log_level=%highlight(%level), thread=[%t], event_source=%logger{36}, %green(%msg%n)</pattern>
+        </encoder>
+    </appender>
+    <logger name="io.gatling.http.ahc" level="DEBUG" />
+    <logger name="net.codeslate.gatling" level="INFO" additivity="false">
+        <appender-ref ref="APP"/>
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="APP"/>
+    </root>
+
+</configuration>
