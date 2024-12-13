@@ -65,6 +65,7 @@ spring:
 
 services:
   kafka:
+    enable: true
     regisTopics: v1.dev.regi
     groupId: "default-dev"
 
@@ -86,7 +87,10 @@ logging:
     org:
       apache:
         kafka: off
-
+poller:
+  outOfBox:
+    cron: "0 0/1 * * * ?"
+    enable: true
 resilience4j:
   circuitbreaker:
     configs:

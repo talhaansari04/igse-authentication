@@ -1,56 +1,54 @@
-package component.com.igse.test.service;
+package component.com.igse.test.scheduler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igse.common.IgseConstants;
-import com.igse.dto.registration.UserRegRequest;
 import com.igse.entity.RegistrationStatusEntity;
 import com.igse.repository.db.RegistrationStatusRepo;
-import com.igse.service.CustomerService;
+import com.igse.service.RegistrationEventService;
 import component.com.igse.test.ComponentTestWithStub;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.UUID;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 @ComponentTestWithStub
-@Sql(scripts = {"/sql/cleanup_registration_status.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@TestPropertySource(properties = {"poller.outOfBox.enable=true", "poller.outOfBox.cron=0/5 * * * * *"})
+@Sql(scripts = {"/sql/cleanup_registration_status.sql","/sql/registration_status.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(scripts = "/sql/cleanup_registration_status.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
-class CustomerServiceTest {
+class RegistrationSchedulerTest {
+
 
     @Autowired
-    private CustomerService customerService;
-    @Autowired
-    private RegistrationStatusRepo registrationStatusRepo;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private RegistrationStatusRepo registrationRepo;
 
-    static HttpHeaders httpHeaders;
+    @SpyBean
+    private RegistrationEventService eventService;
 
-    @BeforeAll
-    static void beforeAll() {
-        httpHeaders = new HttpHeaders();
-        httpHeaders.add(CORRELATION_ID, UUID.randomUUID().toString());
+    long countBefore;
+
+    @BeforeEach
+    void setUp() {
+        countBefore = registrationRepo.count();
     }
 
     @Test
-    void customer_registrationV1_success() throws Exception {
-        UserRegRequest userRegRequest = objectMapper.readValue(REGISTRATION_REQ, UserRegRequest.class);
-
-        assertDoesNotThrow(() -> customerService.saveUser(userRegRequest));
+    void registration_scheduler_verifier() {
+        assertEquals(1,registrationRepo.count());
         await()
-                .atMost(Duration.ofSeconds(2)).untilAsserted(() -> {
-                    Optional<RegistrationStatusEntity> byCustomerId = registrationStatusRepo.findByCustomerId("igseuser61@gmail.com");
+                .atMost(Duration.ofSeconds(15)).untilAsserted(() -> {
+                    verify(eventService,atLeastOnce()).processPendingRecords(anyString());
+                    Optional<RegistrationStatusEntity> byCustomerId = registrationRepo.findByCustomerId("igseuser61@gmail.com");
                     assertTrue(byCustomerId.isPresent());
                     assertEquals("igseuser61@gmail.com", byCustomerId.get().getCustomerId());
 
@@ -58,9 +56,7 @@ class CustomerServiceTest {
                     assertEquals(IgseConstants.PENDING,byCustomerId.get().getIsMeterDetailSave());
                     assertEquals(IgseConstants.PENDING,byCustomerId.get().getIsWalletCreated());
                 });
-
     }
-
     private final static String REGISTRATION_REQ = """
             {
                 "customerId": "igseuser61@gmail.com",
