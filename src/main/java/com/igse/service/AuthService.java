@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -36,23 +37,25 @@ public class AuthService {
     private final JwtService jwt;
     private final PaymentRepo paymentRepo;
 
-    public UserResponse v1Login(LoginRequest loginRequest) {
+    public UserResponse v1Login(LoginRequest loginRequest,String correlationId) {
         UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId())
                 .orElseThrow(() -> new UserException(HttpStatus.NOT_FOUND.value(), INVALID_USER));
-        UserResponse response = getUserDetails(loginRequest, userDetails);
+        UserResponse response = getUserDetails(loginRequest, userDetails,correlationId);
         MDC.clear();
         return response;
 
     }
 
-    public UserResponse v2Login(LoginRequest loginRequest) {
+    public UserResponse v2Login(LoginRequest loginRequest,String correlationId) {
         UserMaster userDetails = userMasterRepository.findAllByUserName(loginRequest.getUserName())
                 .orElseThrow(() -> new UserException(HttpStatus.NOT_FOUND.value(), INVALID_USER));
-        return getUserDetails(loginRequest, userDetails);
+        UserResponse userResponse = getUserDetails(loginRequest, userDetails, correlationId);
+        MDC.clear();
+        return userResponse;
     }
 
 
-    private UserResponse getUserDetails(LoginRequest loginRequest, UserMaster userDetails) throws UserException {
+    private UserResponse getUserDetails(LoginRequest loginRequest, UserMaster userDetails,String correlationId) throws UserException {
             if (validateUser(userDetails, loginRequest)) {
                 UserResponse userResponse = new UserResponse();
                 String token = jwt.generateToken(userDetails.getCustomerId(), userDetails.getRole());
@@ -60,7 +63,7 @@ public class AuthService {
                 BeanUtils.copyProperties(userDetails, userResponse);
                 userDetails.setLastLogin(LocalDate.now());
                 userMasterRepository.save(userDetails);
-                WalletInfoDTO walletInfo = paymentRepo.walletDetails(userDetails.getCustomerId(),token);
+                WalletInfoDTO walletInfo = paymentRepo.walletDetails(userDetails.getCustomerId(),token,correlationId);
                 userResponse.setWalletInfo(walletInfo);
                 userResponse.setDemographicDetails(mapDemographicDetails(userDetails));
                 return userResponse;

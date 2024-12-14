@@ -36,9 +36,10 @@ public class LoginAuthentication {
     public final Callable<UserResponse> loginAuthV1(
             @RequestBody @Validated(value = LoginVersion.LoginV1.class)
             @JsonView(value = LoginVersion.LoginV1.class) final LoginRequest loginRequest) {
-        MDC.put(CORRELATION_ID, UUID.randomUUID().toString());
+        String correlationId = String.format("%s-%s", getClass().getSimpleName(), UUID.randomUUID());
+        MDC.put(CORRELATION_ID, correlationId);
         log.info("Login Authentication Start {}", loginRequest.getCustomerId());
-        return () -> authService.v1Login(loginRequest);
+        return () -> authService.v1Login(loginRequest, correlationId);
 
     }
 
@@ -46,7 +47,8 @@ public class LoginAuthentication {
     public final ResponseEntity<UserResponse> loginAuthV2(
             @RequestBody @Validated(value = LoginVersion.LoginV2.class)
             @JsonView(value = LoginVersion.LoginV2.class) LoginRequest loginRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.v2Login(loginRequest));
+        String correlationId = String.format("%s-%s", getClass().getSimpleName(), UUID.randomUUID());
+        return ResponseEntity.status(HttpStatus.OK).body(authService.v2Login(loginRequest,correlationId));
     }
 
 }

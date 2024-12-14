@@ -18,6 +18,10 @@ service:
     wallet:
       topic: "wallet.v1"
       groupId: "wallet-dev-A1"
+poller:
+  outOfBox:
+    cron: "0 0/1 * * * ?"
+    enable: false
 spring:
   sql:
     init:

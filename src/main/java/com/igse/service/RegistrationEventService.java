@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.igse.common.IgseConstants.CORRELATION_ID;
 import static com.igse.common.IgseConstants.PAID;
@@ -94,7 +95,7 @@ public class RegistrationEventService {
     private void processVoucher(String customerId, RegistrationStatusEntity status, VoucherResponse voucherResponse) {
         log.info("message=\"Voucher verification process start\"");
         if (PENDING.equalsIgnoreCase(status.getIsVoucherRedeemed())) {
-            WalletInfoDTO walletDetails = paymentRepo.walletDetails(customerId, jwt.getAdminToken());
+            WalletInfoDTO walletDetails = paymentRepo.walletDetails(customerId, jwt.getAdminToken(), UUID.randomUUID().toString());
             if (null != walletDetails) {
                 saveVoucher(customerId, voucherResponse);
                 status.setIsVoucherRedeemed(SUCCESS);

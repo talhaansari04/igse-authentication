@@ -1,4 +1,9 @@
 #-----Default admin id and pass------#
+igse:
+  admin:
+    id: gse@shangrila.gov.un
+    pass: gse@energy
+
 management:
   info:
     git:
@@ -10,17 +15,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,circuitbreakers
 info:
   build:
     version: #version#
-igse:
-  admin:
-    day: 0.34
-    night: 0.2
-    gas: 0.1
-    id: gse@shangrila.gov.un
-    pass: gse@energy
 
 server:
   port: 6000
@@ -92,15 +90,16 @@ poller:
   outOfBox:
     cron: "0 0/1 * * * ?"
     enable: true
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
+
+
+resilience4j.circuitbreaker:
+  instances:
+    wallet:
         registerHealthIndicator: true
         slidingWindowSize: 10
-        minimumNumberOfCalls: 5
         permittedNumberOfCallsInHalfOpenState: 3
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        waitDurationInOpenState: 5s
+        slidingWindowType: TIME_BASED
+        minimumNumberOfCalls: 20
+        waitDurationInOpenState: 50s
         failureRateThreshold: 50
         eventConsumerBufferSize: 10

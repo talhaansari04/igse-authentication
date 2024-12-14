@@ -1,11 +1,13 @@
 package com.igse.controller;
 
+import com.igse.common.IgseConstants;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.UserResponse;
 import com.igse.entity.UserMaster;
 import com.igse.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -31,20 +35,27 @@ public class CustomerQuery {
     public final ResponseEntity<IgseResponse<List<UserMaster>>> allCustomerList(
             @RequestParam(value = "offset") int offset,
             @RequestParam(value = "page", defaultValue = "10") int pageSize,
-            @RequestParam(name = "role", defaultValue = "All") String role) {
+            @RequestParam(name = "role", defaultValue = "All") String role,
+            @RequestHeader(IgseConstants.CORRELATION_ID) String correlationId) {
+        MDC.put(CORRELATION_ID, correlationId);
         IgseResponse<List<UserMaster>> igseResponse = new IgseResponse<>();
         igseResponse.setData(adminService.getAllCustomerRecord(offset, pageSize, role));
         igseResponse.setStatus(HttpStatus.OK.value());
+        MDC.clear();
         return ResponseEntity.status(HttpStatus.OK).body(igseResponse);
     }
 
     @GetMapping(path = "/user/info/{customerId}")
     public ResponseEntity<IgseResponse<UserResponse>> dashboardData(
             @PathVariable String customerId,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+            @RequestHeader(IgseConstants.CORRELATION_ID) String correlationId
+            ) {
+        MDC.put(CORRELATION_ID, correlationId);
         IgseResponse<UserResponse> igseResponse = new IgseResponse<>();
-        igseResponse.setData(adminService.dashBoardData(customerId, token.substring(7)));
+        igseResponse.setData(adminService.dashBoardData(customerId, token.substring(7),correlationId));
         igseResponse.setStatus(HttpStatus.OK.value());
+        MDC.clear();
         return ResponseEntity.status(HttpStatus.OK).body(igseResponse);
     }
 }

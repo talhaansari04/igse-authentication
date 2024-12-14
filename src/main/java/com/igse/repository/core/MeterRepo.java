@@ -72,7 +72,7 @@ public class MeterRepo {
         }
     }
 
-    @CircuitBreaker(name = "igseCoreMeter", fallbackMethod = "notFound")
+   @CircuitBreaker(name = "igseCoreMeter", fallbackMethod = "notFound")
     public IgseResponse<UnitPriceDTO> getFixedMeterDetails() {
         /*Note Please handle excetion incase 404*/
         String token = jwtService.getAdminToken();

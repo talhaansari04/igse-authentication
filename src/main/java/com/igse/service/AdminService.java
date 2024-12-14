@@ -28,12 +28,12 @@ public class AdminService {
         return repository.findAll();
     }
 
-    public UserResponse dashBoardData(String customerId,String token) {
+    public UserResponse dashBoardData(String customerId,String token,String correlationId) {
         Optional<UserMaster> details = repository.findById(customerId);
         if (details.isPresent()) {
             UserResponse response = new UserResponse();
             BeanUtils.copyProperties(details.get(), response);
-            WalletInfoDTO walletInfo = paymentRepo.walletDetails(customerId,token);
+            WalletInfoDTO walletInfo = paymentRepo.walletDetails(customerId,token,correlationId);
             response.setWalletInfo(walletInfo);
             return response;
         } else {

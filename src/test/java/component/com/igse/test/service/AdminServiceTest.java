@@ -15,7 +15,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ComponentTestWithStub
-@Sql(scripts = { "/sql/cleanup_dashboard_admin.sql","/sql/dashboard_admin.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = {"/sql/cleanup_dashboard_admin.sql", "/sql/dashboard_admin.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(scripts = "/sql/cleanup_dashboard_admin.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 class AdminServiceTest {
 
@@ -26,12 +26,12 @@ class AdminServiceTest {
     ArgumentCaptor<UserRegRequest> userRegRequestArgumentCaptor;
 
     @Test
-    void admin_Dashboard_Success200(){
-        UserResponse userResponse = adminService.dashBoardData("talhaansari61@gmail.com", UUID.randomUUID().toString());
-
+    void admin_Dashboard_Success200() {
+        String cid = UUID.randomUUID().toString();
+        UserResponse userResponse = adminService.dashBoardData("talhaansari61@gmail.com", cid, cid);
         assertNotNull(userResponse);
 
-       // assertThrows(Exception.class,()->adminService.dashBoardData("test@gmail.com", UUID.randomUUID().toString()));
+        // assertThrows(Exception.class,()->adminService.dashBoardData("test@gmail.com", UUID.randomUUID().toString()));
     }
 
 }
