@@ -51,6 +51,7 @@ spring:
       connection-test-query: select 1
       connection-init-sql: select 1
   jpa:
+    open-in-view: false
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: false
     hibernate:
