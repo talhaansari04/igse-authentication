@@ -5,23 +5,23 @@
 services:
   igse:
     core:
-      endpoint: http://localhost:9701
+      endpoint: http://localhost:7000/igse-core
     payment:
-      endpoint: http://localhost:9702
+      endpoint: http://localhost:5000/igse-payment
   kafka:
     regisTopics: v1.dev.regi
     groupId: "default-dev"
 
 service:
   kafka:
-    enable: false
+    enable: true
     wallet:
       topic: "wallet.v1"
       groupId: "wallet-dev-A1"
 poller:
   outOfBox:
     cron: "0 0/1 * * * ?"
-    enable: false
+    enable: true
 spring:
   sql:
     init:

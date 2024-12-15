@@ -24,6 +24,7 @@ public class CustomerRegistration {
     @PostMapping(path = "v1/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> userRegistrationV1(
             @RequestBody @Valid @JsonView(RegistrationVersion.V1.class) UserRegRequest userRegRequest) {
+        log.info("message=\" Customer Registration request received");
         userMasterService.saveUser(userRegRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

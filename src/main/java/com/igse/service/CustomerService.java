@@ -44,10 +44,11 @@ public class CustomerService {
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Customer already exist");
             }
         }
+        log.info("message=\"New customer registration process start ... {}",userRegRequest.getCustomerId());
         VoucherResponse voucherResponse = voucherDetails(userRegRequest);
         UserMaster success = userMasterRepository.save(mapUserAddress(userRegRequest));
         statusRepo.save(mapRegistrationStatus(userRegRequest, voucherResponse));
-        log.info("Customer Registered Successfully ... {}",success.getCustomerId());
+        log.info("message=\"Customer Registered Successfully ... {}",success.getCustomerId());
     }
 
     @SneakyThrows
@@ -83,12 +84,14 @@ public class CustomerService {
     }
 
     private VoucherResponse voucherDetails(UserRegRequest userRegRequest){
+        log.info("message=\"Fetching voucher details {}",userRegRequest.getCustomerId());
         VoucherResponse voucherDetails = Optional
                 .of(voucherRepo.getVoucherDetail(userRegRequest.getVoucherCode())
                         .getData())
                 .orElseThrow(() -> new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code"));
         if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegRequest.getVoucherCode())) {
             if (voucherDetails.getStatus().equals(USED)) {
+                log.info("message=\"Voucher validation failed for {}",userRegRequest.getCustomerId());
                 throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "EVC code already used");
             }else {
                 return voucherDetails;
@@ -97,11 +100,4 @@ public class CustomerService {
             throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code");
         }
     }
-
-
-
-
-
-
-
 }

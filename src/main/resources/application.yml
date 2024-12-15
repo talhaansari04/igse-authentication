@@ -59,9 +59,6 @@ spring:
       hibernate:
         format_sql: true
 
-
-
-
 services:
   kafka:
     enable: true
