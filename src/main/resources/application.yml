@@ -23,7 +23,7 @@ info:
 server:
   port: 6000
   servlet:
-    context-path: /igse/auth
+    context-path: /igse-auth
 spring:
   application:
     name: igse-auth

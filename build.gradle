@@ -49,13 +49,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation "org.springframework.boot:spring-boot-starter-aop"
-
+    implementation group: 'com.atlassian.oai', name: 'swagger-request-validator-restassured', version: '2.20.0'
     testImplementation('org.springframework.boot:spring-boot-starter-test:3.2.5',
             'io.projectreactor:reactor-test:3.6.5',
             "com.github.tomakehurst:wiremock-jre8-standalone:2.35.2",
             'io.rest-assured:rest-assured:5.3.1',
             'org.hamcrest:hamcrest:2.1',
-            'org.awaitility:awaitility:4.0.3')
+            'org.awaitility:awaitility:4.0.3',
+            'com.atlassian.oai:swagger-request-validator-core:2.44.1')
 
     /*implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'*/
     implementation("io.jsonwebtoken:jjwt-api:0.11.5",
@@ -96,7 +97,6 @@ dependencies {
 
 
 tasks.withType(Test) {
-    jvmArgs(["-Dspring.output.ansi.enabled=ALWAYS", "-Dspring.profiles.active=dev"])
     finalizedBy jacocoTestReport
     useJUnitPlatform()
 }
@@ -144,7 +144,7 @@ dockerCompose {
     dockerComposeStopTimeout = java.time.Duration.ofSeconds(10)
 }
 
-stubRun{
+stubRun {
     mainClass = 'stubs.com.ms.igse.authentication.StubApplication'
 }
 

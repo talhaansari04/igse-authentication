@@ -1,0 +1,74 @@
+openapi: 3.0.2
+info:
+  title: igse-login-auth
+  description: API for user login functionality
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:6000/igse-auth
+    description: Dev API server
+
+paths:
+  /v1/login:
+    post:
+      summary: User Login
+      description: Allows a user to login by providing their username, password, and category.
+      operationId: loginUser
+      requestBody:
+        description: User login credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid username or password."
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An unexpected error occurred. Please try again later."
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+          example: "john_doe"
+        password:
+          type: string
+          example: "SecurePass123"
+      required:
+        - customerId
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsI"

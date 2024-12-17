@@ -1,6 +1,9 @@
 package blackbox.com.igse.test.controller;
 
 import blackbox.com.igse.test.BlackBoxTest;
+import com.atlassian.oai.validator.OpenApiInteractionValidator;
+import com.atlassian.oai.validator.report.LevelResolverFactory;
+import com.atlassian.oai.validator.restassured.OpenApiValidationFilter;
 import com.igse.dto.login.LoginRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -27,10 +30,16 @@ import static org.hamcrest.Matchers.notNullValue;
 class LoginBBTest {
     private static final String VALID_CUSTOMER_ID = "talhaansari61@gmail.com";
     private static final String BASE_URI = "http://localhost";
-    private static final String BASE_PATH = "/igse/auth";
+    private static final String BASE_PATH = "/igse-auth";
     private static final int PORT = 6000;
     private static final String LOGIN_PATH_V1 = "/v1/login";
-     HttpHeaders httpHeaders;
+
+    private static final OpenApiValidationFilter OPEN_API_VALIDATION_FILTER=
+            new OpenApiValidationFilter(OpenApiInteractionValidator.createFor("src/main/api/loginAuth_v1.swagger.yml")
+                    .withBasePathOverride(BASE_PATH)
+                    .withLevelResolver(LevelResolverFactory.withAdditionalPropertiesIgnored())
+                    .build());
+    HttpHeaders httpHeaders;
 
     @AfterEach
     void tearDown() throws Exception {
@@ -44,6 +53,7 @@ class LoginBBTest {
 
     @BeforeEach
     void setUp() throws Exception {
+
         RestAssured.baseURI = BASE_URI;
         RestAssured.basePath = BASE_PATH;
         RestAssured.port = PORT;
@@ -65,6 +75,7 @@ class LoginBBTest {
         given()
                 .log()
                 .all()
+                .filter(OPEN_API_VALIDATION_FILTER)
                 .headers(httpHeaders)
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
@@ -87,6 +98,7 @@ class LoginBBTest {
         given()
                 .log()
                 .all()
+                .filter(OPEN_API_VALIDATION_FILTER)
                 .headers(httpHeaders)
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
