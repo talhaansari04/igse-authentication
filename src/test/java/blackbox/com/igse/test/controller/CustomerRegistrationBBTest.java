@@ -26,7 +26,7 @@ import static org.hamcrest.Matchers.notNullValue;
 public class CustomerRegistrationBBTest {
     private static final String VALID_CUSTOMER_ID = "talhaansari61@gmail.com";
     private static final String BASE_URI = "http://localhost";
-    private static final String BASE_PATH = "/igse/auth";
+    private static final String BASE_PATH = "/igse-auth";
     private static final int PORT = 6000;
     private static final String REGISTRATION_PATH_V1 = "v2/register";
     HttpHeaders httpHeaders;
