@@ -1,5 +1,6 @@
 package component.com.igse.test.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.igse.dto.UserResponse;
 import com.igse.dto.registration.UserRegRequest;
 import com.igse.service.AdminService;
@@ -9,10 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
-
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ComponentTestWithStub
 @Sql(scripts = {"/sql/cleanup_dashboard_admin.sql", "/sql/dashboard_admin.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)

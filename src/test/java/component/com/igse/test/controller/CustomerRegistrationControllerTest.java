@@ -1,5 +1,8 @@
 package component.com.igse.test.controller;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -16,23 +19,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import java.util.UUID;
-
-import static com.igse.common.IgseConstants.CORRELATION_ID;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ComponentTestWithStub
 @Sql(scripts = {"/sql/cleanup_registration_status.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(scripts = "/sql/cleanup_registration_status.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
- class CustomerRegistrationControllerTest {
+class CustomerRegistrationControllerTest {
     private static final String LOGIN_PATH_V1 = "/v1/register";
 
     @Autowired
     private CustomerRegistration customerRegistration;
-
-
 
     @Autowired
     private GlobalExceptionHandler globalExceptionHandler;
@@ -51,7 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
 
-
     @Test
     void customer_registrationV1_200Success() throws Exception {
 
@@ -62,7 +57,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                         .content(REGISTRATION_REQ)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
-
 
 
     }

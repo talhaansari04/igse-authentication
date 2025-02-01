@@ -4,24 +4,26 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
+@Slf4j
 @Configuration
 public class StubServerConfig {
     @Bean
-    public WireMockServer core(){
-        System.out.println("Igse-Core Stub starting ...");
-        return createServer(9701,"src/test/resources/stubdata/locations/core");
+    public WireMockServer core() {
+        log.info("Igse-Core Stub starting ...");
+        return createServer(9701, "src/test/resources/stubdata/locations/core");
     }
 
     @Bean
-    public WireMockServer payment(){
-        return createServer(9702,"src/test/resources/stubdata/locations/payment");
+    public WireMockServer payment() {
+        return createServer(9702, "src/test/resources/stubdata/locations/payment");
     }
 
-    public WireMockServer createServer(int port, String fileMapping){
+    public WireMockServer createServer(int port, String fileMapping) {
 
         return new WireMockServer(WireMockConfiguration.options()
                 .jettyStopTimeout(100L)

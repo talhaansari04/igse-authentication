@@ -1,5 +1,11 @@
 package component.com.igse.test.controller;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igse.controller.LoginAuthentication;
 import com.igse.dto.login.LoginRequest;
@@ -14,15 +20,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import java.util.UUID;
-
-import static com.igse.common.IgseConstants.CORRELATION_ID;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ComponentTestWithStub
 @Sql(scripts = {"/sql/cleanup_dashboard_admin.sql", "/sql/dashboard_admin.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)

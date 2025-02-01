@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -29,7 +28,7 @@ public class StubServerExtension implements BeforeEachCallback, AfterEachCallbac
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-          stubServerAction(context, WireMockServer::stop);
+        stubServerAction(context, WireMockServer::stop);
     }
 
     @Override

@@ -7,7 +7,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
-
 import java.security.Security;
 
 @Configuration
@@ -17,7 +16,6 @@ public class StubApplication {
 
     public StubApplication(StubServerRunner stubServerRunner) {
         this.stubServerRunner = stubServerRunner;
-
     }
 
     static {
@@ -31,7 +29,7 @@ public class StubApplication {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         stubServerRunner.start();
     }
 

@@ -1,5 +1,9 @@
 package blackbox.com.igse.test.controller;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import blackbox.com.igse.test.BlackBoxTest;
 import com.atlassian.oai.validator.OpenApiInteractionValidator;
 import com.atlassian.oai.validator.report.LevelResolverFactory;
@@ -15,15 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.UUID;
-
-import static com.igse.common.IgseConstants.CORRELATION_ID;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 
 
 @BlackBoxTest
@@ -34,7 +32,7 @@ class LoginBBTest {
     private static final int PORT = 6000;
     private static final String LOGIN_PATH_V1 = "/v1/login";
 
-    private static final OpenApiValidationFilter OPEN_API_VALIDATION_FILTER=
+    private static final OpenApiValidationFilter OPEN_API_VALIDATION_FILTER =
             new OpenApiValidationFilter(OpenApiInteractionValidator.createFor("src/main/api/loginAuth_v1.swagger.yml")
                     .withBasePathOverride(BASE_PATH)
                     .withLevelResolver(LevelResolverFactory.withAdditionalPropertiesIgnored())

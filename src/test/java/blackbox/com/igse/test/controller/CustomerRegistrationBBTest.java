@@ -1,7 +1,8 @@
 package blackbox.com.igse.test.controller;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static io.restassured.RestAssured.given;
 import blackbox.com.igse.test.BlackBoxTest;
-import com.igse.repository.db.RegistrationStatusRepo;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
@@ -12,18 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.UUID;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
 @BlackBoxTest
-public class CustomerRegistrationBBTest {
+class CustomerRegistrationBBTest {
     private static final String VALID_CUSTOMER_ID = "talhaansari61@gmail.com";
     private static final String BASE_URI = "http://localhost";
     private static final String BASE_PATH = "/igse-auth";
@@ -42,7 +37,6 @@ public class CustomerRegistrationBBTest {
     DataSource dataSource;
 
 
-
     @BeforeEach
     void setUp() throws Exception {
         RestAssured.baseURI = BASE_URI;
@@ -57,7 +51,7 @@ public class CustomerRegistrationBBTest {
     }
 
     @Test
-    void customer_registrationV1_201success(){
+    void customer_registrationV1_201success() {
         httpHeaders.add(CORRELATION_ID, UUID.randomUUID().toString());
         given()
                 .log()

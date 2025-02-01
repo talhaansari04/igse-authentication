@@ -30,12 +30,15 @@ public class CustomerQuery {
     private final AdminService adminService;
 
     @GetMapping(path = "/all")
-    public final ResponseEntity<IgseResponse<List<UserMaster>>> allCustomerList(@RequestParam(value = "offset") int offset, @RequestParam(value = "page", defaultValue = "10") int pageSize, @RequestParam(name = "role", defaultValue = "All") String role, @RequestHeader(IgseConstants.CORRELATION_ID) String correlationId) {
+    public final ResponseEntity<IgseResponse<List<UserMaster>>> allCustomerList(
+            @RequestParam(value = "offset") int offset,
+            @RequestParam(value = "page", defaultValue = "10") int pageSize,
+            @RequestParam(name = "role", defaultValue = "All") String role,
+            @RequestHeader(IgseConstants.CORRELATION_ID) String correlationId) {
         MDC.put(CORRELATION_ID, correlationId);
         IgseResponse<List<UserMaster>> igseResponse = new IgseResponse<>();
         igseResponse.setData(adminService.getAllCustomerRecord(offset, pageSize, role));
         igseResponse.setStatus(HttpStatus.OK.value());
-        System.out.println("success");
         MDC.clear();
         return ResponseEntity.status(HttpStatus.OK).body(igseResponse);
     }
