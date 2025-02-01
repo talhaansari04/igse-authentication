@@ -22,9 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -37,16 +35,16 @@ public class AuthService {
     private final JwtService jwt;
     private final PaymentRepo paymentRepo;
 
-    public UserResponse v1Login(LoginRequest loginRequest,String correlationId) {
+    public UserResponse v1Login(LoginRequest loginRequest, String correlationId) {
         UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId())
                 .orElseThrow(() -> new UserException(HttpStatus.NOT_FOUND.value(), INVALID_USER));
-        UserResponse response = getUserDetails(loginRequest, userDetails,correlationId);
+        UserResponse response = getUserDetails(loginRequest, userDetails, correlationId);
         MDC.clear();
         return response;
 
     }
 
-    public UserResponse v2Login(LoginRequest loginRequest,String correlationId) {
+    public UserResponse v2Login(LoginRequest loginRequest, String correlationId) {
         UserMaster userDetails = userMasterRepository.findAllByUserName(loginRequest.getUserName())
                 .orElseThrow(() -> new UserException(HttpStatus.NOT_FOUND.value(), INVALID_USER));
         UserResponse userResponse = getUserDetails(loginRequest, userDetails, correlationId);
@@ -55,30 +53,31 @@ public class AuthService {
     }
 
 
-    private UserResponse getUserDetails(LoginRequest loginRequest, UserMaster userDetails,String correlationId) throws UserException {
-            if (validateUser(userDetails, loginRequest)) {
-                UserResponse userResponse = new UserResponse();
-                String token = jwt.generateToken(userDetails.getCustomerId(), userDetails.getRole());
-                userResponse.setToken(token);
-                BeanUtils.copyProperties(userDetails, userResponse);
-                userDetails.setLastLogin(LocalDate.now());
-                userMasterRepository.save(userDetails);
-                WalletInfoDTO walletInfo = paymentRepo.walletDetails(userDetails.getCustomerId(),token,correlationId);
-                userResponse.setWalletInfo(walletInfo);
-                userResponse.setDemographicDetails(mapDemographicDetails(userDetails));
-                return userResponse;
-            } else {
-                throw new UserException(HttpStatus.NOT_FOUND.value(), "Invalid Credential");
-            }
+    private UserResponse getUserDetails(LoginRequest loginRequest, UserMaster userDetails, String correlationId) throws UserException {
+        if (validateUser(userDetails, loginRequest)) {
+            UserResponse userResponse = new UserResponse();
+            String token = jwt.generateToken(userDetails.getCustomerId(), userDetails.getRole());
+            userResponse.setToken(token);
+            BeanUtils.copyProperties(userDetails, userResponse);
+            userDetails.setLastLogin(LocalDate.now());
+            userMasterRepository.save(userDetails);
+            WalletInfoDTO walletInfo = paymentRepo.walletDetails(userDetails.getCustomerId(), token, correlationId);
+            userResponse.setWalletInfo(walletInfo);
+            userResponse.setDemographicDetails(mapDemographicDetails(userDetails));
+            return userResponse;
+        } else {
+            throw new UserException(HttpStatus.NOT_FOUND.value(), "Invalid Credential");
+        }
     }
-    private DemographicDetails mapDemographicDetails(UserMaster userDetails){
+
+    private DemographicDetails mapDemographicDetails(UserMaster userDetails) {
         DemographicDetailsEntity details = userDetails.getDemographicDetails();
         Address address = Address.builder()
                 .area(details.getAddressArea())
                 .flatNo(details.getAddressFlatNo())
                 .pinCode(details.getAddressPinCode())
                 .landmark(details.getAddressLandmark()).build();
-      return DemographicDetails.builder()
+        return DemographicDetails.builder()
                 .numberOfBedRoom(details.getNumberOfBedRoom())
                 .propertyType(details.getPropertyType())
                 .flatRegistrationNo(details.getFlatRegistrationNo())

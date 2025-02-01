@@ -1,6 +1,7 @@
 package com.igse.controller;
 
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.igse.dto.UserResponse;
 import com.igse.dto.login.LoginRequest;
@@ -15,13 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.UUID;
 import java.util.concurrent.Callable;
-
-import static com.igse.common.IgseConstants.CORRELATION_ID;
 
 
 @Slf4j
@@ -48,7 +45,7 @@ public class LoginAuthentication {
             @RequestBody @Validated(value = LoginVersion.LoginV2.class)
             @JsonView(value = LoginVersion.LoginV2.class) LoginRequest loginRequest) {
         String correlationId = String.format("%s-%s", getClass().getSimpleName(), UUID.randomUUID());
-        return ResponseEntity.status(HttpStatus.OK).body(authService.v2Login(loginRequest,correlationId));
+        return ResponseEntity.status(HttpStatus.OK).body(authService.v2Login(loginRequest, correlationId));
     }
 
 }

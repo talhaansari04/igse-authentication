@@ -1,5 +1,6 @@
 package com.igse.event;
 
+import static com.igse.common.IgseConstants.SUCCESS;
 import com.igse.common.IgseConstants;
 import com.igse.dto.WalletPayloadKafka;
 import com.igse.entity.RegistrationStatusEntity;
@@ -10,11 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
-
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
-import static com.igse.common.IgseConstants.SUCCESS;
 
 @Slf4j
 @Component
@@ -27,7 +25,7 @@ public class WalletKafkaProducer {
 
     private final RegistrationStatusRepo statusRepo;
 
-   // @EventListener
+    // @EventListener
     public void triggerWalletEvent(WalletPayloadKafka wallet) {
         Optional<RegistrationStatusEntity> registrationStatus = Optional.empty();
         log.info("message=\"Wallet Event Received of customerId {}...\"", wallet.getCustomerId());
@@ -55,11 +53,11 @@ public class WalletKafkaProducer {
     private void handleFailedEvent(RegistrationStatusEntity registrationStatus) {
         registrationStatus.setIsWalletCreated(IgseConstants.PENDING);
         statusRepo.save(registrationStatus);
-        log.info("message=\"Wallet creation failed {}",registrationStatus.getCustomerId());
+        log.info("message=\"Wallet creation failed {}", registrationStatus.getCustomerId());
     }
 
-    private void updateSuccessStatus(RegistrationStatusEntity customer){
-        statusRepo.updateWalletStatus(customer.getCustomerId(),SUCCESS);
-        log.info("message=\"Wallet created successfully for {}",customer);
+    private void updateSuccessStatus(RegistrationStatusEntity customer) {
+        statusRepo.updateWalletStatus(customer.getCustomerId(), SUCCESS);
+        log.info("message=\"Wallet created successfully for {}", customer);
     }
 }

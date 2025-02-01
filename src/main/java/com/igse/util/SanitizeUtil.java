@@ -2,9 +2,7 @@ package com.igse.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-
 import java.util.regex.Pattern;
-
 
 public class SanitizeUtil {
     private SanitizeUtil() {

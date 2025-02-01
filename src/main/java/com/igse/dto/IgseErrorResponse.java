@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class IgseErrorResponse <T>{
+public class IgseErrorResponse<T> {
     private Integer status;
     private T error;
 }

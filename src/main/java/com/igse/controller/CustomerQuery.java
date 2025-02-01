@@ -1,5 +1,6 @@
 package com.igse.controller;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
 import com.igse.common.IgseConstants;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.UserResponse;
@@ -18,10 +19,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
-
-import static com.igse.common.IgseConstants.CORRELATION_ID;
 
 @Slf4j
 @RestController
@@ -32,28 +30,21 @@ public class CustomerQuery {
     private final AdminService adminService;
 
     @GetMapping(path = "/all")
-    public final ResponseEntity<IgseResponse<List<UserMaster>>> allCustomerList(
-            @RequestParam(value = "offset") int offset,
-            @RequestParam(value = "page", defaultValue = "10") int pageSize,
-            @RequestParam(name = "role", defaultValue = "All") String role,
-            @RequestHeader(IgseConstants.CORRELATION_ID) String correlationId) {
+    public final ResponseEntity<IgseResponse<List<UserMaster>>> allCustomerList(@RequestParam(value = "offset") int offset, @RequestParam(value = "page", defaultValue = "10") int pageSize, @RequestParam(name = "role", defaultValue = "All") String role, @RequestHeader(IgseConstants.CORRELATION_ID) String correlationId) {
         MDC.put(CORRELATION_ID, correlationId);
         IgseResponse<List<UserMaster>> igseResponse = new IgseResponse<>();
         igseResponse.setData(adminService.getAllCustomerRecord(offset, pageSize, role));
         igseResponse.setStatus(HttpStatus.OK.value());
+        System.out.println("success");
         MDC.clear();
         return ResponseEntity.status(HttpStatus.OK).body(igseResponse);
     }
 
     @GetMapping(path = "/user/info/{customerId}")
-    public ResponseEntity<IgseResponse<UserResponse>> dashboardData(
-            @PathVariable String customerId,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-            @RequestHeader(IgseConstants.CORRELATION_ID) String correlationId
-            ) {
+    public ResponseEntity<IgseResponse<UserResponse>> dashboardData(@PathVariable String customerId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestHeader(IgseConstants.CORRELATION_ID) String correlationId) {
         MDC.put(CORRELATION_ID, correlationId);
         IgseResponse<UserResponse> igseResponse = new IgseResponse<>();
-        igseResponse.setData(adminService.dashBoardData(customerId, token.substring(7),correlationId));
+        igseResponse.setData(adminService.dashBoardData(customerId, token.substring(7), correlationId));
         igseResponse.setStatus(HttpStatus.OK.value());
         MDC.clear();
         return ResponseEntity.status(HttpStatus.OK).body(igseResponse);

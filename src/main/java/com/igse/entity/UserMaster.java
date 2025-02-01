@@ -13,8 +13,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
-
-
 import java.time.LocalDate;
 
 @Data
@@ -25,19 +23,19 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserMaster {
 
-	@Id
-	private String customerId;
-	private String role;
-	private String userName;
-	@JsonIgnore
-	private String pass;
+    @Id
+    private String customerId;
+    private String role;
+    private String userName;
+    @JsonIgnore
+    private String pass;
 
-	@JsonIgnore
-	@UpdateTimestamp
-	private LocalDate lastLogin;
+    @JsonIgnore
+    @UpdateTimestamp
+    private LocalDate lastLogin;
 
     @OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "customerId")
-	@JsonManagedReference
-	private DemographicDetailsEntity demographicDetails;
+    @JoinColumn(name = "customerId")
+    @JsonManagedReference
+    private DemographicDetailsEntity demographicDetails;
 }

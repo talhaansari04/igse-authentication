@@ -30,5 +30,4 @@ public class UnitPriceDTO {
     @NotNull(message = "Standing charge shouldn't blank")
     @JsonProperty("standingChargePerDay")
     private Double standingChargePerDay;
-
 }

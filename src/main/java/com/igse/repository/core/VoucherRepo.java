@@ -1,5 +1,7 @@
 package com.igse.repository.core;
 
+import static com.igse.common.IgseConstants.BEARER;
+import static com.igse.common.IgseConstants.CORRELATION_ID;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.VoucherResponse;
 import com.igse.service.JwtService;
@@ -12,11 +14,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import java.util.UUID;
-
-import static com.igse.common.IgseConstants.BEARER;
-import static com.igse.common.IgseConstants.CORRELATION_ID;
 
 
 @Slf4j
@@ -38,11 +36,11 @@ public class VoucherRepo {
 
     public IgseResponse<VoucherResponse> getVoucherDetail(String voucherCode) {
         /*Need to fix*/
-        String corelationId= UUID.randomUUID().toString();
+        String corelationId = UUID.randomUUID().toString();
         String token = jwtService.getAdminToken();
         /*Note Please handle excetion incase 404*/
         return webClient.get()
-                .uri(basePath + voucherDetailPath+voucherCode)
+                .uri(basePath + voucherDetailPath + voucherCode)
                 .header(CORRELATION_ID, corelationId)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)

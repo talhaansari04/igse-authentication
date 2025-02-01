@@ -1,5 +1,7 @@
 package com.igse.scheduler;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static com.igse.common.IgseConstants.OUT_OF_BOX_TASK_EXECUTOR;
 import com.igse.service.RegistrationEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,11 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.util.UUID;
-
-import static com.igse.common.IgseConstants.CORRELATION_ID;
-import static com.igse.common.IgseConstants.OUT_OF_BOX_TASK_EXECUTOR;
 
 
 @Slf4j
@@ -34,8 +32,8 @@ public class RegistrationPoller {
 
             log.info("message=\"Schedule start\", JobName=\"RegistrationOutBox\"");
             eventService.processPendingRecords(correlationId);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 

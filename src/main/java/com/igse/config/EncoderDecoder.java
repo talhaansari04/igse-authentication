@@ -3,7 +3,6 @@ package com.igse.config;
 import com.igse.exception.UserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +20,7 @@ public class EncoderDecoder {
         }
         return bytesToHex2(hash);
     }
+
     private String bytesToHex2(byte[] hash) {
         final StringBuilder builder = new StringBuilder();
         for (byte b : hash) {

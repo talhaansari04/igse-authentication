@@ -1,5 +1,6 @@
 package com.igse.repository.core;
 
+import static com.igse.common.IgseConstants.BEARER;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.MeterReadingDTO;
 import com.igse.dto.UnitPriceDTO;
@@ -15,10 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
-
 import java.time.Duration;
-
-import static com.igse.common.IgseConstants.BEARER;
 
 
 @Slf4j
@@ -72,7 +70,7 @@ public class MeterRepo {
         }
     }
 
-   @CircuitBreaker(name = "igseCoreMeter", fallbackMethod = "notFound")
+    @CircuitBreaker(name = "igseCoreMeter", fallbackMethod = "notFound")
     public IgseResponse<UnitPriceDTO> getFixedMeterDetails() {
         /*Note Please handle excetion incase 404*/
         String token = jwtService.getAdminToken();
@@ -81,24 +79,25 @@ public class MeterRepo {
                     .uri(basePath + meterDetailsPath)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, BEARER + token)
-                    .header("X-Correlation-Id","testvdfdfd")
+                    .header("X-Correlation-Id", "testvdfdfd")
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<IgseResponse<UnitPriceDTO>>() {
                     })
                     .retryWhen(Retry
                             .fixedDelay(3, Duration.ofSeconds(3))
-                            .doAfterRetry(x -> log.info("FixedMeterDetails retry {} path {}", x.totalRetries(),basePath+meterDetailsPath
+                            .doAfterRetry(x -> log.info("FixedMeterDetails retry {} path {}", x.totalRetries(), basePath + meterDetailsPath
 
-                    )))
+                            )))
                     .block();
 
         } finally {
             log.info("Executed");
         }
     }
-    public IgseResponse<UnitPriceDTO> notFound(Exception e){
-        log.info("Hystrix fall back-------{}",e.getMessage());
-        IgseResponse<UnitPriceDTO> response=new IgseResponse<>();
+
+    public IgseResponse<UnitPriceDTO> notFound(Exception e) {
+        log.info("Hystrix fall back-------{}", e.getMessage());
+        IgseResponse<UnitPriceDTO> response = new IgseResponse<>();
         response.setData(UnitPriceDTO.builder().build());
         return response;
     }

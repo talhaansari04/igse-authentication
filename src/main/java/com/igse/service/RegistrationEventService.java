@@ -1,5 +1,10 @@
 package com.igse.service;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static com.igse.common.IgseConstants.PAID;
+import static com.igse.common.IgseConstants.PENDING;
+import static com.igse.common.IgseConstants.SUCCESS;
+import static com.igse.common.IgseConstants.USED;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igse.dto.FilterableRegContext;
 import com.igse.dto.MeterReadingDTO;
@@ -18,16 +23,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
-import static com.igse.common.IgseConstants.CORRELATION_ID;
-import static com.igse.common.IgseConstants.PAID;
-import static com.igse.common.IgseConstants.PENDING;
-import static com.igse.common.IgseConstants.SUCCESS;
-import static com.igse.common.IgseConstants.USED;
 
 @Slf4j
 @Service

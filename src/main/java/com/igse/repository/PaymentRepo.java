@@ -1,5 +1,7 @@
 package com.igse.repository;
 
+import static com.igse.common.IgseConstants.BEARER;
+import static com.igse.common.IgseConstants.CORRELATION_ID;
 import com.igse.dto.WalletInfoDTO;
 import com.igse.exception.UserException;
 import com.igse.repository.core.CoreError;
@@ -16,12 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.util.retry.Retry;
-
 import java.time.Duration;
 import java.util.UUID;
-
-import static com.igse.common.IgseConstants.BEARER;
-import static com.igse.common.IgseConstants.CORRELATION_ID;
 
 
 @Slf4j

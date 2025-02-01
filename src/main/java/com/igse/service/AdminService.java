@@ -1,19 +1,18 @@
 package com.igse.service;
 
+import com.igse.common.IgseConstants;
 import com.igse.dto.UserResponse;
 import com.igse.dto.WalletInfoDTO;
 import com.igse.entity.UserMaster;
 import com.igse.exception.UserException;
 import com.igse.repository.PaymentRepo;
 import com.igse.repository.db.UserMasterRepository;
-import com.igse.common.IgseConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -28,12 +27,12 @@ public class AdminService {
         return repository.findAll();
     }
 
-    public UserResponse dashBoardData(String customerId,String token,String correlationId) {
+    public UserResponse dashBoardData(String customerId, String token, String correlationId) {
         Optional<UserMaster> details = repository.findById(customerId);
         if (details.isPresent()) {
             UserResponse response = new UserResponse();
             BeanUtils.copyProperties(details.get(), response);
-            WalletInfoDTO walletInfo = paymentRepo.walletDetails(customerId,token,correlationId);
+            WalletInfoDTO walletInfo = paymentRepo.walletDetails(customerId, token, correlationId);
             response.setWalletInfo(walletInfo);
             return response;
         } else {
@@ -41,13 +40,13 @@ public class AdminService {
         }
     }
 
-    public List<UserMaster> getAllCustomerRecord(int offSet, int pageSize,String role) {
+    public List<UserMaster> getAllCustomerRecord(int offSet, int pageSize, String role) {
         PageRequest pageReq = PageRequest.of(offSet, pageSize);
         if (IgseConstants.Role.ADMIN.equalsIgnoreCase(role)) {
             return repository.findAllByRole(role, pageReq);
-        } else if (IgseConstants.Role.USER.equalsIgnoreCase(role)){
+        } else if (IgseConstants.Role.USER.equalsIgnoreCase(role)) {
             return repository.findAllByRole(role, pageReq);
-        }else {
+        } else {
             return repository.findAll(pageReq).getContent();
         }
     }

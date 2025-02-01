@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class KafkaConsumerConfig {
         prop.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         prop.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, String.class);
         prop.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, String.class);
-       /* prop.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);*/
+        /* prop.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);*/
         return new DefaultKafkaConsumerFactory<>(prop);
     }
 }

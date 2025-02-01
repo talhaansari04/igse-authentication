@@ -16,9 +16,9 @@ import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-
 import java.util.HashMap;
 import java.util.Map;
+
 @EnableKafka
 @Configuration
 @ConditionalOnProperty(prefix = "service.kafka", value = "enable", havingValue = "true")
@@ -31,6 +31,7 @@ public class KafkaProducerConfig {
 
     @Value("${service.kafka.wallet.topic}")
     private String walletTopic;
+
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> prop = new HashMap<>();
@@ -58,6 +59,7 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String, WalletPayloadKafka> kafkaWalletTemplate() {
         return new KafkaTemplate<>(producerWalletFactory());
     }
+
     @Bean
     public KafkaAdmin admin() {
         Map<String, Object> configs = new HashMap<>();
