@@ -2,6 +2,7 @@ package com.igse.scheduler;
 
 import static com.igse.common.IgseConstants.CORRELATION_ID;
 import static com.igse.common.IgseConstants.OUT_OF_BOX_TASK_EXECUTOR;
+import com.igse.config.MeterConfig;
 import com.igse.service.RegistrationEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @ConditionalOnProperty(prefix = "poller.outOfBox", value = "enable", havingValue = "true")
 public class RegistrationPoller {
     private final RegistrationEventService eventService;
-
+    private final MeterConfig meterConfig;
 
     @Async(OUT_OF_BOX_TASK_EXECUTOR)
     @Scheduled(cron = "${poller.outOfBox.cron}")
@@ -31,9 +32,12 @@ public class RegistrationPoller {
             MDC.put(CORRELATION_ID, OUT_OF_BOX_TASK_EXECUTOR + "-" + correlationId);
 
             log.info("message=\"Schedule start\", JobName=\"RegistrationOutBox\"");
+            log.info("message=\"MeterPrice {}\", JobName=\"RegistrationOutBox\"", meterConfig);
             eventService.processPendingRecords(correlationId);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error("message=\"Scheduler exception occur\", JobName=\"RegistrationOutBox {}\"", e.getMessage(), e);
+        } finally {
+            MDC.clear();
         }
     }
 
