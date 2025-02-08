@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-
 @Getter
 @Setter
 @Builder
@@ -24,7 +23,7 @@ public class LoginRequest {
     private String userName;
 
     @JsonView(value = {LoginVersion.LoginV1.class, LoginVersion.LoginV2.class})
-    @Size(min = 4, max = 20, message = "Password length between 4 to 20",groups = {LoginVersion.LoginV1.class,
+    @Size(min = 4, max = 20, message = "Password length between 4 to 20", groups = {LoginVersion.LoginV1.class,
             LoginVersion.LoginV2.class})
     @NotNull(message = "Password should not be empty", groups = {LoginVersion.LoginV1.class,
             LoginVersion.LoginV2.class})
@@ -32,7 +31,7 @@ public class LoginRequest {
 
     @JsonView(value = LoginVersion.LoginV1.class)
     @NotNull(message = "Email Id should not be empty", groups = LoginVersion.LoginV1.class)
-    @Email(message = "Invalid email id" , regexp = ".+@.+\\..+", groups = LoginVersion.LoginV1.class)
+    @Email(message = "Invalid email id", regexp = ".+@.+\\..+", groups = LoginVersion.LoginV1.class)
     private String customerId;
 
 }

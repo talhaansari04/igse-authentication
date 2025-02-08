@@ -16,6 +16,7 @@ public class WebClientConfig {
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory();
         factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
         ConnectionProvider provider = ConnectionProvider.builder("fixed")
+                .name("Custom-Webclient")
                 .maxConnections(100)
                 .maxIdleTime(Duration.ofSeconds(20))
                 .maxLifeTime(Duration.ofSeconds(60))

@@ -2,7 +2,6 @@ package com.igse.config;
 
 import static com.igse.util.ErrorCode.INVALID_CREDENTIAL;
 import com.igse.exception.UserException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
