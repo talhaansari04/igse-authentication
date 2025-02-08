@@ -2,6 +2,10 @@ package com.igse.service;
 
 import static com.igse.common.IgseConstants.PENDING;
 import static com.igse.common.IgseConstants.USED;
+import static com.igse.util.ErrorCode.EVC_COUPON_INVALID;
+import static com.igse.util.ErrorCode.EVC_COUPON_USED;
+import static com.igse.util.ErrorCode.USER_ALREADY_EXIST;
+import static com.igse.util.ErrorCode.USER_NOT_FOUND;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igse.common.IgseConstants;
 import com.igse.config.EncoderDecoder;
@@ -20,7 +24,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -40,8 +43,8 @@ public class CustomerService {
         if (customerDetails.isPresent()) {
             UserMaster details = customerDetails.get();
             if (details.getCustomerId().equalsIgnoreCase(userRegRequest.getCustomerId())) {
-                throw new UserException(HttpStatus.ALREADY_REPORTED.value(),
-                        "Customer already exist");
+                throw new UserException(USER_ALREADY_EXIST.getErrorCode(),
+                        USER_ALREADY_EXIST.getMessage());
             }
         }
         log.info("message=\"New customer registration process start ... {}",
@@ -90,19 +93,19 @@ public class CustomerService {
         VoucherResponse voucherDetails = Optional
                 .of(voucherRepo.getVoucherDetail(userRegRequest.getVoucherCode())
                         .getData())
-                .orElseThrow(() -> new UserException(HttpStatus.ALREADY_REPORTED.value(),
-                        "Invalid EVC code"));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getErrorCode(),USER_NOT_FOUND.getMessage()));
+
         if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegRequest.getVoucherCode())) {
             if (voucherDetails.getStatus().equals(USED)) {
                 log.info("message=\"Voucher validation failed for {}",
                         userRegRequest.getCustomerId());
-                throw new UserException(HttpStatus.ALREADY_REPORTED.value(),
-                        "EVC code already used");
+                throw new UserException(EVC_COUPON_USED.getErrorCode(),
+                        EVC_COUPON_USED.getMessage());
             } else {
                 return voucherDetails;
             }
         } else {
-            throw new UserException(HttpStatus.ALREADY_REPORTED.value(), "Invalid EVC code");
+            throw new UserException(EVC_COUPON_INVALID.getErrorCode(), EVC_COUPON_INVALID.getMessage());
         }
     }
 }

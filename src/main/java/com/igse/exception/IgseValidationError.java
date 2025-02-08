@@ -1,18 +1,17 @@
 package com.igse.exception;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserException extends RuntimeException {
-    private String errorCode;
+public class IgseValidationError<T> {
+    private int status;
     private String message;
+    private List<T> errors;
 }

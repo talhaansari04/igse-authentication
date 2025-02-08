@@ -1,53 +1,81 @@
 package com.igse.exception;
 
-import com.igse.common.IgseConstants;
+import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Value("${services.kafka.regisTopics}")
     private String topic;
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatusCode status, WebRequest request) {
+        log.error("Validation error header {} statusCode {} request {} ",headers.getHost(),status.value(),request.getContextPath());
+        List<Object> validationErrors = getObjects(ex);
+        IgseValidationError<Object> validationFailed = IgseValidationError.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Validation Failed")
+                .errors(validationErrors)
+                .build();
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationFailed);
+    }
+
+    private static List<Object> getObjects(MethodArgumentNotValidException ex) {
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        List<Object> validationErrors = new ArrayList<>(fieldErrors.size());
+        fieldErrors.forEach(fieldError ->
+                {
+                    ValidationError validationError = ValidationError.builder()
+                            .field(fieldError.getField())
+                            .message(fieldError.getDefaultMessage()).build();
+                    validationErrors.add(validationError);
+                }
+        );
+        return validationErrors;
+    }
+
     @ExceptionHandler(Exception.class)
-    public CustomErrorResponse validateCustom(Exception ex) {
-        CustomErrorResponse errors = new CustomErrorResponse();
-        if (ex instanceof MethodArgumentNotValidException) {
-            MethodArgumentNotValidException cause = (MethodArgumentNotValidException) ex;
-            cause.getBindingResult().getFieldErrors().forEach(e ->
-                    {
-                        errors.setMessage(e.getDefaultMessage());
-                        errors.setStatus(HttpStatus.BAD_REQUEST.value());
-                    }
-            );
-        } else if (ex instanceof UserException) {
-            UserException userException = (UserException) ex;
-            errors.setMessage(userException.getMessage());
-            errors.setStatus(userException.getStatus());
-        } else if (ex instanceof WebClientRequestException) {
-            WebClientRequestException userException = (WebClientRequestException) ex;
-            errors.setMessage(userException.getMessage());
-            errors.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        } else {
-            errors.setMessage(IgseConstants.GENERAL_EXCEPTION);
-            errors.setStatus(HttpStatus.BAD_REQUEST.value());
-        }
-        log.error("{}", ex.getMessage());
+    public ResponseEntity<MicroserviceError> validateCustom(Exception ex) {
+        log.error("General Exception {}", ex.getMessage());
+        MicroserviceError microserviceError = MicroserviceError.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .errorDetails(List.of(ErrorDetails.builder()
+                        .code("0000")
+                        .message(INTERNAL_SERVER_ERROR.reasonPhrase()).build()))
+                .build();
         MDC.clear();
-        return errors;
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(microserviceError);
+    }
+
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<MicroserviceError> microserviceErrorResponseEntity(UserException userException) {
+        MicroserviceError microserviceError = MicroserviceError.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .errorDetails(List.of(ErrorDetails.builder()
+                        .code(userException.getErrorCode())
+                        .message(userException.getMessage()).build()))
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(microserviceError);
     }
 }
