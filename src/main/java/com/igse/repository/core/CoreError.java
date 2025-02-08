@@ -18,7 +18,7 @@ public class CoreError {
         var exception = switch (clientResponse.statusCode().value()) {
             case 400 -> createError("4001", HttpStatus.BAD_REQUEST.getReasonPhrase());
             case 401, 403 -> createError("4002", "auth error");
-            case 404 -> createError("4003", "Wallet "+HttpStatus.NOT_FOUND.getReasonPhrase());
+            case 404 -> createError("4003", "Wallet " + HttpStatus.NOT_FOUND.getReasonPhrase());
             case 500 -> createError("4004", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
             default -> createError("4005", "something went wrong");
         };

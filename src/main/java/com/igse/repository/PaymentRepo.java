@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 import java.time.Duration;
-import java.util.UUID;
 
 
 @Slf4j
@@ -36,16 +35,16 @@ public class PaymentRepo {
 
     @CircuitBreaker(name = "wallet")
     public WalletInfoDTO walletDetails(String customerId, String token, String correlationId) {
-            return webClient.get()
-                    .uri(basePath + walletDetailPath, customerId)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION, BEARER + token)
-                    .header("X-Correlation-Id", correlationId)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::isError, coreError::handleCoreError)
-                    .bodyToMono(WalletInfoDTO.class)
-                    .retryWhen(retryWallet(correlationId))
-                    .block();
+        return webClient.get()
+                .uri(basePath + walletDetailPath, customerId)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, BEARER + token)
+                .header("X-Correlation-Id", correlationId)
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, coreError::handleCoreError)
+                .bodyToMono(WalletInfoDTO.class)
+                .retryWhen(retryWallet(correlationId))
+                .block();
 
     }
 
