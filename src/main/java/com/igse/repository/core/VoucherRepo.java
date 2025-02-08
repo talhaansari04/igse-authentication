@@ -35,23 +35,21 @@ public class VoucherRepo {
 
 
     public IgseResponse<VoucherResponse> getVoucherDetail(String voucherCode) {
-        /*Need to fix*/
-        String corelationId = UUID.randomUUID().toString();
+        String correlationId = UUID.randomUUID().toString();
         String token = jwtService.getAdminToken();
-        /*Note Please handle excetion incase 404*/
         return webClient.get()
                 .uri(basePath + voucherDetailPath + voucherCode)
-                .header(CORRELATION_ID, corelationId)
+                .header(CORRELATION_ID, correlationId)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, coreError::handleCoreError)
                 .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
                 }).block();
     }
 
 
     public void saveSingleDetail(VoucherResponse voucherCode) {
-        /*Note Please handle excetion incase 404*/
         String token = jwtService.getAdminToken();
         webClient.patch()
                 .uri(basePath + saveVoucherPath)
@@ -62,7 +60,6 @@ public class VoucherRepo {
                 .onStatus(HttpStatusCode::isError, coreError::handleCoreError)
                 .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
                 })
-
                 .block();
         log.info("Voucher Save Successfully");
     }

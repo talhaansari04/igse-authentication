@@ -93,18 +93,17 @@ public class CustomerService {
         VoucherResponse voucherDetails = Optional
                 .of(voucherRepo.getVoucherDetail(userRegRequest.getVoucherCode())
                         .getData())
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getErrorCode(),USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getErrorCode(), USER_NOT_FOUND.getMessage()));
 
         if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegRequest.getVoucherCode())) {
             if (voucherDetails.getStatus().equals(USED)) {
-                log.info("message=\"Voucher validation failed for {}",
-                        userRegRequest.getCustomerId());
-                throw new UserException(EVC_COUPON_USED.getErrorCode(),
-                        EVC_COUPON_USED.getMessage());
+                log.info("message=\"Voucher validation failed for {}", userRegRequest.getCustomerId());
+                throw new UserException(EVC_COUPON_USED.getErrorCode(), EVC_COUPON_USED.getMessage());
             } else {
                 return voucherDetails;
             }
         } else {
+            log.info("message=\"Invalid voucher code {}", userRegRequest.getCustomerId());
             throw new UserException(EVC_COUPON_INVALID.getErrorCode(), EVC_COUPON_INVALID.getMessage());
         }
     }

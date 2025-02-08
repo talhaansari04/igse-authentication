@@ -87,7 +87,11 @@ poller:
   outOfBox:
     cron: "0 0/1 * * * ?"
     enable: true
-
+meter:
+  fixed-price:
+    dayReading: 100.00
+    nightReading: 250.00
+    gasReading: 800.00
 
 resilience4j.circuitbreaker:
   instances:

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -44,7 +45,7 @@ public class MeterRepo {
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                 .bodyValue(readingDTO)
                 .retrieve()
-                //.onStatus(HttpStatus::isError, coreError::handleCoreError)
+                .onStatus(HttpStatusCode::isError, coreError::handleCoreError)
                 .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
                 })
                 .block();
@@ -52,7 +53,6 @@ public class MeterRepo {
     }
 
     public void saveMeterPriceDetail(UnitPriceDTO unitPriceDTO) {
-        /*Note Please handle excetion incase 404*/
         String token = jwtService.getAdminToken();
         try {
             webClient.post()
@@ -61,6 +61,7 @@ public class MeterRepo {
                     .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                     .bodyValue(unitPriceDTO)
                     .retrieve()
+                    .onStatus(HttpStatusCode::isError, coreError::handleCoreError)
                     .bodyToMono(new ParameterizedTypeReference<IgseResponse<VoucherResponse>>() {
                     })
                     .block();
@@ -72,7 +73,6 @@ public class MeterRepo {
 
     @CircuitBreaker(name = "igseCoreMeter", fallbackMethod = "notFound")
     public IgseResponse<UnitPriceDTO> getFixedMeterDetails() {
-        /*Note Please handle excetion incase 404*/
         String token = jwtService.getAdminToken();
         try {
             return webClient.get()
@@ -81,15 +81,14 @@ public class MeterRepo {
                     .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                     .header("X-Correlation-Id", "testvdfdfd")
                     .retrieve()
+                    .onStatus(HttpStatusCode::isError, coreError::handleCoreError)
                     .bodyToMono(new ParameterizedTypeReference<IgseResponse<UnitPriceDTO>>() {
                     })
                     .retryWhen(Retry
                             .fixedDelay(3, Duration.ofSeconds(3))
                             .doAfterRetry(x -> log.info("FixedMeterDetails retry {} path {}", x.totalRetries(), basePath + meterDetailsPath
-
                             )))
                     .block();
-
         } finally {
             log.info("Executed");
         }

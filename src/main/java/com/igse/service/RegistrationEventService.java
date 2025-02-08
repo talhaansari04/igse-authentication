@@ -5,7 +5,9 @@ import static com.igse.common.IgseConstants.PAID;
 import static com.igse.common.IgseConstants.PENDING;
 import static com.igse.common.IgseConstants.SUCCESS;
 import static com.igse.common.IgseConstants.USED;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.igse.config.MeterConfig;
 import com.igse.dto.FilterableRegContext;
 import com.igse.dto.MeterReadingDTO;
 import com.igse.dto.VoucherResponse;
@@ -40,6 +42,7 @@ public class RegistrationEventService {
     private final UserMasterRepository masterRepository;
     private final JwtService jwt;
     private final ObjectMapper objectMapper;
+    private final MeterConfig meterConfig;
 
 
     public void processPendingRecords(String correlationId) {
@@ -72,8 +75,8 @@ public class RegistrationEventService {
                 processMeterReading(regContext);
                 processWallet(regContext);
             });
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        } catch (JsonProcessingException e) {
+            log.error("message=\"Unable parse json\", JobName=\"RegistrationOutBox {}\"", e.getMessage());
         }
     }
 
@@ -93,9 +96,9 @@ public class RegistrationEventService {
         log.info("message=\"Meter process start\"");
         if (PENDING.equalsIgnoreCase(regContext.getStatus().getIsMeterDetailSave())) {
             MeterReadingDTO readingDTO = MeterReadingDTO.builder()
-                    .dayReading(100.00)
-                    .nightReading(250.0)
-                    .gasReading(800.00)
+                    .dayReading(meterConfig.getDayReading())
+                    .nightReading(meterConfig.getNightReading())
+                    .gasReading(meterConfig.getGasReading())
                     .submissionDate(LocalDate.now())
                     .billingStatus(PAID)
                     .customerId(regContext.getCustomerId()).build();
