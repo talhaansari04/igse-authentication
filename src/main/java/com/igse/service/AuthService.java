@@ -1,5 +1,7 @@
 package com.igse.service;
 
+import static com.igse.util.ErrorCode.INVALID_CREDENTIAL;
+import static com.igse.util.ErrorCode.USER_NOT_FOUND;
 import com.igse.config.EncoderDecoder;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.UserResponse;
@@ -18,7 +20,6 @@ import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -37,7 +38,7 @@ public class AuthService {
 
     public UserResponse v1Login(LoginRequest loginRequest, String correlationId) {
         UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId())
-                .orElseThrow(() -> new UserException(HttpStatus.NOT_FOUND.value(), INVALID_USER));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getErrorCode(),USER_NOT_FOUND.getMessage()));
         UserResponse response = getUserDetails(loginRequest, userDetails, correlationId);
         MDC.clear();
         return response;
@@ -46,7 +47,7 @@ public class AuthService {
 
     public UserResponse v2Login(LoginRequest loginRequest, String correlationId) {
         UserMaster userDetails = userMasterRepository.findAllByUserName(loginRequest.getUserName())
-                .orElseThrow(() -> new UserException(HttpStatus.NOT_FOUND.value(), INVALID_USER));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getErrorCode(),USER_NOT_FOUND.getMessage()));
         UserResponse userResponse = getUserDetails(loginRequest, userDetails, correlationId);
         MDC.clear();
         return userResponse;
@@ -66,7 +67,7 @@ public class AuthService {
             userResponse.setDemographicDetails(mapDemographicDetails(userDetails));
             return userResponse;
         } else {
-            throw new UserException(HttpStatus.NOT_FOUND.value(), "Invalid Credential");
+            throw new UserException(INVALID_CREDENTIAL.getErrorCode(), INVALID_CREDENTIAL.getMessage());
         }
     }
 

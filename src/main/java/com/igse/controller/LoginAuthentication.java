@@ -33,7 +33,7 @@ public class LoginAuthentication {
     public final Callable<UserResponse> loginAuthV1(
             @RequestBody @Validated(value = LoginVersion.LoginV1.class)
             @JsonView(value = LoginVersion.LoginV1.class) final LoginRequest loginRequest) {
-        String correlationId = String.format("%s-%s", getClass().getSimpleName(), UUID.randomUUID());
+        String correlationId =UUID.randomUUID().toString();
         MDC.put(CORRELATION_ID, correlationId);
         log.info("Login Authentication Start {}", loginRequest.getCustomerId());
         return () -> authService.v1Login(loginRequest, correlationId);

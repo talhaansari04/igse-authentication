@@ -1,5 +1,6 @@
 package com.igse.config;
 
+import static com.igse.util.ErrorCode.INVALID_CREDENTIAL;
 import com.igse.exception.UserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class EncoderDecoder {
             digest = MessageDigest.getInstance("SHA-256");
             hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
-            throw new UserException(HttpStatus.BAD_REQUEST.value(), "Invalid Password");
+            throw new UserException(INVALID_CREDENTIAL.getErrorCode(), INVALID_CREDENTIAL.getMessage());
         }
         return bytesToHex2(hash);
     }

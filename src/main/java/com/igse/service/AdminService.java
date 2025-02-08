@@ -1,5 +1,6 @@
 package com.igse.service;
 
+import static com.igse.util.ErrorCode.USER_INFO_FOUND;
 import com.igse.common.IgseConstants;
 import com.igse.dto.UserResponse;
 import com.igse.dto.WalletInfoDTO;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public class AdminService {
             response.setWalletInfo(walletInfo);
             return response;
         } else {
-            throw new UserException(HttpStatus.NOT_FOUND.value(), "Not Found");
+            throw new UserException(USER_INFO_FOUND.getErrorCode(), USER_INFO_FOUND.getMessage());
         }
     }
 
