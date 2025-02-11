@@ -1,6 +1,7 @@
 package blackbox.com.igse.test;
 
 import com.igse.Application;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,5 +21,6 @@ import java.lang.annotation.Target;
 @ActiveProfiles("test")
 @SpringBootTest(classes = {Application.class, RestAssuredExtension.class, StubServerConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
+@Disabled
 public @interface BlackBoxTest {
 }

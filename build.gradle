@@ -1,6 +1,10 @@
 plugins {
     id 'checkstyle'
-    id 'igse' version '1.0'
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+   // id 'igse' version '1.0'
     id 'com.gorylenko.gradle-git-properties' version '2.4.1'
     id 'com.avast.gradle.docker-compose' version "0.14.2"
     //id 'org.ajoberstar.grgit' version "5.0.0-rc.3"
@@ -90,8 +94,8 @@ dependencies {
 
     implementation 'org.apache.commons:commons-text:1.12.0'
     implementation 'org.apache.commons:commons-lang3'
-
-    implementation 'com.igse:igse-common:1.1'
+/*Need to publish on any repository*/
+    //implementation 'com.igse:igse-common:1.1'
     //implementation 'com.vladmihalcea:hibernate-types-52:2.21.1'
 
     implementation 'org.bouncycastle:bcprov-jdk18on:1.79'
@@ -110,10 +114,10 @@ tasks.withType(Test) {
     useJUnitPlatform()
 }
 
-
-bootJar {
+/*For local JAR*/
+/*bootJar {
     destinationDirectory.set(file("D:\\Project\\buildJars"))
-}
+}*/
 
 bootRun {
     jvmArgs(["-Dspring.output.ansi.enabled=ALWAYS", "-Dspring.profiles.active=dev"])
@@ -153,8 +157,8 @@ dockerCompose {
     dockerComposeStopTimeout = java.time.Duration.ofSeconds(10)
 }
 
-stubRun {
+/*stubRun {
     mainClass = 'stubs.com.ms.igse.authentication.StubApplication'
-}
+}*/
 
 configurations.runtimeClasspath.resolutionStrategy.activateDependencyLocking()

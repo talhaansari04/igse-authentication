@@ -1,6 +1,6 @@
 package com.igse.config;
 
-import com.igse.common.IgseConstants;
+import com.igse.util.IgseConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;

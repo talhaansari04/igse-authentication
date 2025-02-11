@@ -1,7 +1,7 @@
 package com.igse.repository.core;
 
-import static com.igse.common.IgseConstants.BEARER;
-import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static com.igse.util.IgseConstants.BEARER;
+import static com.igse.util.IgseConstants.CORRELATION_ID;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.VoucherResponse;
 import com.igse.service.JwtService;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import java.util.UUID;
 
 
 @Slf4j
@@ -34,8 +33,7 @@ public class VoucherRepo {
     private String saveVoucherPath;
 
 
-    public IgseResponse<VoucherResponse> getVoucherDetail(String voucherCode) {
-        String correlationId = UUID.randomUUID().toString();
+    public IgseResponse<VoucherResponse> getVoucherDetail(String voucherCode, String correlationId) {
         String token = jwtService.getAdminToken();
         return webClient.get()
                 .uri(basePath + voucherDetailPath + voucherCode)
@@ -49,10 +47,11 @@ public class VoucherRepo {
     }
 
 
-    public void saveSingleDetail(VoucherResponse voucherCode) {
+    public void saveSingleDetail(VoucherResponse voucherCode, String correlationId) {
         String token = jwtService.getAdminToken();
         webClient.patch()
                 .uri(basePath + saveVoucherPath)
+                .header(CORRELATION_ID, correlationId)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                 .bodyValue(voucherCode)

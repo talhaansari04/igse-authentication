@@ -1,7 +1,7 @@
 package com.igse.controller;
 
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static com.igse.util.IgseConstants.CORRELATION_ID;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.igse.dto.UserResponse;
 import com.igse.dto.login.LoginRequest;
@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -31,9 +32,9 @@ public class LoginAuthentication {
 
     @PostMapping(path = "v1/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public final Callable<UserResponse> loginAuthV1(
+            @RequestHeader(CORRELATION_ID) String correlationId,
             @RequestBody @Validated(value = LoginVersion.LoginV1.class)
             @JsonView(value = LoginVersion.LoginV1.class) final LoginRequest loginRequest) {
-        String correlationId = UUID.randomUUID().toString();
         MDC.put(CORRELATION_ID, correlationId);
         log.info("Login Authentication Start {}", loginRequest.getCustomerId());
         return () -> authService.v1Login(loginRequest, correlationId);

@@ -1,21 +1,18 @@
 package component.com.igse.test.service;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.igse.common.IgseConstants;
 import com.igse.dto.registration.UserRegRequest;
 import com.igse.entity.RegistrationStatusEntity;
 import com.igse.repository.db.RegistrationStatusRepo;
 import com.igse.service.CustomerService;
+import com.igse.util.IgseConstants;
 import component.com.igse.test.ComponentTestWithStub;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.jdbc.Sql;
 import java.time.Duration;
 import java.util.Optional;
@@ -32,20 +29,20 @@ class CustomerServiceTest {
     private RegistrationStatusRepo registrationStatusRepo;
     @Autowired
     private ObjectMapper objectMapper;
-
-    static HttpHeaders httpHeaders;
+    private static final String CORRELATION_ID = UUID.randomUUID().toString();
+ /*   static HttpHeaders httpHeaders;
 
     @BeforeAll
     static void beforeAll() {
         httpHeaders = new HttpHeaders();
         httpHeaders.add(CORRELATION_ID, UUID.randomUUID().toString());
-    }
+    }*/
 
     @Test
     void customer_registrationV1_success() throws Exception {
         UserRegRequest userRegRequest = objectMapper.readValue(REGISTRATION_REQ, UserRegRequest.class);
 
-        assertDoesNotThrow(() -> customerService.saveUser(userRegRequest));
+        assertDoesNotThrow(() -> customerService.saveUser(userRegRequest,CORRELATION_ID));
         await()
                 .atMost(Duration.ofSeconds(2)).untilAsserted(() -> {
                     Optional<RegistrationStatusEntity> byCustomerId = registrationStatusRepo.findByCustomerId("igseuser61@gmail.com");

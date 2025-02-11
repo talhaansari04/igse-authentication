@@ -5,9 +5,9 @@
 services:
   igse:
     core:
-      endpoint: http://localhost:7000/igse-core
+      endpoint: http://localhost:8080/igse-core
     payment:
-      endpoint: http://localhost:5000/igse-payment
+      endpoint: http://localhost:8080/igse-payment
   kafka:
     regisTopics: v1.dev.regi
     groupId: "default-dev"
@@ -23,6 +23,8 @@ poller:
     cron: "0 0/1 * * * ?"
     enable: true
 spring:
+  jpa:
+    show-sql: false
   sql:
     init:
       mode: ALWAYS

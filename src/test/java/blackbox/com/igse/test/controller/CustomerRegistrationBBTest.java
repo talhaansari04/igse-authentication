@@ -1,6 +1,6 @@
 package blackbox.com.igse.test.controller;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static com.igse.util.IgseConstants.CORRELATION_ID;
 import static io.restassured.RestAssured.given;
 import blackbox.com.igse.test.BlackBoxTest;
 import io.restassured.RestAssured;
@@ -72,7 +72,7 @@ class CustomerRegistrationBBTest {
 
     private final static String REGISTRATION_REQ = """
             {
-                "customerId": "igseuser61@gmail.com",
+                "customerId": "talhaansari61@gmail.com",
                 "pass": "root",
                 "userName": "igse",
                 "voucherCode": "62ANW9MV",

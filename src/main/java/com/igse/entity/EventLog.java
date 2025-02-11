@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class EventLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int eventId;
     protected String eventName;
 }

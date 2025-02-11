@@ -1,7 +1,7 @@
 package com.igse.service;
 
 import static com.igse.util.ErrorCode.USER_INFO_FOUND;
-import com.igse.common.IgseConstants;
+import com.igse.util.IgseConstants;
 import com.igse.dto.UserResponse;
 import com.igse.dto.WalletInfoDTO;
 import com.igse.entity.UserMaster;
@@ -36,7 +36,7 @@ public class AdminService {
             response.setWalletInfo(walletInfo);
             return response;
         } else {
-            throw new UserException(USER_INFO_FOUND.getErrorCode(), USER_INFO_FOUND.getMessage());
+            throw new UserException(USER_INFO_FOUND.getCode(), USER_INFO_FOUND.getMessage());
         }
     }
 

@@ -1,7 +1,7 @@
 package com.igse.repository;
 
-import static com.igse.common.IgseConstants.BEARER;
-import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static com.igse.util.IgseConstants.BEARER;
+import static com.igse.util.IgseConstants.CORRELATION_ID;
 import static com.igse.util.ErrorCode.WALLET_NOT_FOUND;
 import com.igse.dto.WalletInfoDTO;
 import com.igse.exception.UserException;
@@ -57,13 +57,13 @@ public class PaymentRepo {
                         }
                 )
                 .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
-                    throw new UserException(WALLET_NOT_FOUND.getErrorCode(), WALLET_NOT_FOUND.getMessage());
+                    throw new UserException(WALLET_NOT_FOUND.getCode(), WALLET_NOT_FOUND.getMessage());
                 });
 
     }
 
     public WalletInfoDTO walletNotFound(Throwable e) {
         log.error("wallet {}", e.getMessage());
-        throw new UserException(WALLET_NOT_FOUND.getErrorCode(), WALLET_NOT_FOUND.getMessage());
+        throw new UserException(WALLET_NOT_FOUND.getCode(), WALLET_NOT_FOUND.getMessage());
     }
 }
