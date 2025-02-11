@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
@@ -27,6 +28,7 @@ class CustomerServiceTest {
     @Mock
     private UserMasterRepository userMasterRepository;
 
+    private static final String CORRELATION_ID = UUID.randomUUID().toString();
 
     @Test
     void user_registerUser_failedUnit() {
@@ -35,7 +37,7 @@ class CustomerServiceTest {
         when(userMasterRepository.findById(any()))
                 .thenReturn(Optional.of(UserMaster.builder().customerId("123654").build()));
         //doThrow(UserException.builder().status(400).message("exist").build()).when(customerService).saveUser(registration);
-        assertThrows(UserException.class, () -> customerService.saveUser(registration));
+        assertThrows(UserException.class, () -> customerService.saveUser(registration, CORRELATION_ID));
         verify(userMasterRepository, times(1)).findById(any());
         //verify(customerService,times(1)).saveUser(any());
     }

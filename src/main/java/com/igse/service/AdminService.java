@@ -36,7 +36,7 @@ public class AdminService {
             response.setWalletInfo(walletInfo);
             return response;
         } else {
-            throw new UserException(USER_INFO_FOUND.getErrorCode(), USER_INFO_FOUND.getMessage());
+            throw new UserException(USER_INFO_FOUND.getCode(), USER_INFO_FOUND.getMessage());
         }
     }
 

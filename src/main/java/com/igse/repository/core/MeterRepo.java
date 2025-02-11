@@ -1,6 +1,7 @@
 package com.igse.repository.core;
 
 import static com.igse.common.IgseConstants.BEARER;
+import static com.igse.common.IgseConstants.CORRELATION_ID;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.MeterReadingDTO;
 import com.igse.dto.UnitPriceDTO;
@@ -37,10 +38,11 @@ public class MeterRepo {
     @Value("${infrastructure.services.igse_core.meterDetailPath}")
     private String meterDetailsPath;
 
-    public void saveMeterDetails(MeterReadingDTO readingDTO) {
+    public void saveMeterDetails(MeterReadingDTO readingDTO,String correlationId) {
         String token = jwtService.getAdminToken();
         webClient.post()
                 .uri(basePath + BASE_URL)
+                .header(CORRELATION_ID, correlationId)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                 .bodyValue(readingDTO)

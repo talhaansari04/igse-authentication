@@ -105,7 +105,7 @@ class LoginBBTest {
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
-                .body("status", is(404))
-                .body("message", is("Customer not registered"));
+                .body("status", is(400))
+                .body("errorDetails[0].message", is("Customer not registered"));
     }
 }

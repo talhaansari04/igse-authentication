@@ -66,14 +66,14 @@ public class RegistrationEventService {
 
                 FilterableRegContext regContext = FilterableRegContext.of(
                         master.getCustomerId(),
-                        "",
+                        correlationId,
                         jwt.getAdminToken(),
                         voucherResponse,
                         status
                 );
+                processWallet(regContext);
                 processVoucher(regContext);
                 processMeterReading(regContext);
-                processWallet(regContext);
             });
         } catch (JsonProcessingException e) {
             log.error("message=\"Unable parse json\", JobName=\"RegistrationOutBox {}\"", e.getMessage());
@@ -87,7 +87,7 @@ public class RegistrationEventService {
                     .customerId(regContext.getCustomerId())
                     .totalBalance(regContext.getVoucherResponse().getVoucherBalance())
                     .creationDate(LocalDate.now()).build();
-            walletKafkaProducer.triggerWalletEvent(wallet);
+            walletKafkaProducer.triggerWalletEvent(wallet,regContext.getCorrelationId());
             log.info("Wallet event publish successfully {}", regContext.getCustomerId());
         }
     }
@@ -102,7 +102,7 @@ public class RegistrationEventService {
                     .submissionDate(LocalDate.now())
                     .billingStatus(PAID)
                     .customerId(regContext.getCustomerId()).build();
-            meterRepo.saveMeterDetails(readingDTO);
+            meterRepo.saveMeterDetails(readingDTO,regContext.getCorrelationId());
             statusRepo.updateMeterDetailStatus(regContext.getCustomerId(), SUCCESS);
             log.info("Meter reading save successfully {}", regContext.getCustomerId());
         }
@@ -113,20 +113,25 @@ public class RegistrationEventService {
         VoucherResponse voucherDetails = regContext.getVoucherResponse();
 
         if (PENDING.equalsIgnoreCase(regContext.getStatus().getIsVoucherRedeemed())) {
-            WalletInfoDTO walletDetails = paymentRepo.walletDetails(regContext.getCustomerId(),
-                    regContext.getAccessToken(), regContext.getCorrelationId());
+           try{
+               WalletInfoDTO walletDetails = paymentRepo.walletDetails(regContext.getCustomerId(),
+                       regContext.getAccessToken(), regContext.getCorrelationId());
+                log.info("message=\"Wallet has been created {}",regContext.getCustomerId());
+               if (null != walletDetails) {
+                   VoucherResponse voucherCode = VoucherResponse.builder()
+                           .voucherCode(voucherDetails.getVoucherCode())
+                           .status(USED)
+                           .customerId(regContext.getCustomerId())
+                           .voucherBalance(voucherDetails.getVoucherBalance()).build();
 
-            if (null != walletDetails) {
-                VoucherResponse voucherCode = VoucherResponse.builder()
-                        .voucherCode(voucherDetails.getVoucherCode())
-                        .status(USED)
-                        .customerId(regContext.getCustomerId())
-                        .voucherBalance(voucherDetails.getVoucherBalance()).build();
-
-                voucherRepo.saveSingleDetail(voucherCode);
-                log.info("Voucher details save successfully {}", regContext.getCustomerId());
-                statusRepo.updateVoucherRedeemedStatus(regContext.getCustomerId(), SUCCESS);
-            }
+                   voucherRepo.saveSingleDetail(voucherCode,regContext.getCorrelationId());
+                   log.info("Voucher details save successfully {}", regContext.getCustomerId());
+                   statusRepo.updateVoucherRedeemedStatus(regContext.getCustomerId(), SUCCESS);
+               }
+           }
+           catch (Exception e){
+            log.error("message=\"Wallet not found {} ",e.getMessage());
+           }
         }
     }
 }

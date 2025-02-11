@@ -38,7 +38,7 @@ public class AuthService {
 
     public UserResponse v1Login(LoginRequest loginRequest, String correlationId) {
         UserMaster userDetails = userMasterRepository.findById(loginRequest.getCustomerId())
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getErrorCode(),USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getCode(), USER_NOT_FOUND.getMessage()));
         UserResponse response = getUserDetails(loginRequest, userDetails, correlationId);
         MDC.clear();
         return response;
@@ -47,7 +47,7 @@ public class AuthService {
 
     public UserResponse v2Login(LoginRequest loginRequest, String correlationId) {
         UserMaster userDetails = userMasterRepository.findAllByUserName(loginRequest.getUserName())
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getErrorCode(),USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getCode(), USER_NOT_FOUND.getMessage()));
         UserResponse userResponse = getUserDetails(loginRequest, userDetails, correlationId);
         MDC.clear();
         return userResponse;
@@ -67,7 +67,7 @@ public class AuthService {
             userResponse.setDemographicDetails(mapDemographicDetails(userDetails));
             return userResponse;
         } else {
-            throw new UserException(INVALID_CREDENTIAL.getErrorCode(), INVALID_CREDENTIAL.getMessage());
+            throw new UserException(INVALID_CREDENTIAL.getCode(), INVALID_CREDENTIAL.getMessage());
         }
     }
 
