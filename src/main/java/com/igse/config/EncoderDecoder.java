@@ -16,7 +16,7 @@ public class EncoderDecoder {
             digest = MessageDigest.getInstance("SHA-256");
             hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
-            throw new UserException(INVALID_CREDENTIAL.getErrorCode(), INVALID_CREDENTIAL.getMessage());
+            throw new UserException(INVALID_CREDENTIAL.getCode(), INVALID_CREDENTIAL.getMessage());
         }
         return bytesToHex2(hash);
     }

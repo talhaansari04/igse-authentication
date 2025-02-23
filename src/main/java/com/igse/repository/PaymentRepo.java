@@ -57,13 +57,13 @@ public class PaymentRepo {
                         }
                 )
                 .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
-                    throw new UserException(WALLET_NOT_FOUND.getErrorCode(), WALLET_NOT_FOUND.getMessage());
+                    throw new UserException(WALLET_NOT_FOUND.getCode(), WALLET_NOT_FOUND.getMessage());
                 });
 
     }
 
     public WalletInfoDTO walletNotFound(Throwable e) {
         log.error("wallet {}", e.getMessage());
-        throw new UserException(WALLET_NOT_FOUND.getErrorCode(), WALLET_NOT_FOUND.getMessage());
+        throw new UserException(WALLET_NOT_FOUND.getCode(), WALLET_NOT_FOUND.getMessage());
     }
 }

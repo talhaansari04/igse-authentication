@@ -34,8 +34,7 @@ public class VoucherRepo {
     private String saveVoucherPath;
 
 
-    public IgseResponse<VoucherResponse> getVoucherDetail(String voucherCode) {
-        String correlationId = UUID.randomUUID().toString();
+    public IgseResponse<VoucherResponse> getVoucherDetail(String voucherCode,String correlationId) {
         String token = jwtService.getAdminToken();
         return webClient.get()
                 .uri(basePath + voucherDetailPath + voucherCode)
@@ -49,10 +48,11 @@ public class VoucherRepo {
     }
 
 
-    public void saveSingleDetail(VoucherResponse voucherCode) {
+    public void saveSingleDetail(VoucherResponse voucherCode,String correlationId) {
         String token = jwtService.getAdminToken();
         webClient.patch()
                 .uri(basePath + saveVoucherPath)
+                .header(CORRELATION_ID, correlationId)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, BEARER + token)
                 .bodyValue(voucherCode)

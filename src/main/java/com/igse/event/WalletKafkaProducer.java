@@ -1,5 +1,6 @@
 package com.igse.event;
 
+import static com.igse.common.IgseConstants.CORRELATION_ID;
 import static com.igse.common.IgseConstants.SUCCESS;
 import com.igse.common.IgseConstants;
 import com.igse.dto.WalletPayloadKafka;
@@ -7,6 +8,7 @@ import com.igse.entity.RegistrationStatusEntity;
 import com.igse.repository.db.RegistrationStatusRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -26,7 +28,7 @@ public class WalletKafkaProducer {
     private final RegistrationStatusRepo statusRepo;
 
     // @EventListener
-    public void triggerWalletEvent(WalletPayloadKafka wallet) {
+    public void triggerWalletEvent(WalletPayloadKafka wallet, String correlationId) {
         Optional<RegistrationStatusEntity> registrationStatus = Optional.empty();
         log.info("message=\"Wallet Event Received of customerId {}...\"", wallet.getCustomerId());
         try {
@@ -34,6 +36,7 @@ public class WalletKafkaProducer {
             registrationStatus = statusRepo.findByCustomerId(wallet.getCustomerId());
             Optional<RegistrationStatusEntity> finalRegistrationStatus = registrationStatus;
             future.whenComplete((result, ex) -> {
+                MDC.put(CORRELATION_ID, correlationId);
                 if (null == ex) {
                     log.info("message=\"Kafka event sent successfully ...");
                     finalRegistrationStatus.ifPresent(this::updateSuccessStatus);

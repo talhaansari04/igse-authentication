@@ -37,19 +37,19 @@ public class CustomerService {
     private final RegistrationStatusRepo statusRepo;
 
     @Transactional
-    public void saveUser(UserRegRequest userRegRequest) {
+    public void saveUser(UserRegRequest userRegRequest,String correlationId) {
         Optional<UserMaster> customerDetails =
                 userMasterRepository.findById(userRegRequest.getCustomerId());
         if (customerDetails.isPresent()) {
             UserMaster details = customerDetails.get();
             if (details.getCustomerId().equalsIgnoreCase(userRegRequest.getCustomerId())) {
-                throw new UserException(USER_ALREADY_EXIST.getErrorCode(),
+                throw new UserException(USER_ALREADY_EXIST.getCode(),
                         USER_ALREADY_EXIST.getMessage());
             }
         }
         log.info("message=\"New customer registration process start ... {}",
                 userRegRequest.getCustomerId());
-        VoucherResponse voucherResponse = voucherDetails(userRegRequest);
+        VoucherResponse voucherResponse = voucherDetails(userRegRequest,correlationId);
         UserMaster success = userMasterRepository.save(mapUserAddress(userRegRequest));
         statusRepo.save(mapRegistrationStatus(userRegRequest, voucherResponse));
         log.info("message=\"Customer Registered Successfully ... {}", success.getCustomerId());
@@ -88,23 +88,23 @@ public class CustomerService {
                 .demographicDetails(demographicDetails).build();
     }
 
-    private VoucherResponse voucherDetails(UserRegRequest userRegRequest) {
+    private VoucherResponse voucherDetails(UserRegRequest userRegRequest,String correlationId) {
         log.info("message=\"Fetching voucher details {}", userRegRequest.getCustomerId());
         VoucherResponse voucherDetails = Optional
-                .of(voucherRepo.getVoucherDetail(userRegRequest.getVoucherCode())
+                .of(voucherRepo.getVoucherDetail(userRegRequest.getVoucherCode(),correlationId)
                         .getData())
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getErrorCode(), USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND.getCode(), USER_NOT_FOUND.getMessage()));
 
         if (voucherDetails.getVoucherCode().equalsIgnoreCase(userRegRequest.getVoucherCode())) {
             if (voucherDetails.getStatus().equals(USED)) {
                 log.info("message=\"Voucher validation failed for {}", userRegRequest.getCustomerId());
-                throw new UserException(EVC_COUPON_USED.getErrorCode(), EVC_COUPON_USED.getMessage());
+                throw new UserException(EVC_COUPON_USED.getCode(), EVC_COUPON_USED.getMessage());
             } else {
                 return voucherDetails;
             }
         } else {
             log.info("message=\"Invalid voucher code {}", userRegRequest.getCustomerId());
-            throw new UserException(EVC_COUPON_INVALID.getErrorCode(), EVC_COUPON_INVALID.getMessage());
+            throw new UserException(EVC_COUPON_INVALID.getCode(), EVC_COUPON_INVALID.getMessage());
         }
     }
 }
