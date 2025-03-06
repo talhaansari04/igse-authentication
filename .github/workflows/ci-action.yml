@@ -13,7 +13,42 @@ jobs:
   validate-ticket:
     runs-on: ubuntu-latest
     needs: [ request-approval ]  # Depends on approval job
+    outputs:
+      ticket: ${{ steps.extract-ticket.outputs.ticket }}
+    steps:
+      - name: Fetch Commit Comments
+        id: fetch-comments
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comments = await github.rest.repos.listCommitComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+            });
+            return comments.data;
+
+      - name: Extract Ticket from Comment
+        id: extract-ticket
+        run: |
+          # Find the latest comment matching "/ticket <NUMBER>" from an approver
+          TICKET=$(echo '${{ toJSON(steps.fetch-comments.outputs.result) }}' | \
+            jq -r 'map(select(.user.login == "${{ github.actor }}" and 
+              (.body | test("/ticket\\s+\\S+")))) | 
+            last | .body | capture("/ticket (?<ticket>\\S+)") | .ticket')
+
+          if [ -z "$TICKET" ]; then
+            echo "No valid ticket comment found."
+            exit 1
+          fi
+
+          echo "ticket=$TICKET" >> $GITHUB_OUTPUT
+
+  validate:
+    needs: [capture-ticket]
+    runs-on: ubuntu-latest
     steps:
       - name: Validate ServiceNow Ticket
         run: |
-          echo "Validating ticket: ${{ vars.TICKET_NUMBER }}"
+          echo "Validating ticket: ${{ needs.capture-ticket.outputs.ticket }}"
+          # Add validation logic (e.g., API call to ServiceNow)
