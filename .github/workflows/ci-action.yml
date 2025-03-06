@@ -11,6 +11,7 @@ jobs:
         id: create-check
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             const { data: check } = await github.rest.checks.create({
               owner: context.repo.owner,
