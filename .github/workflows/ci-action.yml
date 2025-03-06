@@ -10,7 +10,7 @@ jobs:
       - name: Wait for approval + ticket input
         run: echo "Awaiting manual approval and ticket number input..."
 
-  validate-ticket:
+  capture-ticket:
     runs-on: ubuntu-latest
     needs: [ request-approval ]  # Depends on approval job
     outputs:
