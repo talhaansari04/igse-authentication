@@ -23,7 +23,7 @@ jobs:
 
 
       - name: Step 3 - Cleanup
-        if: always() && ${{ steps.deploy.outcome == 'success' }}
+        if: ${{ steps.deploy.outcome == 'success' }}
         run: |
           echo "Performing cleanup... ${{ steps.deploy.outcome == 'success' }}"
           # Insert your cleanup commands here
