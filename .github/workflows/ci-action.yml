@@ -13,30 +13,23 @@ jobs:
         id: deploy
         run: |
           echo "Deploying app..."
-          # Simulate a failure for demonstration purposes
-          exit 1
 
       - name: Step 2 - Run Integration Tests
         id: integration_test
         if: ${{ steps.deploy.outcome == 'success' }}
         run: |
           echo "Running integration tests..."
-          # Simulate a failure for demonstration purposes
-          exit 1
+          exit 1  # Fail the job for demonstration purposes
 
-      - name: Step 3 - Cleanup after Deploy Failure
-        if: ${{ steps.deploy.outcome == 'failure' }}
-        run: |
-          echo "Cleaning up after deploy failure..."
-          # Insert your cleanup commands here
-
-      - name: Step 4 - Cleanup after Integration Test Failure
+      - name: Step 3 - Cleanup
         if: ${{ steps.deploy.outcome == 'success' }} && ${{ steps.integration_test.outcome == 'failure' }}
         run: |
-          echo "Cleaning up after integration test failure..."
+          echo "Performing cleanup..."
           # Insert your cleanup commands here
+          # For example, you might run:
+          # kubectl delete pods --all
 
-      - name: Step 5 - Tag the commit
+      - name: Step 4 - Tag the commit
         if: ${{ steps.deploy.outcome == 'success' }} && ${{ steps.integration_test.outcome == 'success' }}
         run: |
           echo "Tagging the commit..."
