@@ -24,7 +24,7 @@ jobs:
 
 
       - name: Step 3 - Cleanup
-        if: ${{ steps.integration_test.outcome == 'success' }}
+        if: ${{ steps.deploy.conclusion == 'success' }}
         run: |
           echo "Performing cleanup..."
           # Insert your cleanup commands here
