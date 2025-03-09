@@ -20,12 +20,12 @@ jobs:
         run: |
           echo "Running integration tests..."
           exit 1  # Fail the job for demonstration purposes
-        continue-on-error: true
+
 
       - name: Step 3 - Cleanup
-        if: always() && ${{ steps.deploy.outcome == 'success' }}
+        if: always() && true
         run: |
-          echo "Performing cleanup..."
+          echo "Performing cleanup... ${{ steps.deploy.outcome == 'success' }}"
           # Insert your cleanup commands here
           # For example, you might run:
           # kubectl delete pods --all
