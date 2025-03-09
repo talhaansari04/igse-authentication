@@ -3,28 +3,37 @@ name: CD
 on:
   push:
     tags:
-      - '*'
+      - '*'  # Triggers on any tag starting with "v"
 
 jobs:
-  dev:
+  release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensure full git history (needed for annotated tags)
 
-      - name: Get tag details
-        id: tag
+      - name: Extract Tag Name
+        id: extract_tag
         run: |
-          TAG_NAME=${{ github.ref_name }}
-          TAG_MESSAGE=$(git tag -l --format='%(contents)' $TAG_NAME)
-          echo "Tag name: $TAG_NAME"
+          # GITHUB_REF is like "refs/tags/v1.0.1"
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "Tag Name: $TAG_NAME"
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Extract Tag Message
+        id: extract_message
+        run: |
+          # This command fetches the tag message from the annotated tag
+          TAG_MESSAGE=$(git for-each-ref --format='%(contents)' refs/tags/${GITHUB_REF#refs/tags/})
+          echo "Tag Message: $TAG_MESSAGE"
+          echo "TAG_MESSAGE=$TAG_MESSAGE" >> $GITHUB_ENV
+
+      - name: Use Tag Information
+        run: |
+          echo "Processing release for tag: $TAG_NAME"
           echo "Tag message: $TAG_MESSAGE"
-          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
-          echo "tag_message=$TAG_MESSAGE" >> $GITHUB_OUTPUT
-
-      - name: Print tag details
-        run: |
-          echo "Tag name: ${{ steps.tag.outputs.tag_name }}"
-          echo "Tag message: ${{ steps.tag.outputs.tag_message }}"
-
-
+          # Here you could add your logic to validate a ServiceNow ticket
+          # For example, if you encoded the ticket number in the tag message,
+          # you might extract it with grep or another tool.
