@@ -14,14 +14,12 @@ jobs:
         run: |
           echo "Deploying app..."
 
-
       - name: Step 2 - Run Integration Tests
         id: integration_test
         if: ${{ steps.deploy.outcome == 'success' }}
         run: |
           echo "Running integration tests..."
           exit 1  # Fail the job for demonstration purposes
-
 
       - name: Step 3 - Cleanup
         if: ${{ steps.deploy.conclusion == 'success' }} && ${{ steps.integration_test.conclusion == 'failure' }}
@@ -31,7 +29,6 @@ jobs:
           # For example, you might run:
           # kubectl delete pods --all
 
-      - name: Step 3 - Tag the commit
+      - name: Step 4 - Tag the commit
         run: |
           echo "Tagging the commit..."
-
