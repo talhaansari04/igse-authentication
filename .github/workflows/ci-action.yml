@@ -33,7 +33,11 @@ jobs:
             echo "Script output is good, continuing."
           fi
 
+      - name: Step 3 - Cleanup images
+        if: success() || failure()
+        run: |
+          echo "Images cleanup..."
+
       - name: Step 4 - Tag the commit
-        if: ${{ steps.deploy.outcome == 'success' }} && ${{ steps.integration_test.outcome == 'success' }}
         run: |
           echo "Tagging the commit..."
