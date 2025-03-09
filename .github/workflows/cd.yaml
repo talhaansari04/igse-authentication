@@ -17,7 +17,7 @@ jobs:
       - name: Get Latest Tag Subject
         id: get_tag_subject
         run: |
-          TAG_SUBJECT=$(git tag --sort=-creatordate | Select-Object -First 1 | ForEach-Object { git tag -l --format='%(contents:subject)' $_ })
+          TAG_SUBJECT=$(git tag --sort=-creatordate | head -n 1 | xargs -I {} git tag -l --format='%(contents:subject)' {})
           echo "::set-output name=tag_subject::$TAG_SUBJECT"
 
       - name: Print Latest Tag Subject
