@@ -22,7 +22,7 @@ jobs:
           exit 1  # Fail the job for demonstration purposes
 
       - name: Step 3 - Cleanup
-        if: ${{ steps.deploy.outcome == 'success' }} && ${{ steps.integration_test.outcome == 'failure' }}
+        if: always() && ${{ steps.deploy.outcome == 'success' }}
         run: |
           echo "Performing cleanup..."
           # Insert your cleanup commands here
