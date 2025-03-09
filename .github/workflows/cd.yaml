@@ -25,11 +25,9 @@ jobs:
       - name: Extract Tag Message
         id: extract_message
         run: |
-          # This command fetches the tag message from the annotated tag
-          TAG_MESSAGE=$(git for-each-ref --format='%(contents)' refs/tags/${GITHUB_REF#refs/tags/})
-          echo "Tag Message: $TAG_MESSAGE"
+          echo "Tag Message: ${{ github.event.client_payload.message }}"
           TAG=$(git tag -l --format='%(contents:subject)'${GITHUB_REF#refs/*/})
-          echo "tag: $TAG"
+          echo "tag_name = : $TAG"
       - name: Use Tag Information
         run: |
           echo "Processing release for tag: $TAG_NAME"
