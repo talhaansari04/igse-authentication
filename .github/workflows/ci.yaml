@@ -16,5 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensure full git history (needed for annotated tags)
       - name: Development Tag Creation
-        run: echo "Creating development tag..."
+        env:
+          AUTHOR: ${{ github.event.pusher.name }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+            echo "Creating tag for development branch"
+            echo "Author: $AUTHOR"
+            echo "SHA: $SHA"
+            git tag -a "dev-${{ github.run_number }}" -m "Development tag created by $AUTHOR"
+            git push origin "dev-${{ github.run_number }}"
