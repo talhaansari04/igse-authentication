@@ -28,8 +28,8 @@ jobs:
           # This command fetches the tag message from the annotated tag
           TAG_MESSAGE=$(git for-each-ref --format='%(contents)' refs/tags/${GITHUB_REF#refs/tags/})
           echo "Tag Message: $TAG_MESSAGE"
-          echo "TAG_MESSAGE=$(git tag -l --format='%(contents:subject)'${GITHUB_REF#refs/*/})" >> $GITHUB_ENV
-
+          TAG=$(git tag -l --format='%(contents:subject)'${GITHUB_REF#refs/*/})
+          echo "tag: $TAG"
       - name: Use Tag Information
         run: |
           echo "Processing release for tag: $TAG_NAME"
