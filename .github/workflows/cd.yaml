@@ -30,15 +30,21 @@ jobs:
           echo "tag_name = : $TAG"
 
 
-      - name: Capture Tag Message
+      - name: Set
         run: |
-          # Extract the tag name from GITHUB_REF (e.g. "refs/tags/1.0.0" -> "1.0.0")
-          TAG=${GITHUB_REF##*/}
-          echo "Detected tag: $TAG"
-          
-          # Retrieve the full annotated tag message
-          TAG_MESSAGE=$(git for-each-ref --format='%(contents)' refs/tags/$TAG)
-          echo "Tag message: $TAG_MESSAGE"
-          
-          # Optionally, set the tag message as an output variable for use in later steps:
-          echo "tag_message=$TAG_MESSAGE" >> $GITHUB_OUTPUT
+          git fetch --tags --force
+          latest_tag=$(git describe --tags --abbrev=0)
+          echo "latest_tag: $latest_tag"
+          echo
+          tag_body="$(git tag -l "$latest_tag" --format='%(contents:body)')"
+          echo "tag_body: $tag_body"
+          echo
+          echo "tag_body<<EOF" >> "$GITHUB_ENV"
+          echo "$tag_body" >> "$GITHUB_ENV"
+          echo "EOF" >> "$GITHUB_ENV"
+
+          - name: Get
+            env:
+              tag_body: '${{ env.tag_body }}'
+            run: |
+              echo "tag_body: $tag_body"
