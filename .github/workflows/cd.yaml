@@ -28,7 +28,17 @@ jobs:
           echo "Tag Message: ${{ github.event.client_payload.message }}"
           TAG=$(git tag -l --format='%(contents:subject)'${GITHUB_REF#refs/*/})
           echo "tag_name = : $TAG"
-      - name: Use Tag Information
+
+
+      - name: Capture Tag Message
         run: |
-          echo "Processing release for tag: $TAG_NAME"
+          # Extract the tag name from GITHUB_REF (e.g. "refs/tags/1.0.0" -> "1.0.0")
+          TAG=${GITHUB_REF##*/}
+          echo "Detected tag: $TAG"
+          
+          # Retrieve the full annotated tag message
+          TAG_MESSAGE=$(git for-each-ref --format='%(contents)' refs/tags/$TAG)
           echo "Tag message: $TAG_MESSAGE"
+          
+          # Optionally, set the tag message as an output variable for use in later steps:
+          echo "tag_message=$TAG_MESSAGE" >> $GITHUB_OUTPUT
