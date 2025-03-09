@@ -20,6 +20,7 @@ jobs:
         run: |
           echo "Running integration tests..."
           exit 1  # Fail the job for demonstration purposes
+        continue-on-error: true
 
       - name: Step 3 - Cleanup
         if: always() && ${{ steps.deploy.outcome == 'success' }}
