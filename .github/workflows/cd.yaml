@@ -12,7 +12,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Ensure full git history (needed for annotated tags)
+          fetch-depth: 1  # Ensure full git history (needed for annotated tags)
 
       - name: Get Latest Tag Subject
         id: get_tag_subject

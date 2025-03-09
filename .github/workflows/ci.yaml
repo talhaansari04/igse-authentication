@@ -19,7 +19,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Set up Git user
@@ -35,5 +35,5 @@ jobs:
             EPOCH=`date +%s%3N`
             COMMIT_SHORT=${SHA:0:7}
             TAG_NAME="dev.standard.${EPOCH}.${COMMIT_SHORT}.${AUTHOR}_.${{github.run_number}}"
-            git tag -a ${TAG_NAME} -m "created_by_$AUTHOR"
+            git tag -a ${TAG_NAME} -m "created_by_$AUTHOR_${{github.run_number}}"
             git push origin ${TAG_NAME}
