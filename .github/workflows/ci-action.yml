@@ -20,10 +20,8 @@ jobs:
         if: ${{ steps.deploy.outcome == 'success' }}
         run: |
           echo "Running integration tests..."
-          # Insert your integration test commands here
-          # For example, you might run:
-          # ./run-tests.sh
-        continue-on-error: true
+          exit 1  # Fail the job for demonstration purposes
+
 
       - name: Step 3 - Cleanup
         if: ${{ steps.deploy.outcome == 'success' }}
