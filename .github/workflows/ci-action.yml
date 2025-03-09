@@ -24,9 +24,14 @@ jobs:
 
 
       - name: Step 3 - Cleanup
-        if: ${{ steps.deploy.outcome == 'success' }}
+        if: ${{ steps.integration_test.outcome == 'success' }}
         run: |
           echo "Performing cleanup..."
           # Insert your cleanup commands here
           # For example, you might run:
           # kubectl delete pods --all
+
+      - name: Step 3 - Tag the commit
+        run: |
+          echo "Tagging the commit..."
+
