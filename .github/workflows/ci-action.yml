@@ -12,7 +12,8 @@ jobs:
       - name: Step 1 - Deploy App
         id: deploy
         run: |
-          echo "Deploying app..."
+          echo "Running integration tests..."
+          exit 1  # Fail the job for demonstration purposes
 
       - name: Step 2 - Run Integration Tests
         id: integration_test
