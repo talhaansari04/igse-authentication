@@ -14,37 +14,12 @@ jobs:
         with:
           fetch-depth: 0  # Ensure full git history (needed for annotated tags)
 
-      - name: Extract Tag Name
-        id: extract_tag
+      - name: Get Latest Tag Subject
+        id: get_tag_subject
         run: |
-          # GITHUB_REF is like "refs/tags/v1.0.1"
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          echo "Tag Name: $TAG_NAME"
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          TAG_SUBJECT=$(git tag --sort=-creatordate | Select-Object -First 1 | ForEach-Object { git tag -l --format='%(contents:subject)' $_ })
+          echo "::set-output name=tag_subject::$TAG_SUBJECT"
 
-      - name: Extract Tag Message
-        id: extract_message
+      - name: Print Latest Tag Subject
         run: |
-          echo "Tag Message: ${{ github.event.client_payload.message }}"
-          TAG=$(git tag -l --format='%(contents:subject)'${GITHUB_REF#refs/*/})
-          echo "tag_name = : $TAG"
-
-
-      - name: Set
-        run: |
-          git fetch --tags --force
-          latest_tag=$(git describe --tags --abbrev=0)
-          echo "latest_tag: $latest_tag"
-          echo
-          tag_body="$(git tag -l "$latest_tag" --format='%(contents:body)')"
-          echo "tag_body: $tag_body"
-          echo
-          echo "tag_body<<EOF" >> "$GITHUB_ENV"
-          echo "$tag_body" >> "$GITHUB_ENV"
-          echo "EOF" >> "$GITHUB_ENV"
-
-      - name: Get
-        env:
-          tag_body: '${{ env.tag_body }}'
-        run: |
-          echo "tag_body: $tag_body"
+          echo "Latest tag subject: ${{ steps.get_tag_subject.outputs.tag_subject }}"

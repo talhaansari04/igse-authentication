@@ -34,6 +34,6 @@ jobs:
         run: |
             EPOCH=`date +%s%3N`
             COMMIT_SHORT=${SHA:0:7}
-            TAG_NAME="dev.standard.dev.${{github.run_number}}.${EPOCH}.${COMMIT_SHORT}.${AUTHOR}"
+            TAG_NAME="dev.standard.${EPOCH}.${COMMIT_SHORT}.${AUTHOR}_.${{github.run_number}}"
             git tag -a ${TAG_NAME} -m "created_by_$AUTHOR"
             git push origin ${TAG_NAME}
