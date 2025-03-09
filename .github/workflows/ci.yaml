@@ -33,6 +33,6 @@ jobs:
           SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
             COMMIT_SHORT=${SHA:0:7}
-            TAG_NAME="dev.standard.dev.@{github.run_number}.@{COMMIT_SHORT}.${AUTHOR}"
+            TAG_NAME="dev.standard.dev.${github.run_number}.${COMMIT_SHORT}.${AUTHOR}"
             git tag -a ${TAG_NAME} -m "created_by_$AUTHOR"
             git push origin ${TAG_NAME}
