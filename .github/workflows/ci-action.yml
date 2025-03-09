@@ -13,6 +13,7 @@ jobs:
         id: deploy
         run: |
           echo "Running integration tests..."
+          exit 1
 
       - name: Step 2 - Run Integration Tests
         id: integration_test
