@@ -26,3 +26,18 @@ jobs:
       - name: Print Latest Tag Subject
         run: |
           echo "Latest tag subject: ${{ steps.get_tag_subject.outputs.tag_subject }}"
+  deploy-dev:
+    runs-on: ubuntu-latest
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: 'dev'
+
+#  deploy-stage:
+#    uses: ./.github/workflows/deploy.yml
+#    with:
+#      environment: 'stage'
+#
+#  deploy-prod:
+#    uses: ./.github/workflows/deploy.yml
+#    with:
+#      environment: 'prod'
