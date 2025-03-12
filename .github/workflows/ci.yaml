@@ -12,35 +12,32 @@ jobs:
       - name: Environment Setup
         run: |
           echo "Running integration tests..."
-  call-reusable-workflow:
-    uses: ./.github/workflows/deploy.yaml
-    with:
-      environment: 'dev'
-#  tag:
-#    runs-on: ubuntu-latest
-#    needs: build
-#    steps:
-#      - name: Checkout Repository
-#        uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 1
-#          token: ${{ secrets.ACCESS_TOKEN }}
-#
-#      - name: Set up Git user
-#        run: |
-#          git config --global user.name "talhaansari04"
-#          git config --global user.email "talhaansari61@gmail.com"
-#
-#      - name: Development Tag Creation
-#        env:
-#          AUTHOR: ${{ github.event.pusher.name }}
-#          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-#        run: |
-#            EPOCH=`date +%s%3N`
-#            COMMIT_SHORT=${SHA:0:7}
-#            TAG_NAME="dev.standard.${EPOCH}.${COMMIT_SHORT}.${AUTHOR}_.${{github.run_number}}"
-#            TAG_MSG="created_by_${AUTHOR}_${{github.run_number}}"
-#            echo "Tagging with $TAG_NAME"
-#            echo "Tagging with msg $TAG_MSG"
-#            git tag -a ${TAG_NAME} -m ${TAG_MSG}
-#            git push origin ${TAG_NAME}
+
+  tag:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Set up Git user
+        run: |
+          git config --global user.name "talhaansari04"
+          git config --global user.email "talhaansari61@gmail.com"
+
+      - name: Development Tag Creation
+        env:
+          AUTHOR: ${{ github.event.pusher.name }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+            EPOCH=`date +%s%3N`
+            COMMIT_SHORT=${SHA:0:7}
+            TAG_NAME="dev.standard.${EPOCH}.${COMMIT_SHORT}.${AUTHOR}_.${{github.run_number}}"
+            TAG_MSG="created_by_${AUTHOR}_${{github.run_number}}"
+            echo "Tagging with $TAG_NAME"
+            echo "Tagging with msg $TAG_MSG"
+            git tag -a ${TAG_NAME} -m ${TAG_MSG}
+            git push origin ${TAG_NAME}
