@@ -41,3 +41,15 @@ jobs:
             echo "Tagging with msg $TAG_MSG"
             git tag -a ${TAG_NAME} -m ${TAG_MSG}
             git push origin ${TAG_NAME}
+
+      - name: Run conditional script
+        run: |
+          #!/bin/bash
+          GIT_REF=$(git rev-parse --abbrev-ref HEAD)
+          if [[ $GIT_REF == hotfix-* ]]; then
+            echo "This is a hotfix branch: $GIT_REF"
+            # Add your commands for hotfix branches here
+          else
+            echo "This is NOT a hotfix branch: $GIT_REF"
+            # Add your commands for non-hotfix branches here
+          fi
