@@ -28,7 +28,7 @@ jobs:
           echo "Latest tag subject: ${{ steps.get_tag_subject.outputs.tag_subject }}"
           
 
-  call-reusable-workflow:
-    uses: ./.github/workflows/deploy.yaml
-    with:
-      environment: 'dev'
+      - name: Call Deploy Workflow
+        uses: ./.github/workflows/deploy.yaml
+        with:
+          environment: 'dev'
