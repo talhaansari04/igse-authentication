@@ -26,9 +26,4 @@ jobs:
       - name: Print Latest Tag Subject
         run: |
           echo "Latest tag subject: ${{ steps.get_tag_subject.outputs.tag_subject }}"
-          
-
-      - name: Call Deploy Workflow
-        uses: ./.github/workflows/deploy.yaml
-        with:
-          environment: 'dev'
+      

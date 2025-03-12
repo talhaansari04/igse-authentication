@@ -46,7 +46,7 @@ jobs:
         run: |
           #!/bin/bash
           GIT_REF=$(git rev-parse --abbrev-ref HEAD)
-          if [[ $GIT_REF == "ref/head/feature" || $GIT_REF == hotfix-* ]]; then
+          if [[ $GIT_REF == "feature" || $GIT_REF == hotfix-* ]]; then
             echo "This is a hotfix branch: $GIT_REF"
           else
             echo "This is NOT a hotfix branch: $GIT_REF"
