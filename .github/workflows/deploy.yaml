@@ -1,4 +1,4 @@
-name: Deploy
+name: Reusable Workflow
 
 on:
   workflow_call:
@@ -17,18 +17,3 @@ jobs:
       - name: Common Deployment Step
         run: |
           echo "Running common deployment steps for ${{ inputs.environment }}"
-
-      - name: Deploy to Environment
-        if: inputs.environment == 'dev'
-        run: |
-          echo "Deploying to DEV environment"
-
-      - name: Deploy to Stage
-        if: inputs.environment == 'stage'
-        run: |
-          echo "Deploying to STAGE environment"
-
-      - name: Deploy to Prod
-        if: inputs.environment == 'prod'
-        run: |
-          echo "Deploying to PROD environment"
