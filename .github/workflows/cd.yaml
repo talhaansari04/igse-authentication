@@ -28,9 +28,10 @@ jobs:
           echo "Latest tag subject: ${{ steps.get_tag_subject.outputs.tag_subject }}"
   deploy-dev:
     runs-on: ubuntu-latest
-    uses: ./.github/workflows/deploy.yaml
-    with:
-      environment: 'dev'
+    steps:
+      uses: ./.github/workflows/deploy.yaml
+      with:
+        environment: 'dev'
 
 #  deploy-stage:
 #    uses: ./.github/workflows/deploy.yml
