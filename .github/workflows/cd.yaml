@@ -29,7 +29,7 @@ jobs:
           echo "Latest tag subject: ${{ steps.get_tag_subject.outputs.tag_subject }}"
 
       - name: Print Tag Message
-        if: startsWith(github.ref, 'ref/tag/dev.standard.') || startsWith(github.ref, 'ref/tag/prod.dev.standard.')
+        if: startsWith(github.ref, 'refs/tag/dev.standard.') || startsWith(github.ref, 'refs/tag/prod.dev.standard.')
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           echo "The latest tag is: $TAG_NAME"
