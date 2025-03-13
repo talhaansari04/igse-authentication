@@ -29,13 +29,13 @@ jobs:
           echo "Latest tag subject: ${{ steps.get_tag_subject.outputs.tag_subject }}"
 
       - name: Print Tag Message
-        if: startsWith(github.ref, 'dev.standard.') || startsWith(github.ref, 'prod.dev.standard.')
+        if: startsWith(github.ref, 'ref/tag/dev.standard.') || startsWith(github.ref, 'ref/tag/prod.dev.standard.')
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           echo "The latest tag is: $TAG_NAME"
-          if [[ "$TAG_NAME" == stage* ]]; then
+          if [[ "$TAG_NAME" == dev.* ]]; then
             echo "Stage tag pushed"
-          elif [[ "$TAG_NAME" == prod* ]]; then
+          elif [[ "$TAG_NAME" == prod.* ]]; then
             echo "Prod tag pushed"
           else
             echo "Unknown tag pushed $TAG_NAME"
