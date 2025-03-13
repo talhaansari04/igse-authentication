@@ -3,7 +3,8 @@ name: CD
 on:
   push:
     tags:
-      - '*'  # Triggers on any tag starting with "v"
+      - 'dev.standard.*'
+      - 'prod.standard.*'
 
 jobs:
   release:
