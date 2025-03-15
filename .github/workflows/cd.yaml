@@ -48,13 +48,18 @@ jobs:
           echo "Github name: ${{ github.ref_name }}"
           echo "GitHub event: ${{ github.event_name }}"
 
-      - name: ${{ format('Extract and Use Tag Name - {0}', github.ref) }}
+      - name: Set Partial Tag Name
+        id: set_partial_tag_name
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          PARTIAL_TAG_NAME=${TAG_NAME%%.*}
+          echo "PARTIAL_TAG_NAME=$PARTIAL_TAG_NAME" >> $GITHUB_ENV
+
+      - name: Extract and Use Tag Name - ${{ env.PARTIAL_TAG_NAME }}
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           IFS='.' read -r -a TAG_ARRAY <<< "$TAG_NAME"
           if [ ${#TAG_ARRAY[@]} -gt 1 ]; then
-            INDEX1_VALUE=${TAG_ARRAY[1]}
-            echo "Value at index 1: $INDEX1_VALUE"
+            echo "Value at index 1: ${TAG_ARRAY[1]}"
           else
             echo "Tag name does not have enough parts"
-          fi
