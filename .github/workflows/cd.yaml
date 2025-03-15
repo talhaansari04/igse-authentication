@@ -5,7 +5,8 @@ on:
     tags:
       - 'dev.standard.*'
       - 'prod.standard.*'
-
+env:
+  TAG_NAME: ${{github.ref#refs/tags/}}
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -39,4 +40,22 @@ jobs:
             echo "Prod tag pushed"
           else
             echo "Unknown tag pushed $TAG_NAME"
+          fi
+
+      - name: Set TAG_NAME Environment Variable
+        id: set_tag_name
+        run: |
+          echo "GitHub ref: ${{ github.ref }}"
+          echo "Github name: ${{ github.ref_name }}"
+          echo "GitHub event: ${{ github.event_name }}"
+
+      - name: Extract and Use Tag Name
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          IFS='.' read -r -a TAG_ARRAY <<< "$TAG_NAME"
+          if [ ${#TAG_ARRAY[@]} -gt 1 ]; then
+            INDEX1_VALUE=${TAG_ARRAY[1]}
+            echo "Value at index 1: $INDEX1_VALUE"
+          else
+            echo "Tag name does not have enough parts"
           fi
