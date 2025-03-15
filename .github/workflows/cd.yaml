@@ -63,3 +63,4 @@ jobs:
             echo "Value at index 1: ${TAG_ARRAY[1]}"
           else
             echo "Tag name does not have enough parts"
+          fi
