@@ -50,7 +50,7 @@ jobs:
 
       - name: Set Partial Tag Name
         id: set_partial_tag_name
-        run: echo "PARTIAL_TAG_NAME=$(echo ${GITHUB_REF_NAME} | cut -d'.' -f2)" >> $GITHUB_ENV
+        run: echo "THIRD_INDEX_VALUE=$(echo ${GITHUB_REF_NAME} | cut -d'.' -f3)" >> $GITHUB_ENV
 
       - name: Extract and Use Tag Name - ${{ env.PARTIAL_TAG_NAME }}
         run: |
