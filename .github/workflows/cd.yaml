@@ -3,7 +3,7 @@ name: CD
 on:
   push:
     tags:
-      - 'dev.standard.*'
+      - 'azure.standard.dev.*'
       - 'prod.standard.*'
 env:
   environment: ${{ github.ref_name | split('.')[2] }}
