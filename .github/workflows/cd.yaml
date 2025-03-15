@@ -5,7 +5,8 @@ on:
     tags:
       - 'dev.standard.*'
       - 'prod.standard.*'
-
+env:
+  environment: ${{ github.ref_name | split('.')[2] }}
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -18,7 +19,7 @@ jobs:
       - name: Fetch All Tags
         run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
-      - name: Get Latest Tag Subject
+      - name: Get Latest Tag Subject environment ${{ env.environment }}
         id: get_tag_subject
         run: |
           TAG_SUBJECT=$(git tag --sort=-creatordate | head -n 1 | xargs -I {} git tag -l --format='%(contents:subject)' {})

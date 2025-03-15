@@ -35,7 +35,7 @@ jobs:
         run: |
             EPOCH=`date +%s%3N`
             COMMIT_SHORT=${SHA:0:7}
-            TAG_NAME="dev.standard.${EPOCH}.${COMMIT_SHORT}.${AUTHOR}_.${{github.run_number}}"
+            TAG_NAME="azure.standard.dev.${EPOCH}.${COMMIT_SHORT}.${AUTHOR}_.${{github.run_number}}"
             TAG_MSG="created_by_${AUTHOR}_${{github.run_number}}"
             echo "Tagging with $TAG_NAME"
             echo "Tagging with msg $TAG_MSG"
