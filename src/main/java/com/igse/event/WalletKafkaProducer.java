@@ -1,8 +1,10 @@
 package com.igse.event;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
-import static com.igse.common.IgseConstants.SUCCESS;
-import com.igse.common.IgseConstants;
+
+import static com.igse.util.IgseConstants.CORRELATION_ID;
+import static com.igse.util.IgseConstants.SUCCESS;
+import com.igse.util.IgseConstants;
+
 import com.igse.dto.WalletPayloadKafka;
 import com.igse.entity.RegistrationStatusEntity;
 import com.igse.repository.db.RegistrationStatusRepo;

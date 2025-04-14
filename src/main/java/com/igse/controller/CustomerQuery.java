@@ -1,7 +1,7 @@
 package com.igse.controller;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
-import com.igse.common.IgseConstants;
+import static com.igse.util.IgseConstants.CORRELATION_ID;
+import com.igse.util.IgseConstants;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.UserResponse;
 import com.igse.entity.UserMaster;

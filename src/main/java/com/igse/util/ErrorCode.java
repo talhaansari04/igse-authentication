@@ -11,8 +11,7 @@ public enum ErrorCode {
     EVC_COUPON_USED("1005", "EVC code already used"),
     EVC_COUPON_INVALID("1006", "Invalid EVC code"),
     WALLET_NOT_FOUND("1007", "Wallet not found"),
-    CORRELATION_ID_NOT_FOUND("2001","correlationId not found in header")
-    ;
+    CORRELATION_ID_NOT_FOUND("2001", "correlationId not found in header");
 
     private static final String PRE_FIX = "IGSE_AUTH-";
     private final String code;

@@ -1,21 +1,18 @@
 package component.com.igse.test.service;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.igse.common.IgseConstants;
 import com.igse.dto.registration.UserRegRequest;
 import com.igse.entity.RegistrationStatusEntity;
 import com.igse.repository.db.RegistrationStatusRepo;
 import com.igse.service.CustomerService;
+import com.igse.util.IgseConstants;
 import component.com.igse.test.ComponentTestWithStub;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.jdbc.Sql;
 import java.time.Duration;
 import java.util.Optional;

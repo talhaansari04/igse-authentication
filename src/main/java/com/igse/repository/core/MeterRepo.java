@@ -1,7 +1,8 @@
 package com.igse.repository.core;
 
-import static com.igse.common.IgseConstants.BEARER;
-import static com.igse.common.IgseConstants.CORRELATION_ID;
+
+import static com.igse.util.IgseConstants.BEARER;
+import static com.igse.util.IgseConstants.CORRELATION_ID;
 import com.igse.dto.IgseResponse;
 import com.igse.dto.MeterReadingDTO;
 import com.igse.dto.UnitPriceDTO;

@@ -1,6 +1,6 @@
 package blackbox.com.igse.test.controller;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static com.igse.util.IgseConstants.CORRELATION_ID;
 import static io.restassured.RestAssured.given;
 import blackbox.com.igse.test.BlackBoxTest;
 import io.restassured.RestAssured;

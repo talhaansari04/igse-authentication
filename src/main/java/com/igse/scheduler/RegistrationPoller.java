@@ -1,7 +1,9 @@
 package com.igse.scheduler;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
-import static com.igse.common.IgseConstants.OUT_OF_BOX_TASK_EXECUTOR;
+
+import static com.igse.util.IgseConstants.CORRELATION_ID;
+import static com.igse.util.IgseConstants.OUT_OF_BOX_TASK_EXECUTOR;
+
 import com.igse.config.MeterConfig;
 import com.igse.service.RegistrationEventService;
 import lombok.RequiredArgsConstructor;

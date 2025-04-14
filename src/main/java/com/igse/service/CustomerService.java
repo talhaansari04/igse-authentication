@@ -1,13 +1,14 @@
 package com.igse.service;
 
-import static com.igse.common.IgseConstants.PENDING;
-import static com.igse.common.IgseConstants.USED;
+
+import static com.igse.util.IgseConstants.PENDING;
+import static com.igse.util.IgseConstants.USED;
 import static com.igse.util.ErrorCode.EVC_COUPON_INVALID;
 import static com.igse.util.ErrorCode.EVC_COUPON_USED;
 import static com.igse.util.ErrorCode.USER_ALREADY_EXIST;
 import static com.igse.util.ErrorCode.USER_NOT_FOUND;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.igse.common.IgseConstants;
+import com.igse.util.IgseConstants;
 import com.igse.config.EncoderDecoder;
 import com.igse.dto.VoucherResponse;
 import com.igse.dto.registration.Address;

@@ -1,6 +1,6 @@
 package com.igse.controller;
 
-import static com.igse.common.IgseConstants.CORRELATION_ID;
+import static com.igse.util.IgseConstants.CORRELATION_ID;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.igse.dto.registration.RegistrationVersion;
 import com.igse.dto.registration.UserRegRequest;

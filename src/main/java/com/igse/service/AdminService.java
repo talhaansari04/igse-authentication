@@ -1,7 +1,7 @@
 package com.igse.service;
 
 import static com.igse.util.ErrorCode.USER_INFO_FOUND;
-import com.igse.common.IgseConstants;
+import com.igse.util.IgseConstants;
 import com.igse.dto.UserResponse;
 import com.igse.dto.WalletInfoDTO;
 import com.igse.entity.UserMaster;
