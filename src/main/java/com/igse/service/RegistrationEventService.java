@@ -1,5 +1,6 @@
 package com.igse.service;
 
+
 import static com.igse.util.IgseConstants.CORRELATION_ID;
 import static com.igse.util.IgseConstants.PAID;
 import static com.igse.util.IgseConstants.PENDING;
@@ -87,6 +88,7 @@ public class RegistrationEventService {
                     .customerId(regContext.getCustomerId())
                     .totalBalance(regContext.getVoucherResponse().getVoucherBalance())
                     .creationDate(LocalDate.now()).build();
+
             walletKafkaProducer.triggerWalletEvent(wallet, regContext.getCorrelationId());
             log.info("Wallet event publish successfully {}", regContext.getCustomerId());
         }
@@ -102,7 +104,9 @@ public class RegistrationEventService {
                     .submissionDate(LocalDate.now())
                     .billingStatus(PAID)
                     .customerId(regContext.getCustomerId()).build();
+
             meterRepo.saveMeterDetails(readingDTO, regContext.getCorrelationId());
+
             statusRepo.updateMeterDetailStatus(regContext.getCustomerId(), SUCCESS);
             log.info("Meter reading save successfully {}", regContext.getCustomerId());
         }
