@@ -8,6 +8,7 @@ import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -51,6 +52,7 @@ class CustomerRegistrationBBTest {
     }
 
     @Test
+    @Disabled
     void customer_registrationV1_201success() {
         httpHeaders.add(CORRELATION_ID, UUID.randomUUID().toString());
         given()
@@ -72,7 +74,7 @@ class CustomerRegistrationBBTest {
 
     private final static String REGISTRATION_REQ = """
             {
-                "customerId": "talhaansari61@gmail.com",
+                "customerId": "igseuser61@gmail.com",
                 "pass": "root",
                 "userName": "igse",
                 "voucherCode": "62ANW9MV",

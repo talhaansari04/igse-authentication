@@ -3,11 +3,10 @@ package com.igse.event;
 
 import static com.igse.util.IgseConstants.CORRELATION_ID;
 import static com.igse.util.IgseConstants.SUCCESS;
-import com.igse.util.IgseConstants;
-
 import com.igse.dto.WalletPayloadKafka;
 import com.igse.entity.RegistrationStatusEntity;
 import com.igse.repository.db.RegistrationStatusRepo;
+import com.igse.util.IgseConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;

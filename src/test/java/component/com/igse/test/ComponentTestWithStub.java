@@ -1,7 +1,6 @@
 package component.com.igse.test;
 
 import com.igse.Application;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -21,6 +20,5 @@ import java.lang.annotation.Target;
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("test")
 @Import({StubServerConfig.class})
-@Disabled
 public @interface ComponentTestWithStub {
 }

@@ -1,10 +1,9 @@
 package com.igse.repository;
 
 
+import static com.igse.util.ErrorCode.WALLET_NOT_FOUND;
 import static com.igse.util.IgseConstants.BEARER;
 import static com.igse.util.IgseConstants.CORRELATION_ID;
-
-import static com.igse.util.ErrorCode.WALLET_NOT_FOUND;
 import com.igse.dto.WalletInfoDTO;
 import com.igse.exception.UserException;
 import com.igse.repository.core.CoreError;

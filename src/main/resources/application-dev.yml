@@ -5,9 +5,9 @@
 services:
   igse:
     core:
-      endpoint: http://localhost:8080/igse-core
+      endpoint: http://localhost:9701
     payment:
-      endpoint: http://localhost:8080/igse-payment
+      endpoint: http://localhost:9702
   kafka:
     regisTopics: v1.dev.regi
     groupId: "default-dev"

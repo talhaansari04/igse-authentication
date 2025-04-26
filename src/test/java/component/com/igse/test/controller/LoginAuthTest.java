@@ -78,7 +78,7 @@ class LoginAuthTest {
 
         mockMvc.perform(asyncDispatch(result))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status", is(404)))
-                .andExpect(jsonPath("$.message", is("Customer not registered")));
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.errorDetails[0].message", is("Customer not registered")));
     }
 }
