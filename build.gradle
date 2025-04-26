@@ -28,8 +28,8 @@ group = 'com.igse'
 //version = "${igseVersion}${project.suffix()}"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 configurations {
@@ -75,7 +75,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.32'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 
-    runtimeOnly 'com.mysql:mysql-connector-j:8.3.0'
+    implementation 'org.postgresql:postgresql:42.6.0'
     implementation 'org.flywaydb:flyway-mysql'
 
     //implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.1.1'

@@ -35,9 +35,9 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/igse-admin
-    username: root
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/igse_admin
+    username: igse
     password: root
     hikari:
       minimum-idle: 5
@@ -50,7 +50,7 @@ spring:
       connection-init-sql: select 1
   jpa:
     open-in-view: false
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     hibernate:
       naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl

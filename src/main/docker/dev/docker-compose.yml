@@ -2,9 +2,9 @@ services:
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
-#    environment:
-#      ZOOKEEPER_CLIENT_PORT: 2181
-#      ZOOKEEPER_TICK_TIME: 2000
+    #    environment:
+    #      ZOOKEEPER_CLIENT_PORT: 2181
+    #      ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
 
@@ -16,7 +16,19 @@ services:
     ports:
       - "9092:9092"
     links:
-        - zookeeper
+      - zookeeper
     environment:
-        KAFKA_ADVERTISED_HOST_NAME: localhost
-        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: igse
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: igse_admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - /d/workSpace/postgres:/var/lib/postgresql/data

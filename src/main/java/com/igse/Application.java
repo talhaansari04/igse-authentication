@@ -1,6 +1,5 @@
 package com.igse;
 
-import jakarta.annotation.PostConstruct;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +12,7 @@ import java.util.TimeZone;
 @EnableTransactionManagement
 @EnableSchedulerLock(defaultLockAtMostFor = "PT60S")
 public class Application {
-    @PostConstruct
+
     void started() {
         TimeZone.setDefault(TimeZone.getTimeZone("IST"));
     }

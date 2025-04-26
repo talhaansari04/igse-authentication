@@ -2,9 +2,10 @@ plugins {
     id 'java'
     id 'scala'
     id 'maven-publish'
-    id 'io.gatling.gradle' version '3.13.1'
+    id 'io.gatling.gradle' version '3.10.3'
 }
-compileScala.targetCompatibility = 17
+
+compileScala.targetCompatibility = 21
 ScalaCompileOptions.metaClass.useAnt = false
 
 group = 'com.igse'
@@ -15,9 +16,9 @@ repositories {
 }
 
 dependencies {
-    //testImplementation 'io.gatling:gatling-http-java:3.13.1'
-    implementation "io.gatling.highcharts:gatling-charts-highcharts:3.6.1"
-    implementation "io.gatling:gatling-test-framework:3.6.1"
+    implementation "io.gatling.highcharts:gatling-charts-highcharts:3.10.3" // Updated version
+    implementation "io.gatling:gatling-test-framework:3.10.3" // Updated version
+    implementation "org.scala-lang:scala-library:2.13.12" // Ensure Scala version compatibility
 }
 
 task loadTest(dependsOn: ['compileTestScala', 'processTestResources']) {

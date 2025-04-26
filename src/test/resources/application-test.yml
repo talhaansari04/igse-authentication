@@ -6,14 +6,7 @@ igse:
     gas: 0.1
     id: gse@shangrila.gov.un
     pass: gse@energy
-eureka:
-  client:
-    fetch-registry: false
-    register-with-eureka: false
-    serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-  instance:
-    preferIpAddress: false
+
 
 spring:
   application:
@@ -21,9 +14,9 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/igse-admin
-    username: root
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/igse_admin
+    username: igse
     password: root
     hikari:
       minimum-idle: 5
@@ -35,7 +28,7 @@ spring:
       connection-test-query: select 1
       connection-init-sql: select 1
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     hibernate:
       naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
