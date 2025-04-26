@@ -29,7 +29,7 @@ task loadTest(dependsOn: ['compileTestScala', 'processTestResources']) {
             args '-sf', 'build/classes/main',
                     '-df', 'src/main/resources',
                     '-s', 'com.igse.PerformanceTests',
-                    '-rf', "$buildDir/reports/gatling"
+                    '-rf', "$rootProject.layout.buildDirectory/reports/gatling"
         }
     }
 }
