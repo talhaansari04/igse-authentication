@@ -55,7 +55,7 @@ ext['tomcat.version'] = '10.1.25'
 
 
 dependencies {
-    implementation 'com.igse.igseserv:igse-plugin:1.0'
+    implementation 'igse:igse.gradle.plugin:1.0'
     checkstyle 'com.puppycrawl.tools:checkstyle:10.12.1'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
