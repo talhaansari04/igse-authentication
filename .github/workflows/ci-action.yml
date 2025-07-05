@@ -8,7 +8,9 @@ on:
     branches:
       - develop
 
-
+env:
+  TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  USERNAME: ${{ github.actor }}
 
 jobs:
   unit-test:
