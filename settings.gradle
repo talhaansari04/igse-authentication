@@ -3,8 +3,8 @@ pluginManagement {
 		maven {
 			url = uri("https://maven.pkg.github.com/talhaansari04/igse-plugin")
 			credentials {
-				username = project.findProperty("github_username") ?: System.getenv("username")
-				password = project.findProperty("github_token") ?: System.getenv("TOKEN")
+				username =  System.getenv("username")
+				password =  System.getenv("TOKEN")
 			}
 		}
 		maven { url 'https://repo.spring.io/milestone' }
