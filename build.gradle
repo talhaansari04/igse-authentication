@@ -39,8 +39,6 @@ configurations {
 }
 
 repositories {
-//    mavenLocal()
-    mavenCentral()
     maven {
         url = uri("https://maven.pkg.github.com/talhaansari04/igse-plugin")
         credentials {
@@ -48,6 +46,7 @@ repositories {
             password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
         }
     }
+    mavenCentral()
 }
 
 ext['resilience4jVersion'] = '2.1.0'
