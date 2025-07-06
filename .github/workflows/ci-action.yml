@@ -9,8 +9,8 @@ on:
       - develop
 
 env:
-  TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  USERNAME: ${{ github.actor }}
+  GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  GITHUB_USERNAME: ${{ github.actor }}
 
 jobs:
   unit-test:

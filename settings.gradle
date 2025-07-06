@@ -3,8 +3,8 @@ pluginManagement {
 		maven {
 			url = uri("https://maven.pkg.github.com/talhaansari04/igse-plugin")
 			credentials {
-				username =  System.getenv("username")
-				password =  System.getenv("TOKEN")
+				username =  System.getenv('GITHUB_USERNAME')
+				password =  System.getenv('GITHUB_TOKEN')
 			}
 		}
 		maven { url 'https://repo.spring.io/milestone' }
@@ -13,6 +13,7 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
+
 rootProject.name = 'igse-authentication'
 def modules = ["performance"]
 include(modules as String[])
