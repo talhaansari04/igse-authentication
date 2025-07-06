@@ -1,6 +1,6 @@
 plugins {
     id 'checkstyle'
-    id 'com.igse.plugin' version '1.0.4'
+    id 'com.igse.plugin' version '1.0'
     id 'com.gorylenko.gradle-git-properties' version '2.4.1'
     id 'com.avast.gradle.docker-compose' version "0.14.2"
     //id 'org.ajoberstar.grgit' version "5.0.0-rc.3"
@@ -81,7 +81,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.32'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 
-    implementation 'org.postgresql:postgresql:42.6.0'
+    implementation 'org.postgresql:postgresql:42.7.7'
     implementation 'org.flywaydb:flyway-mysql'
 
     //implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.1.1'
