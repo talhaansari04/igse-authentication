@@ -117,9 +117,9 @@ tasks.withType(Test) {
 }
 
 
-bootJar {
+/*bootJar {
     destinationDirectory.set(file("D:\\Project\\buildJars"))
-}
+}*/
 
 bootRun {
     jvmArgs(["-Dspring.output.ansi.enabled=ALWAYS", "-Dspring.profiles.active=dev"])
