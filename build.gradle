@@ -1,3 +1,5 @@
+import java.time.Duration
+
 plugins {
     id 'checkstyle'
     id 'com.igse.plugin' version '1.0'
@@ -156,7 +158,7 @@ gitProperties {
 }
 dockerCompose {
     useComposeFiles = ["src/main/docker/dev/docker-compose.yml"]
-    dockerComposeStopTimeout = java.time.Duration.ofSeconds(10)
+    dockerComposeStopTimeout = Duration.ofSeconds(10)
 }
 
 stubRun {
